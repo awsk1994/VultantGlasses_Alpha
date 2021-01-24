@@ -16,7 +16,7 @@ function App() {
       <Stack.Navigator initialRouteName="Menu">
         <Stack.Screen name="Menu" component={MenuScreen} />
         <Stack.Screen name="Notification" component={NotificationScreen} />
-        <Stack.Screen name="Cue Card" component={CueCardScreen} />
+        <Stack.Screen name="CueCard" component={CueCardScreen} />
         <Stack.Screen name="Notes" component={NotesScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
