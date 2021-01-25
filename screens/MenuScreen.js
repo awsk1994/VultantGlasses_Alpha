@@ -33,7 +33,7 @@ class MenuScreen extends React.Component {
             updateCharacteristic={this.updateCharacteristic}
             updateDeviceName={this.updateDeviceName}
           />
-        {/* <DemoComponent characteristic={this.state.characteristic}/> */}
+        <DemoComponent/>
 
         {this.state.characteristic != null && <View>
           <View style={styles.button}>

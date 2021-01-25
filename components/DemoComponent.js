@@ -1,60 +1,59 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
-import BLEUtils from "./BLEUtils.js";
-
-function strToFormatMsgJSX(inpt){
-  let strInpt = BLEUtils.strToHex(inpt);
-  let msg = BLEUtils.hexToFormatMsgJSX(strInpt);
-
-  if(msg == null){
-    return <Text>ERR</Text>;
-  }
-  
-  return (
-    <View>
-      <Text>帆头: {msg.header}</Text>
-      <Text>主属性: {msg.pAttri}</Text>
-      <Text>次属性1: {msg.sAttri1}</Text>
-      <Text>次属性2: {msg.sAttri2}</Text>
-      <Text>内容: {msg.content}</Text>
-      <Text>CRC: {msg.CRC}</Text>
-    </View>
-  );
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class DemoComponent extends React.Component { 
   constructor(props) {
     super();
     this.state = {
-      readValue: null
+      writeVal: "",
+      readVal: ""
+    };
+
+    this.onPressRead();
+  };
+
+  onPressWrite = async(value) => {
+    console.log("onPressWrite");
+    try {
+      this.setState({writeVal: value});
+
+      console.log("Writing to async storage");
+      await AsyncStorage.setItem('DemoKey', value)
+      console.log("Successfully written to async storage");
+    } catch (e) {
+      console.log(e);
     }
   };
 
-  onPressReadOp = async() => {
-    console.log("onPressReadOp");
-    try{
-      let char = await this.props.characteristic.read();
-      console.log("Characteristics Read Value: " + char.value);
-      ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
-      this.setState({readValue: char.value});
-    } catch(err){
-      console.log("ERROR:");
-      console.log(err);
-      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-    }
+  onPressRead = async() => {
+    console.log("onPressRead");
+    try {
+      console.log("Reading from asyncStorage");
+      const value = await AsyncStorage.getItem('DemoKey');
+      console.log("Successfully read from asyncStorage");
+
+      if(value !== null) {
+        console.log("value is " + value);
+        this.setState({readVal: value});
+      } else {
+        console.log("No Value");
+      }
+    } catch(e) {
+      console.log(e);
+    }  
   };
 
   render() {
     return (
       <View>
-        <Text>=======================================</Text>
-        <Text>操作（Operations)</Text>
-        <Text>读取特征值:</Text>
-        <View >
-          <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressReadOp} title="读取特征值"/>
-        </View>
-        {strToFormatMsgJSX(this.state.readValue)}
-        <Text>{`十六进制: ${BLEUtils.strToHex(this.state.readValue)}`}</Text>
+        <TextInput
+            placeholder="writeVal"
+            value={this.state.writeVal}
+            onChangeText={v => this.onPressWrite(v)}
+          />
+        <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressRead} title="Read"/>
+        <Text>Read Value: {this.state.readVal}</Text>
       </View>
     );
   }
