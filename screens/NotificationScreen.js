@@ -74,7 +74,7 @@ class NotificationScreen extends React.Component {
       + ", contact = " + contactHex
       + ", content = " + contentHex);
     
-      console.log("onPressWriteCharacteristic | getSize | appName = " + this.getHexSize(appNameHex) 
+    console.log("onPressWriteCharacteristic | getSize | appName = " + this.getHexSize(appNameHex) 
       + ", contact = " + this.getHexSize(contactHex)
       + ", content = " + this.getHexSize(contentHex));
 
