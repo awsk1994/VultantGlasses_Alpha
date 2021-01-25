@@ -3,6 +3,10 @@ import { ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Al
 import BLEUtils from "../components/BLEUtils";
 import { Buffer } from 'buffer/'
 
+// TODO: Debug 内容 into the 3 parts (app name, contact, content)
+// TODO: too many console.log. Remove some.
+// TODO: Implement constants.js to store CONSTANTS.
+
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);
   let msg = BLEUtils.hexToFormatMsgJSX(strInpt);
@@ -30,27 +34,64 @@ class NotificationScreen extends React.Component {
       appName: "",
       contact: "",
       content: "",
-      vMsgHeader: "00",
-      vMsgPAttri: "00",
-      vMsgSAttri1: "00",
-      vMsgSAttri2: "00",
-      vMsgContent: "00",
+      vMsgHeader: "02", // Hardcoded
+      vMsgPAttri: "02", // Hardcoded
+      vMsgSAttri1: "23", // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
       characteristic: route.params.characteristic,
       readVal: ""
     };
   };
 
+  utf8ToHex(inptStr){
+    const hexMsg = Buffer.from(inptStr, 'utf8').toString('hex')
+    return hexMsg;
+  }
+
+  getHexSize(hexStr){
+    const s = Math.floor(hexStr.length/2);
+    let sHexStr = s.toString(16);
+    if(sHexStr.length == 0){
+      return "00";
+    } else if(sHexStr.length % 2 == 1){ // odd
+      return "0" + sHexStr;
+    } else {  // even
+      return sHexStr;
+    };
+  }
+
   onPressWriteCharacteristic(){
-    // "00" temp divider
-    const content = this.state.appName + "00" + this.state.contact + "00" + this.state.content;
+    const divider = "00";    
+    const appNameHex = this.utf8ToHex(this.state.appName);
+    const contactHex = this.utf8ToHex(this.state.contact);
+    const contentHex = this.utf8ToHex(this.state.content);
+
+    console.log("onPressWriteCharacteristic | Input utf8 | appName = " + this.state.appName 
+      + ", contact = " + this.state.contact
+      + ", content = " + this.state.content);
+
+    console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
+      + ", contact = " + contactHex
+      + ", content = " + contentHex);
+    
+      console.log("onPressWriteCharacteristic | getSize | appName = " + this.getHexSize(appNameHex) 
+      + ", contact = " + this.getHexSize(contactHex)
+      + ", content = " + this.getHexSize(contentHex));
+
+    const entireContentHex = this.getHexSize(appNameHex) + appNameHex + divider
+    + this.getHexSize(contactHex) + contactHex + divider 
+    + this.getHexSize(contentHex) + contentHex;
+
+    console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
+
     const hexMsg = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + this.state.vMsgSAttri1
     + this.state.vMsgSAttri2
-    + content;
+    + entireContentHex;
 
     const CRCHex = BLEUtils.sumHex(hexMsg);
-    console.log("write hexStr | " + (hexMsg + CRCHex));
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
     this.writeHexOp(hexMsg + CRCHex);
   }
 
