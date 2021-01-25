@@ -6,13 +6,40 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 2. Make UI for each settings types
 */
 
+// TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
+
+const SettingsType = {
+  "boolean": 0,
+  "numeric": 1,
+  "text": 2,
+  "language": 3
+};
+
 const SETTINGS = [
-  {title: "Display TimeOut"},
-  {title: "Do Not Disturb"},
-  {title: "Language"},
-  {title: "App Enable/Disable"},
-  {title: "Bluetooth Device Name"},
-  {title: "Audio Loudness"},
+  {
+    title: "Display TimeOut",
+    type: SettingsType.numeric
+  },
+  {
+    title: "Do Not Disturb",
+    type: SettingsType.boolean
+  },
+  {
+    title: "Language",
+    type: SettingsType.language
+  },
+  {
+    title: "App Enable/Disable",
+    type: SettingsType.boolean
+  },
+  {
+    title: "Bluetooth Device Name",
+    type: SettingsType.text
+  },
+  {
+    title: "Audio Loudness",
+    type: SettingsType.numeric
+  }
 ];
 
 const gridItem = (itemData) => {
