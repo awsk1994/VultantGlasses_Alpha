@@ -24,7 +24,7 @@ class MenuScreen extends React.Component {
         <View style={styles.button}>
           <Button title="Notification" onPress={() => {
             this.props.navigation.navigate("Notification", {
-              textA: this.state.textA // TODO: will pass characteristics in the future
+              characteristic: this.state.characteristic // TODO: will pass characteristics in the future
             });
           }}/>
         </View>
