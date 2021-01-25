@@ -1,5 +1,11 @@
 # Vultant Glasses Alpha App
 
+## Libraries
+ - react navigation:
+   - https://reactnavigation.org/docs/4.x/getting-started
+ - async-storage:
+   - https://react-native-async-storage.github.io/async-storage/docs/usage
+
 ## Log
  - 20210124: Ensured react-navigation is functional.
  - 20210125: Set up a structure for the entire app.
