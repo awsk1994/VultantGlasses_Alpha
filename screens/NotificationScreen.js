@@ -1,7 +1,6 @@
 import React from 'react';
 import { ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLEUtils from "../components/BLEUtils";
-import { Buffer } from 'buffer/'
 import BLERead from "../components/BLERead";
 
 // TODO: Debug 内容 into the 3 parts (app name, contact, content)
