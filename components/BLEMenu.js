@@ -5,6 +5,8 @@ import BLEUtils from "./BLEUtils";
 import { Buffer } from 'buffer/'
 import Storage from "../components/Storage";
 
+// TODO: Move this to screens folder.
+
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);
   let msg = BLEUtils.hexToFormatMsgJSX(strInpt);
