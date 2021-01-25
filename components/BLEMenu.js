@@ -3,6 +3,7 @@ import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroi
 import { BleManager } from 'react-native-ble-plx';
 import BLEUtils from "./BLEUtils";
 import { Buffer } from 'buffer/'
+import Storage from "../components/Storage";
 
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);
@@ -25,7 +26,7 @@ function strToFormatMsgJSX(inpt){
 }
 
 class BLEMenu extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       status: null,
@@ -43,9 +44,11 @@ class BLEMenu extends React.Component {
       vMsgSAttri1: "00",
       vMsgSAttri2: "00",
       vMsgContent: "00",
-      vMsgCRC: "00"
+      vMsgCRC: "00",
+      deviceName: null
     };
-    const manager = this.bleManager = new BleManager();
+    console.log(props);
+    this.bleManager = new BleManager();
   };
 
   componentWillUnmount() {
@@ -62,6 +65,7 @@ class BLEMenu extends React.Component {
   };
 
   onScannedDevice = (error, device) => {
+    console.log(device);
     if (error) {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
@@ -121,7 +125,9 @@ class BLEMenu extends React.Component {
   onPressDevice = async (device) => {
     let services = await device.services();
     this.setState({services});
-    this.props.updateDeviceName(device.localName);
+    this.setState({
+      deviceName: device.localName
+    })
   };
 
   onPressService = async(service) => {
@@ -132,7 +138,7 @@ class BLEMenu extends React.Component {
   onPressCharacteristic = async(characteristic) => {
     console.log("onPressCharacteristic")
     this.setState({characteristic});
-    this.props.updateCharacteristic(characteristic);
+    this.updateCharacteristic(characteristic);
   }
 
   onPressReadOp = async() => {
@@ -202,6 +208,15 @@ class BLEMenu extends React.Component {
     console.log("onPressCalcCRC | CRC = " + CRC);
     this.setState({"CRC": CRC});
   };
+
+  updateCharacteristic = (characteristic) => {
+    // TODO: better to use saveObject. Currently, unable to do it.
+    console.log("updateCharacteristic")
+    Storage.saveText("@deviceId", characteristic.deviceID);
+    Storage.saveText("@serviceId", characteristic.serviceUUID);
+    Storage.saveText("@characteristicId", characteristic.uuid);
+    Storage.saveText("@deviceName", this.state.deviceName);
+  }
 
   render() {
     return (
