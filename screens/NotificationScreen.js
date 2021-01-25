@@ -43,44 +43,27 @@ class NotificationScreen extends React.Component {
     };
   };
 
-  utf8ToHex(inptStr){
-    const hexMsg = Buffer.from(inptStr, 'utf8').toString('hex')
-    return hexMsg;
-  }
-
-  getHexSize(hexStr){
-    const s = Math.floor(hexStr.length/2);
-    let sHexStr = s.toString(16);
-    if(sHexStr.length == 0){
-      return "00";
-    } else if(sHexStr.length % 2 == 1){ // odd
-      return "0" + sHexStr;
-    } else {  // even
-      return sHexStr;
-    };
-  }
-
   onPressWriteCharacteristic(){
-    const divider = "00";    
-    const appNameHex = this.utf8ToHex(this.state.appName);
-    const contactHex = this.utf8ToHex(this.state.contact);
-    const contentHex = this.utf8ToHex(this.state.content);
-
     console.log("onPressWriteCharacteristic | Input utf8 | appName = " + this.state.appName 
       + ", contact = " + this.state.contact
       + ", content = " + this.state.content);
+    
+    const divider = "00";    
+    const appNameHex = BLEUtils.utf8ToHex(this.state.appName);
+    const contactHex = BLEUtils.utf8ToHex(this.state.contact);
+    const contentHex = BLEUtils.utf8ToHex(this.state.content);
 
     console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex
       + ", content = " + contentHex);
     
-    console.log("onPressWriteCharacteristic | getSize | appName = " + this.getHexSize(appNameHex) 
-      + ", contact = " + this.getHexSize(contactHex)
-      + ", content = " + this.getHexSize(contentHex));
+    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.getHexSize(appNameHex) 
+      + ", contact = " + BLEUtils.getHexSize(contactHex)
+      + ", content = " + BLEUtils.getHexSize(contentHex));
 
-    const entireContentHex = this.getHexSize(appNameHex) + appNameHex + divider
-    + this.getHexSize(contactHex) + contactHex + divider 
-    + this.getHexSize(contentHex) + contentHex;
+    const entireContentHex = BLEUtils.getHexSize(appNameHex) + appNameHex + divider
+    + BLEUtils.getHexSize(contactHex) + contactHex + divider 
+    + BLEUtils.getHexSize(contentHex) + contentHex;
 
     console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
 
@@ -92,25 +75,18 @@ class NotificationScreen extends React.Component {
 
     const CRCHex = BLEUtils.sumHex(hexMsg);
     console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
-    this.writeHexOp(hexMsg + CRCHex);
-  }
 
-  writeHexOp = (hexStr) => {
-    if (!hexStr) {
-      Alert.alert('请输入要写入的特征值')
+    SuccessWriteFn = () => {
+      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+    };
+
+    ErrWriteFn = (err) => {
+      console.log('写入特征值出错：', err)
+      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
-    const hexMsg = Buffer.from(hexStr, 'hex').toString('base64')
-    ToastAndroid.show('开始写入特征值：' + hexMsg, ToastAndroid.SHORT);
 
-    this.state.characteristic.writeWithResponse(hexMsg)
-      .then(() => {
-        Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...')
-      })
-      .catch(err => {
-        console.log('写入特征值出错：', err)
-        ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-      })
-  };
+    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+  }
 
   onPressRead = async() => {
     console.log("onPressRead");

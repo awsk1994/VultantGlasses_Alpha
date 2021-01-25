@@ -88,6 +88,36 @@ class BLEUtils {
 
     return msg;
   };
+
+  static writeHexOp = (hexStr, characteristics, SuccessWriteFn, ErrWriteFn) => {
+    if (!hexStr) {
+      console.log('ERROR. hexStr is empty. 请输入要写入的特征值')
+    }
+    const hexMsg = Buffer.from(hexStr, 'hex').toString('base64')
+    console.log('开始写入特征值：' + hexMsg);
+
+    characteristics.writeWithResponse(hexMsg)
+      .then(SuccessWriteFn)
+      .catch(ErrWriteFn)
+  };
+
+
+  static utf8ToHex(inptStr){
+    const hexMsg = Buffer.from(inptStr, 'utf8').toString('hex')
+    return hexMsg;
+  }
+
+  static getHexSize(hexStr){
+    const s = Math.floor(hexStr.length/2);
+    let sHexStr = s.toString(16);
+    if(sHexStr.length == 0){
+      return "00";
+    } else if(sHexStr.length % 2 == 1){ // odd
+      return "0" + sHexStr;
+    } else {  // even
+      return sHexStr;
+    };
+  }
 }
 
 export default BLEUtils;
