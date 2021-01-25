@@ -118,6 +118,10 @@ class BLEUtils {
       return sHexStr;
     };
   }
+
+  static numStrToHex(numStr){
+    return parseInt(numStr).toString(16).toString('utf8');
+  }
 }
 
 export default BLEUtils;
