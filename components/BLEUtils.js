@@ -120,7 +120,14 @@ class BLEUtils {
   }
 
   static numStrToHex(numStr){
-    return parseInt(numStr).toString(16).toString('utf8');
+    numHexStr = parseInt(numStr).toString(16).toString('utf8');
+    if(numHexStr.length == 0){
+      return "00";
+    } else if(numHexStr.length % 2 == 1){ // odd
+      return "0" + numHexStr;
+    } else {  // even
+      return numHexStr;
+    };
   }
 }
 
