@@ -1,32 +1,72 @@
 import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ToastAndroid } from 'react-native';
+import BLERead from "../components/BLERead";
 
 class NotesScreen extends React.Component {
-  constructor(props) {
+  constructor({props, route}) {
     super(props);
     this.state = {
-      notes: ""
+      notes: "",
+      imgId: "00",
+      vMsgHeader: "A0", // Hardcoded
+      vMsgPAttri: "01", // Hardcoded
+      vMsgSAttri1: "13", // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
+      characteristic: route.params.characteristic
     }
   };
 
-  // TODO
-  generateMsg(){
-    return this.state.notes;
-  };
+  onPressWrite(){
+    console.log("onPressWrite | Input utf8 | imgId = " + this.state.imgId 
+    + ", notes = " + this.state.notes);
+    
+    const imgIdHex = BLEUtils.numStrToHex(this.state.imgId);
+    const notesHex = BLEUtils.utf8ToHex(this.state.notes);
+
+    console.log("onPressWrite | utf8 to hex | imgId = " + imgIdHex 
+    + ", notes = " + notesHex);
+
+    const entireContentHex = imgIdHex + notesHex;
+    console.log("onPressWrite | entireContentHex | " + entireContentHex);
+
+    const hexMsg = this.state.vMsgHeader 
+    + this.state.vMsgPAttri 
+    + this.state.vMsgSAttri1
+    + this.state.vMsgSAttri2
+    + entireContentHex;
+
+    const CRCHex = BLEUtils.sumHex(hexMsg);
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+
+    SuccessWriteFn = () => {
+      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+    };
+
+    ErrWriteFn = (err) => {
+      console.log('写入特征值出错：', err)
+      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+    }
+
+    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+  }
 
   render() {
     return (
       <View style={{margin: 10}}>
-        {/* <Text>NotesScreen</Text> */}
+        <TextInput
+            placeholder="Image ID"
+            value={this.state.imgId}
+            onChangeText={v => this.setState({"imgId": v})}
+          />
         <TextInput
             placeholder="Notes"
             value={this.state.notes}
             onChangeText={v => this.setState({"notes": v})}
           />
         <Button title="Send Notes" onPress = {() => {
-          // TODO: Placeholder. Should update this.props.characteristics.
-          ToastAndroid.show("Send Notes: " + this.generateMsg(), ToastAndroid.SHORT);
+          this.onPressWrite();
         }}/>
+        <BLERead characteristic={this.state.characteristic}/>
       </View>
     )
   };
