@@ -2,30 +2,11 @@ import React from 'react';
 import { ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLEUtils from "../components/BLEUtils";
 import { Buffer } from 'buffer/'
+import BLERead from "../components/BLERead";
 
 // TODO: Debug 内容 into the 3 parts (app name, contact, content)
 // TODO: too many console.log. Remove some.
 // TODO: Implement constants.js to store CONSTANTS.
-
-function strToFormatMsgJSX(inpt){
-  let strInpt = BLEUtils.strToHex(inpt);
-  let msg = BLEUtils.hexToFormatMsgJSX(strInpt);
-
-  if(msg == null){
-    return <Text>ERR</Text>;
-  }
-  
-  return (
-    <View>
-      <Text>帆头: {msg.header}</Text>
-      <Text>主属性: {msg.pAttri}</Text>
-      <Text>次属性1: {msg.sAttri1}</Text>
-      <Text>次属性2: {msg.sAttri2}</Text>
-      <Text>内容: {msg.content}</Text>
-      <Text>CRC: {msg.CRC}</Text>
-    </View>
-  );
-}
 
 class NotificationScreen extends React.Component {
   constructor({props, route}) {
@@ -34,7 +15,7 @@ class NotificationScreen extends React.Component {
       appName: "",
       contact: "",
       content: "",
-      vMsgHeader: "02", // Hardcoded
+      vMsgHeader: "A0", // Hardcoded
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
@@ -88,20 +69,6 @@ class NotificationScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
-  onPressRead = async() => {
-    console.log("onPressRead");
-    try{
-      let char = await this.state.characteristic.read();
-      console.log("Characteristics Read Value: " + char.value);
-      ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
-      this.setState({readValue: char.value});
-    } catch(err){
-      console.log("ERROR:");
-      console.log(err);
-      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-    }
-  };
-
   render() {
     return (
       <ScrollView style={{margin: 10}}>
@@ -124,11 +91,7 @@ class NotificationScreen extends React.Component {
         <Button title="Write Characteristic" onPress = {() => {
           this.onPressWriteCharacteristic();
         }}/>
-        <Text>============</Text>
-        <Button title="Read Characteristic" onPress = {() => {
-          this.onPressRead()
-        }}/>
-        {strToFormatMsgJSX(this.state.readValue)}
+        <BLERead characteristic={this.state.characteristic}/>
       </ScrollView>
     )
   };
