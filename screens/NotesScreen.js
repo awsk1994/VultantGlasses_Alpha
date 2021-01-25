@@ -53,19 +53,26 @@ class NotesScreen extends React.Component {
   render() {
     return (
       <View style={{margin: 10}}>
-        <TextInput
+        <View> 
+          <Text>Image ID:</Text>
+          <TextInput
             placeholder="Image ID"
             value={this.state.imgId}
             onChangeText={v => this.setState({"imgId": v})}
           />
-        <TextInput
+        </View>
+        <View>
+          <Text>Notes:</Text>
+          <TextInput
             placeholder="Notes"
             value={this.state.notes}
             onChangeText={v => this.setState({"notes": v})}
           />
+        </View>
         <Button title="Send Notes" onPress = {() => {
           this.onPressWrite();
         }}/>
+        <View style={styles.lineStyle}/>
         <BLERead characteristic={this.state.characteristic}/>
       </View>
     )
@@ -76,6 +83,11 @@ class NotesScreen extends React.Component {
 const styles = StyleSheet.create({
   "button": {
     margin: 10
+  },
+  lineStyle:{
+    borderWidth: 0.5,
+    borderColor:'black',
+    margin:10,
   }
 })
 
