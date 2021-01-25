@@ -15,7 +15,8 @@
 <img src="./img/20210125_SettingsScreen.png" height="300"/>
 
 ## TODO:
- - persistent storage (to device info) -> then change search device to an option in settings.
+ - persistent storage (to device info) -> then change search device to an option in settings, notes and cue card information.
+ - Notification -> Send.
  - BLE library test on physical device
  - pass characteristics object via react-navigation
  - Content of each screen
