@@ -206,7 +206,7 @@ class BLEMenu extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        {this.state.characteristic == null && <ScrollView>
           <Text>Vultant Testing App</Text>
           <Text>扫描中: {this.state.scanning.toString()}</Text>
           <View style={styles.b1}>
@@ -273,7 +273,7 @@ class BLEMenu extends React.Component {
             />
           </View>}
         </ScrollView>
-
+        }
       </View>
     );
   }
