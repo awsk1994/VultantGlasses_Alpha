@@ -1,5 +1,7 @@
+import { Buffer } from 'buffer/'
+
 class BLEUtils {
-  strToBinary(str) {
+  static strToBinary(str) {
     if(str == null){
       return "";
     }
@@ -13,14 +15,14 @@ class BLEUtils {
     return result.join("");
   }
 
-   strToHex(str){
+  static strToHex(str){
     if(str == null){
       return "";
     }
     return Buffer.from(str, 'base64').toString('hex');
   }
 
-   strToUTF8(str){
+  static strToUTF8(str){
     if(str == null){
       return "";
     }
@@ -28,7 +30,7 @@ class BLEUtils {
     return str;
   }
 
-   sumHex(hexStr){
+  static sumHex(hexStr){
     if(hexStr == null){
       return "";
     };
@@ -54,7 +56,7 @@ class BLEUtils {
     };
   };
 
-   hexToFormatMsgJSX(msgStr){
+  static hexToFormatMsgJSX(msgStr){
     if(msgStr == null){
       return "";
     };
@@ -87,3 +89,5 @@ class BLEUtils {
     return msg;
   };
 }
+
+export default BLEUtils;
