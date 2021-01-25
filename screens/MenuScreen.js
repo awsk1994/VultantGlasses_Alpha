@@ -1,27 +1,25 @@
 import React from 'react';
-import { Button, View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-// import BLEMenu from "../components/BLEMenu";
+import { Button, View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
 
 class MenuScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      "textA": "This is text A"
+      characteristic: null
     }
   };
 
-  updateTextA = (newValue) => {
-    this.setState({"textA": newValue});
+  updateCharacteristic = (newValue) => {
+    this.setState({"characteristic": newValue});
   }
 
   render() {
     return (
-      <View>
-        {/* <BLEMenu/> */}    
-        {/* TODO: need to wait for physical device to charge. */ }
-        <DemoComponent textA={this.state.textA} updateTextA={this.updateTextA}/>
-        <Text>MenuScreen | TextA = {this.state.textA}</Text>
+      <ScrollView>
+        <BLEMenu updateCharacteristic={this.updateCharacteristic} />    
+        <DemoComponent characteristic={this.state.characteristic}/>
 
         <View style={styles.button}>
           <Button title="Notification" onPress={() => {
@@ -51,7 +49,7 @@ class MenuScreen extends React.Component {
             })}
           }/>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }

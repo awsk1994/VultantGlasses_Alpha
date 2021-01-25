@@ -1,7 +1,8 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
-import BLEUtils from "./BLEUtils.js";
+import BLEUtils from "./BLEUtils";
+import { Buffer } from 'buffer/'
 
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);
@@ -23,7 +24,7 @@ function strToFormatMsgJSX(inpt){
   );
 }
 
-class BLEMenu extends Component {
+class BLEMenu extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -130,6 +131,7 @@ class BLEMenu extends Component {
   onPressCharacteristic = async(characteristic) => {
     console.log("onPressCharacteristic")
     this.setState({characteristic});
+    this.props.updateCharacteristic(characteristic);
   }
 
   onPressReadOp = async() => {
