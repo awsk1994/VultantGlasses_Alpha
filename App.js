@@ -7,6 +7,7 @@ import NotificationScreen from "./screens/NotificationScreen";
 import CueCardScreen from "./screens/CueCardScreen";
 import NotesScreen from "./screens/NotesScreen";
 import SettingsScreen from "./screens/SettingsScreen";
+import BLEMenu from "./components/BLEMenu";
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Menu">
         <Stack.Screen name="Menu" component={MenuScreen} />
+        <Stack.Screen name="BLEMenu" component={BLEMenu} />
         <Stack.Screen name="Notification" component={NotificationScreen} />
         <Stack.Screen name="CueCard" component={CueCardScreen} />
         <Stack.Screen name="Notes" component={NotesScreen} />

@@ -139,6 +139,7 @@ class BLEMenu extends React.Component {
     console.log("onPressCharacteristic")
     this.setState({characteristic});
     this.updateCharacteristic(characteristic);
+    this.props.navigation.goBack();
   }
 
   onPressReadOp = async() => {

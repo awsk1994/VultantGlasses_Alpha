@@ -28,9 +28,9 @@ class MenuScreen extends React.Component {
     console.log("componentDidMount start.");
 
     // TODO: confirm setTimeout time.
-    // setInterval(() => {
-    //   this.fetchCharacteristic();
-    // }, 20000);
+    setInterval(() => {
+      this.fetchCharacteristic();
+    }, 20000);
 
     setTimeout(() => {
       this.fetchCharacteristic();
@@ -118,17 +118,34 @@ class MenuScreen extends React.Component {
         <Text>Service Id: {this.state.serviceId}</Text>
         <Text>Characteristic Id: {this.state.characteristicId}</Text>
 
-        <Button title="Reset BLE Connection" onPress={this.resetBLEConnection}/>
-        <Button title="Start BLE Connection" onPress={this.connectBLE}/>
+
+        <View style={styles.button}>
+          <Button title="Choose Device" onPress={() => {
+                this.props.navigation.navigate("BLEMenu");
+              }}/>
+        </View>
+
+        <View style={styles.button}>
+          <Button title="Fetch from Storage" onPress={this.fetchCharacteristic}/>
+        </View>
+
+        <View style={styles.button}>
+          <Button title="Start BLE Connection" onPress={this.connectBLE}/>
+        </View>
+
+        <View style={styles.button}>
+          <Button title="Reset BLE Connection" onPress={this.resetBLEConnection}/>
+        </View>
+
 
         {/* <Button title="Reset Characteristic" onPress={this.resetBLEConnection}/> */}
-        
-        <BLEMenu
+        {/* <BLEMenu
             updateCharacteristic={this.updateCharacteristic}
             updateDeviceName={this.updateDeviceName}
-          />
+          /> */}
         {/* <DemoComponent/> */}
 
+        <View style={styles.lineStyle}/>
         {this.state.characteristic != null && <View>
           <View style={styles.button}>
             <Button title="Notification" onPress={() => {
@@ -167,7 +184,12 @@ class MenuScreen extends React.Component {
 const styles = StyleSheet.create({
   "button": {
     margin: 10
-  }
+  },
+  lineStyle:{
+    borderWidth: 0.5,
+    borderColor:'black',
+    margin:10,
+}
 })
 
 export default MenuScreen;
