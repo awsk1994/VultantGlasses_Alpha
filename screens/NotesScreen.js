@@ -17,7 +17,7 @@ class NotesScreen extends React.Component {
   render() {
     return (
       <View style={{margin: 10}}>
-        <Text>NotesScreen</Text>
+        {/* <Text>NotesScreen</Text> */}
         <TextInput
             placeholder="Notes"
             value={this.state.notes}

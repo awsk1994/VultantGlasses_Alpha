@@ -129,7 +129,7 @@ class NotificationScreen extends React.Component {
   render() {
     return (
       <ScrollView style={{margin: 10}}>
-        <Text>NotificationScreen</Text>
+        {/* <Text>NotificationScreen</Text> */}
         <TextInput
             placeholder="App Name"
             value={this.state.appName}

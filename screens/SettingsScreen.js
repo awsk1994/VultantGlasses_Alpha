@@ -26,7 +26,7 @@ const gridItem = (itemData) => {
 const SettingsScreen = (props) => {
   return (
     <View>
-      <Text>SettingsScreen</Text>
+      {/* <Text>SettingsScreen</Text> */}
       <FlatList keyExtractor={(item, index) => item.id} data={SETTINGS} renderItem={gridItem}/>
     </View>
   )

@@ -3,7 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 
 const CueCardScreen = (props) => {
   return (
-    <View><Text>CueCardScreen</Text></View>
+    <View>
+      <Text>CueCardScreen</Text>
+    </View>
   )
 }
 
