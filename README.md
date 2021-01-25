@@ -6,6 +6,12 @@
  - async-storage:
    - https://react-native-async-storage.github.io/async-storage/docs/usage
 
+## TODO:
+ - move BLEMenu to be part of Settings.
+ - Figure out how to get settings from smartglasses. Can we get notes info as well?
+ - Implement persistence storage for notes, cue-card.
+ - More work on settings.
+
 ## Log
  - 20210124: Ensured react-navigation is functional.
  - 20210125: Set up a structure for the entire app.
@@ -31,12 +37,3 @@
 <img src="./img/20210125_2_NotesScreen.png" height="300"/>
 <img src="./img/20210125_2_CueCardScreen.png" height="300"/>
 <img src="./img/20210125_2_SettingsScreen.png" height="300"/>
-
-## TODO:
- - persistent storage (to device info) -> then change search device to an option in settings, notes and cue card information.
- - Notification -> Send.
- - BLE library test on physical device
- - pass characteristics object via react-navigation
- - Content of each screen
-   - UI of Settings
-   - UI of Cue Card
