@@ -39,28 +39,28 @@ class MenuScreen extends React.Component {
           <View style={styles.button}>
             <Button title="Notification" onPress={() => {
               this.props.navigation.navigate("Notification", {
-                characteristic: this.state.characteristic // TODO: will pass characteristics in the future
+                characteristic: this.state.characteristic 
               });
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="Notes" onPress={() => {
               this.props.navigation.navigate("Notes", {
-                textA: this.state.textA // TODO: will pass characteristics in the future
+                characteristic: this.state.characteristic
               })
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="Cue Card" onPress={() => {
               this.props.navigation.navigate("CueCard", {
-                textA: this.state.textA // TODO: will pass characteristics in the future
+                characteristic: this.state.characteristic
               })
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="Settings" onPress={() => {
               this.props.navigation.navigate("Settings", {
-                textA: this.state.textA // TODO: will pass characteristics in the future
+                characteristic: this.state.characteristic
               })}
             }/>
           </View>
