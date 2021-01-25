@@ -8,6 +8,8 @@ target 'VultantGlassesAlpha2' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'react-native-ble-plx', :path => '../node_modules/react-native-ble-plx'
+
   target 'VultantGlassesAlpha2Tests' do
     inherit! :complete
     # Pods for testing
