@@ -7,26 +7,6 @@ import Storage from "../components/Storage";
 
 // TODO: Move this to screens folder.
 
-function strToFormatMsgJSX(inpt){
-  let strInpt = BLEUtils.strToHex(inpt);
-  let msg = BLEUtils.hexToFormatMsgJSX(strInpt);
-
-  if(msg == null){
-    return <Text>ERR</Text>;
-  }
-  
-  return (
-    <View>
-      <Text>帆头: {msg.header}</Text>
-      <Text>主属性: {msg.pAttri}</Text>
-      <Text>次属性1: {msg.sAttri1}</Text>
-      <Text>次属性2: {msg.sAttri2}</Text>
-      <Text>内容: {msg.content}</Text>
-      <Text>CRC: {msg.CRC}</Text>
-    </View>
-  );
-}
-
 class BLEMenu extends React.Component {
   constructor(props) {
     super();
