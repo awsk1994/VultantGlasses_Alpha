@@ -121,6 +121,7 @@ class BLEMenu extends React.Component {
   onPressDevice = async (device) => {
     let services = await device.services();
     this.setState({services});
+    this.props.updateDeviceName(device.localName);
   };
 
   onPressService = async(service) => {
