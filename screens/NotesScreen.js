@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ToastAndroid } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLERead from "../components/BLERead";
+import BLEUtils from "../components/BLEUtils";
 
 class NotesScreen extends React.Component {
   constructor({props, route}) {
