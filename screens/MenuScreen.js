@@ -1,9 +1,11 @@
 import React from 'react';
-import { Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { AppRegistry, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
 import { BleManager } from 'react-native-ble-plx';
 import Storage from "../components/Storage";
+import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
+import BLEUtils from "../components/BLEUtils";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -18,11 +20,86 @@ class MenuScreen extends React.Component {
       characteristicId: null,
       selectedDevice: null,
       selectedService: null,
-      selectedCharacteristic: null
+      selectedCharacteristic: null,
+      vMsgHeader: "A0", // Hardcoded
+      vMsgPAttri: "02", // Hardcoded
+      vMsgSAttri1: "23", // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
     };
     console.log("MenuScreen");
     this.bleManager = new BleManager();
   };
+
+  setNotificationPermission = async () => {
+    // To check if the user has permission
+    const status = await RNAndroidNotificationListener.getPermissionStatus()
+    console.log("Notification Permission status");
+    console.log(status) // Result can be 'authorized', 'denied' or 'unknown'
+
+    // To open the Android settings so the user can enable it
+    RNAndroidNotificationListener.requestPermission();
+    AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
+  }
+
+  headlessNotificationListener = async (notification) => {
+    if(this.state.characteristic != null){
+      this.handleNotification(notification);
+    } else {
+      console.log("No characteristic connected. Cannot send notification.");
+    }
+  };
+
+  handleNotification = (notification) => {
+    const { app, title, text } = notification;
+    console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
+    this.onPressWriteCharacteristic(app, title, text);
+  }
+
+  onPressWriteCharacteristic(appName, contact, content){
+    console.log("onPressWriteCharacteristic | Input utf8 | appName = " + appName 
+      + ", contact = " + contact
+      + ", content = " + content);
+    
+    const divider = "00";
+    // TODO: when message is too long, getting message timeout.
+    const appNameHex = BLEUtils.utf8ToHex(appName).substring(0,2);
+    const contactHex = BLEUtils.utf8ToHex(contact).substring(0,2);
+    const contentHex = BLEUtils.utf8ToHex(content).substring(0,2);
+
+    console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
+      + ", contact = " + contactHex
+      + ", content = " + contentHex);
+    
+    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.getHexSize(appNameHex) 
+      + ", contact = " + BLEUtils.getHexSize(contactHex)
+      + ", content = " + BLEUtils.getHexSize(contentHex));
+
+    const entireContentHex = BLEUtils.getHexSize(appNameHex) + appNameHex + divider
+    + BLEUtils.getHexSize(contactHex) + contactHex + divider 
+    + BLEUtils.getHexSize(contentHex) + contentHex;
+
+    console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
+
+    const hexMsg = this.state.vMsgHeader 
+    + this.state.vMsgPAttri 
+    + this.state.vMsgSAttri1
+    + this.state.vMsgSAttri2
+    + entireContentHex;
+
+    const CRCHex = BLEUtils.sumHex(hexMsg);
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+
+    let SuccessWriteFn2 = () => {
+      console.log("Wrote successfully.");
+    };
+
+    let ErrWriteFn = (err) => {
+      console.log('写入特征值出错：', err)
+      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+    }
+
+    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn2, ErrWriteFn);
+  }
 
   componentDidMount() {
     console.log("componentDidMount start.");
@@ -31,11 +108,13 @@ class MenuScreen extends React.Component {
       this.fetchCharacteristic();
     }, 1000);
 
-    // // Below is only for debugging purposes.
-    // setTimeout(() => {
-    //   console.log("DEBUG | Read BLE info");
-    //   this.connectBLE();
-    // }, 5000);
+    setTimeout(this.setNotificationPermission, 1000);
+
+    // Below is only for debugging purposes.
+    setTimeout(() => {
+      console.log("DEBUG | Read BLE info");
+      this.connectBLE();
+    }, 5000);
     
    };
    

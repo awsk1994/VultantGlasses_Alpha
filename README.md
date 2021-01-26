@@ -5,9 +5,15 @@
    - https://reactnavigation.org/docs/4.x/getting-started
  - async-storage:
    - https://react-native-async-storage.github.io/async-storage/docs/usage
+ - notification:
+   - https://github.com/leandrosimoes/react-native-android-notification-listener
+ - bluetooth:
+   - https://github.com/Polidea/react-native-ble-plx
 
 ## TODO: 
- - Integrate notification.
+ - Integrate notification -> Had to add length limitation.
+ - Notification Permission improvement.
+ - BLE message limitation problem.
  - move BLEMenu to be part of Settings (or better hide/show)
  - BLE permission stuff.
  - Figure out how to get settings from smartglasses. Can we get notes info as well?
