@@ -11,6 +11,7 @@
    - https://github.com/Polidea/react-native-ble-plx
 
 ## TODO: 
+ - Add video/screenshot of current version.
  - Integrate notification -> Had to add length limitation.
  - Notification Permission improvement.
  - BLE message limitation problem.
