@@ -7,10 +7,11 @@
    - https://react-native-async-storage.github.io/async-storage/docs/usage
 
 ## TODO:
- - move BLEMenu to be part of Settings.
+ - move BLEMenu to be part of Settings (or better hide/show)
  - Figure out how to get settings from smartglasses. Can we get notes info as well?
  - Implement persistence storage for notes, cue-card.
- - More work on settings.
+ - More work on settings
+ - BLEManager issue. Need to share characteristic?
 
 ## Log
  - 20210124: Ensured react-navigation is functional.
