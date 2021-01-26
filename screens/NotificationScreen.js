@@ -90,7 +90,6 @@ class NotificationScreen extends React.Component {
         <Button title="Write Characteristic" onPress = {() => {
           this.onPressWriteCharacteristic();
         }}/>
-        <View style={styles.lineStyle}/>
         <BLERead characteristic={this.state.characteristic}/>
       </ScrollView>
     )
@@ -106,6 +105,14 @@ const styles = StyleSheet.create({
       borderWidth: 0.5,
       borderColor:'black',
       margin:10,
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  h2: {
+    fontSize: 15,
+    fontWeight: "bold"
   }
 })
 

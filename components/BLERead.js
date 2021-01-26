@@ -47,7 +47,8 @@ class BLERead extends React.Component {
   render() {
     return (
       <View>
-        <Text>操作（Operations)</Text>
+        <View style={styles.lineStyle}/>
+        <Text style={styles.h2}>READ DEBUG</Text>
         <Text>读取特征值:</Text>
         <View >
           <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressReadOp} title="读取特征值"/>
@@ -58,5 +59,25 @@ class BLERead extends React.Component {
     );
   }
 }
+
+// TODO: generate styles
+const styles = StyleSheet.create({
+  "button": {
+    margin: 10
+  },
+  lineStyle:{
+      borderWidth: 0.5,
+      borderColor:'black',
+      margin:10,
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  h2: {
+    fontSize: 15,
+    fontWeight: "bold"
+  }
+})
 
 export default BLERead;

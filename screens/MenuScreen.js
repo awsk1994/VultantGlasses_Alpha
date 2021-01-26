@@ -132,12 +132,11 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <ScrollView>
-        <Text>Characteristic Selected: {this.state.characteristic == null ? "False" : "True" }</Text>
+        <Text style={styles.h1}>Characteristic Selected: {this.state.characteristic == null ? "False" : "True" }</Text>
         <Text>Device Name: {this.state.deviceName}</Text>
         <Text>Device Id: {this.state.deviceId}</Text>
         <Text>Service Id: {this.state.serviceId}</Text>
         <Text>Characteristic Id: {this.state.characteristicId}</Text>
-
 
         <View style={styles.button}>
           <Button title="Choose Device" onPress={() => {
@@ -173,6 +172,9 @@ class MenuScreen extends React.Component {
         {/* <DemoComponent/> */}
 
         <View style={styles.lineStyle}/>
+        {this.state.characteristic == null && <View>
+          <Text style={styles.h1}>No BLE Connected. Please connect to a device!!!</Text>
+        </View>}
         {this.state.characteristic != null && <View>
           <View style={styles.button}>
             <Button title="Notification" onPress={() => {
@@ -216,7 +218,15 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor:'black',
     margin:10,
-}
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  h2: {
+    fontSize: 15,
+    fontWeight: "bold"
+  },
 })
 
 export default MenuScreen;

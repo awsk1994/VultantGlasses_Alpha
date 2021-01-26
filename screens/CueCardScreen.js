@@ -58,7 +58,6 @@ class CueCardScreen extends React.Component {
         <Button title="Send Notes" onPress = {() => {
           this.onPressWrite();
         }}/>
-        <View style={styles.lineStyle}/>
         <BLERead characteristic={this.state.characteristic}/>
       </View>
     )
