@@ -27,14 +27,9 @@ class MenuScreen extends React.Component {
   componentDidMount() {
     console.log("componentDidMount start.");
 
-    // TODO: confirm setTimeout time.
-    setInterval(() => {
-      this.fetchCharacteristic();
-    }, 20000);
-
     setTimeout(() => {
       this.fetchCharacteristic();
-    }, 2000);
+    }, 1000);
 
     // // Below is only for debugging purposes.
     // setTimeout(() => {
@@ -46,6 +41,13 @@ class MenuScreen extends React.Component {
    
   connectBLE = async () => {
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
+  }
+
+  componentWillUnmount() {
+    console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
+    if(this.bleManager != null || typeof this.bleManager != "undefined"){
+      // this.bleManager.destroy();
+    }
   }
 
   scanAndConnect = (error, device) => {
@@ -79,7 +81,16 @@ class MenuScreen extends React.Component {
           })
         })
       })
+      .catch((error) => {
+        console.log(error);
+      });
+
   };
+
+  debug = () => {
+    console.log("Debug | characteristic");
+    console.log(this.state.characteristic);
+  }
 
   fetchCharacteristic = async () => {
     console.log("Fetching BLE information.");
@@ -104,10 +115,18 @@ class MenuScreen extends React.Component {
       characteristicId: null,
       selectedDevice: null,
       selectedService: null,
-      selectedCharacteristic: null
+      selectedCharacteristic: null,
+      characteristic: null
     });
     Storage.clearBLEStorage();
+    // TODO: confirm below 2 lines of code.
+    this.bleManager.destroy();
+    this.bleManager = new BleManager();
   }
+
+  updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
+    this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
+  };
 
   render() {
     return (
@@ -121,7 +140,10 @@ class MenuScreen extends React.Component {
 
         <View style={styles.button}>
           <Button title="Choose Device" onPress={() => {
-                this.props.navigation.navigate("BLEMenu");
+                this.props.navigation.navigate("BLEMenu", {
+                  bleManager: this.bleManager,
+                  updateMenuCharacteristic: this.updateMenuCharacteristic
+                })
               }}/>
         </View>
 
@@ -135,6 +157,10 @@ class MenuScreen extends React.Component {
 
         <View style={styles.button}>
           <Button title="Reset BLE Connection" onPress={this.resetBLEConnection}/>
+        </View>
+
+        <View style={styles.button}>
+          <Button title="Debug" onPress={this.debug}/>
         </View>
 
 

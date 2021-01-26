@@ -30,14 +30,15 @@ class BLEMenu extends React.Component {
       deviceName: null
     };
     console.log(props);
-    this.bleManager = new BleManager();
+    this.bleManager = props.route.params.bleManager;
+    this.updateMenuCharacteristic = props.route.params.updateMenuCharacteristic;
   };
 
   componentWillUnmount() {
-    console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
-    if(this.bleManager != null || typeof this.bleManager != "undefined"){
-      this.bleManager.destroy();
-    }
+    // console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
+    // if(this.bleManager != null || typeof this.bleManager != "undefined"){
+    //   this.bleManager.destroy();
+    // }
   }
 
   scanDevices = async () => {
@@ -193,12 +194,15 @@ class BLEMenu extends React.Component {
   };
 
   updateCharacteristic = (characteristic) => {
-    // TODO: better to use saveObject. Currently, unable to do it.
     console.log("updateCharacteristic")
     Storage.saveText("@deviceId", characteristic.deviceID);
     Storage.saveText("@serviceId", characteristic.serviceUUID);
     Storage.saveText("@characteristicId", characteristic.uuid);
     Storage.saveText("@deviceName", this.state.deviceName);
+    this.updateMenuCharacteristic(
+      characteristic,
+      this.state.deviceName, characteristic.deviceID, 
+      characteristic.serviceUUID, characteristic.uuid);
   }
 
   render() {
