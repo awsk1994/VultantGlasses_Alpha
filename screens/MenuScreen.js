@@ -261,7 +261,7 @@ class MenuScreen extends React.Component {
         {this.state.characteristic != null && <View>
           <Text style={styles.h2}>版面(Screens)</Text>
           <View style={styles.button}>
-            <Button title="APP推送消息（Notification）" onPress={() => {
+            <Button title="自定APP推送消息（Custom Notification）" onPress={() => {
               this.props.navigation.navigate("Notification", {
                 characteristic: this.state.characteristic 
               });
