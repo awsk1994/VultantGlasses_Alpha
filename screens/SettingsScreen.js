@@ -1,13 +1,10 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import Storage from "../components/Storage";
-
-/* TODO
-1. Add settings types into SETTINGS
-2. Make UI for each settings types
-*/
-
+import BLEUtils from "../components/BLEUtils";
+import BLERead from "../components/BLERead";
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
+// TODO: Time/Date Settings
 
 const SettingsType = {
   "boolean": 0,
@@ -20,37 +17,37 @@ const SETTINGS = [
   {
     id: "displayTimeOut",
     title: "Display TimeOut",
-    type: SettingsType.numeric
+    type: SettingsType.numeric,
+    sAttri1HexStr: "56" // HARDCODED
   },
-  {
-    id: "doNotDisturb",
-    title: "Do Not Disturb",
-    type: SettingsType.boolean
-  },
+  // {
+  //   id: "doNotDisturb",
+  //   title: "Do Not Disturb",
+  //   type: SettingsType.boolean,
+  //   sAttri1HexStr: "59" // HARDCODED (not in document)
+  // },
   {
     id: "language",
     title: "Language",
-    type: SettingsType.language
+    type: SettingsType.language,
+    sAttri1HexStr: "52" // HARDCODED
   },
-  {
-    id: "appEnable",
-    title: "App Enable/Disable",
-    type: SettingsType.boolean
-  },
+  // {
+  //   id: "appEnable",
+  //   title: "App Enable/Disable",
+  //   type: SettingsType.boolean,
+  //   sAttri1HexStr: "60" // HARDCODED (not in document)
+  // },
   {
     id: "bluetoothName",
     title: "Bluetooth Device Name",
-    type: SettingsType.text
-  },
-  {
-    id: "audioLoudness",
-    title: "Audio Loudness",
-    type: SettingsType.numeric
+    type: SettingsType.text,
+    sAttri1HexStr: "58" // HARDCODED
   }
 ];
 
 class SettingsScreen extends React.Component { 
-  constructor(props) {
+  constructor({props, route}) {
     super();
     this.state = {
       displayTimeOut: null,
@@ -59,6 +56,10 @@ class SettingsScreen extends React.Component {
       appEnable: null,
       bluetoothName: null,
       audioLoudness: null,
+      vMsgHeader: "A0", // Hardcoded
+      vMsgPAttri: "05", // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
+      characteristic: route.params.characteristic
     };
     setTimeout(() => {
       this.fetchSettingsInfo();
@@ -88,50 +89,89 @@ class SettingsScreen extends React.Component {
     audioLoudnessPromise.then((v) => this.setState({'audioLoudness': v}));
   }
 
-  updateState = (id, text) => {
-    this.setState({[id]: text});
+  updateState = (item, text) => {
+    this.setState({[item.id]: text});
   }
 
-  send = (id, text) => {
-    Storage.saveText("@" + id, text);
-    console.log("Send | id = " + id + ", text = " + text);  // TODO
+  sendTextAndSave = (item, content) => {
+    this.sendText(item, content);
+    Storage.saveText("@" + item.id, content);
   }
 
-  updateStateAndSend = (id, text) => {
-    this.updateState(id, text)
-    this.send(id, text);
+  sendNumberAndSave = (item, content) => {
+    this.sendNumber(item, content);
+    Storage.saveText("@" + item.id, content);
+  }
+
+  sendNumber = (item, content) => {
+    this.send(item, BLEUtils.numStrToHex(content));
+  }
+
+  sendText = (item, content) => {
+    this.send(item, BLEUtils.utf8ToHex(content))
+  };
+
+  send = (item, contentHexStr) => {
+    console.log("sendAndSave | sAttri1 = " + item.sAttri1HexStr
+      + ", id = " + item.id + ", contentHexStr = " + contentHexStr);  // TODO
+
+    const hexMsg = this.state.vMsgHeader 
+    + this.state.vMsgPAttri 
+    + item.sAttri1HexStr
+    + this.state.vMsgSAttri2
+    + contentHexStr;
+
+    const CRCHex = BLEUtils.sumHex(hexMsg);
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+
+    SuccessWriteFn = () => {
+      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+    };
+
+    ErrWriteFn = (err) => {
+      console.log('写入特征值出错：', err)
+      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+    }
+
+    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+  };
+
+  updateSendSaveLang = (item, text) => {
+    this.updateState(item, text)
+    this.sendNumber(item, text);    // language is a number. 1 = chinese, 2 = english
+    Storage.saveText("@" + item.id, text);
   }
 
   gridItem = (itemData) => {
     return (
       <View>
-        {itemData.item.type == SettingsType.boolean && <View>
+        {/* {itemData.item.type == SettingsType.boolean && <View>
           <Text>{itemData.item.title}</Text>
-          <Button title="True" onPress={() => this.updateStateAndSend(itemData.item.id, "true")}/>
-          <Button title="False" onPress={() => this.updateStateAndSend(itemData.item.id, "false")}/>
-        </View>}
+          <Button title="True" onPress={() => this.updateStateAndSendSave(itemData.item, "true")}/>
+          <Button title="False" onPress={() => this.updateStateAndSendSave(itemData.item, "false")}/>
+        </View>} */}
         {itemData.item.type == SettingsType.numeric && <View>
           <Text>{itemData.item.title}</Text>
           <TextInput keyboardType='numeric' 
-            onChangeText={(text) => this.updateState(itemData.item.id, text)}
+            onChangeText={(text) => this.updateState(itemData.item, text)}
             value={this.state[itemData.item.id]}
             maxLength={10}  //setting limit of input
           />
-          <Button title="Send" onPress={() => {this.send(itemData.item.id, this.state[itemData.item.id])}}/>
+          <Button title="Send" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
         </View>}
         {itemData.item.type == SettingsType.text && <View>
           <Text>{itemData.item.title}</Text>
           <TextInput
-            onChangeText={(text) => this.updateState(itemData.item.id, text)}
+            onChangeText={(text) => this.updateState(itemData.item, text)}
             value={this.state[itemData.item.id]}
           />
-          <Button title="Send" onPress={() => {this.send(itemData.item.id, this.state[itemData.item.id])}}/>
+          <Button title="Send" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
         </View>}
         {itemData.item.type == SettingsType.language && <View>
           <Text>{itemData.item.title}</Text>
           {/* 1 = chinese, 2 = english*/}
-          <Button title="Chinese" onPress={() => this.updateStateAndSend(itemData.item.id, "1")}/>
-          <Button title="English" onPress={() => this.updateStateAndSend(itemData.item.id, "2")}/>
+          <Button title="Chinese" onPress={() => this.updateSendSaveLang(itemData.item, "1")}/>
+          <Button title="English" onPress={() => this.updateSendSaveLang(itemData.item, "2")}/>
         </View>}
         <View style={styles.lineStyle}/>
       </View>
@@ -140,15 +180,15 @@ class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <View>
+      <ScrollView>
       {/* <Text>SettingsScreen</Text> */}
         <FlatList keyExtractor={(item, index) => item.id} data={SETTINGS} renderItem={this.gridItem}/>
         <Button title="Debug" onPress={() => {console.log(this.state)}}/>
-      </View>
+        <BLERead characteristic={this.state.characteristic}/>
+      </ScrollView>
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   gridItem: {
