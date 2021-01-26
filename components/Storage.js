@@ -35,18 +35,4 @@ class Storage {
   }
 }
 
-
-const deviceNamePromise = Storage.fetchText('@deviceName');
-deviceNamePromise.then((v) => this.setState({'deviceName': v}));
-
-const deviceIdPromise = Storage.fetchText('@deviceId');
-deviceIdPromise.then((v) => this.setState({'deviceId': v}));
-
-const servicePromise = Storage.fetchText('@serviceId');
-servicePromise.then((v) => this.setState({'serviceId': v}));
-
-const characteristicPromise = Storage.fetchText('@characteristicId');
-characteristicPromise.then((v) => this.setState({'characteristicId': v}));
-
-
 export default Storage;
