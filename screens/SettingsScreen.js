@@ -16,7 +16,7 @@ const SettingsType = {
 const SETTINGS = [
   {
     id: "displayTimeOut",
-    title: "Display TimeOut",
+    title: "熄屏时间（Display TimeOut）",
     type: SettingsType.numeric,
     sAttri1HexStr: "56" // HARDCODED
   },
@@ -28,7 +28,7 @@ const SETTINGS = [
   // },
   {
     id: "language",
-    title: "Language",
+    title: "语言（Language）",
     type: SettingsType.language,
     sAttri1HexStr: "52" // HARDCODED
   },
@@ -40,7 +40,7 @@ const SETTINGS = [
   // },
   {
     id: "bluetoothName",
-    title: "Bluetooth Device Name",
+    title: "蓝牙装置名称（Bluetooth Device Name）",
     type: SettingsType.text,
     sAttri1HexStr: "58" // HARDCODED
   }
@@ -157,7 +157,7 @@ class SettingsScreen extends React.Component {
             value={this.state[itemData.item.id]}
             maxLength={10}  //setting limit of input
           />
-          <Button title="Send" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
         </View>}
         {itemData.item.type == SettingsType.text && <View>
           <Text>{itemData.item.title}</Text>
@@ -165,13 +165,13 @@ class SettingsScreen extends React.Component {
             onChangeText={(text) => this.updateState(itemData.item, text)}
             value={this.state[itemData.item.id]}
           />
-          <Button title="Send" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
         </View>}
         {itemData.item.type == SettingsType.language && <View>
           <Text>{itemData.item.title}</Text>
           {/* 1 = chinese, 2 = english*/}
-          <Button title="Chinese" onPress={() => this.updateSendSaveLang(itemData.item, "1")}/>
-          <Button title="English" onPress={() => this.updateSendSaveLang(itemData.item, "2")}/>
+          <Button title="选择中文（Chinese）并发送" onPress={() => this.updateSendSaveLang(itemData.item, "1")}/>
+          <Button title="选择英文（English）并发送" onPress={() => this.updateSendSaveLang(itemData.item, "2")}/>
         </View>}
         <View style={styles.lineStyle}/>
       </View>
@@ -183,7 +183,7 @@ class SettingsScreen extends React.Component {
       <ScrollView>
       {/* <Text>SettingsScreen</Text> */}
         <FlatList keyExtractor={(item, index) => item.id} data={SETTINGS} renderItem={this.gridItem}/>
-        <Button title="Debug" onPress={() => {console.log(this.state)}}/>
+        {/* <Button title="Debug" onPress={() => {console.log(this.state)}}/> */}
         <BLERead characteristic={this.state.characteristic}/>
       </ScrollView>
     );

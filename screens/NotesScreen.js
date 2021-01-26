@@ -55,22 +55,22 @@ class NotesScreen extends React.Component {
     return (
       <View style={{margin: 10}}>
         <View> 
-          <Text>Image ID:</Text>
+          <Text>图片ID（Image ID）:</Text>
           <TextInput
-            placeholder="Image ID"
+            placeholder="图片ID（Image ID）"
             value={this.state.imgId}
             onChangeText={v => this.setState({"imgId": v})}
           />
         </View>
         <View>
-          <Text>Notes:</Text>
+          <Text>笔记（Notes）:</Text>
           <TextInput
-            placeholder="Notes"
+            placeholder="笔记（Notes）"
             value={this.state.notes}
             onChangeText={v => this.setState({"notes": v})}
           />
         </View>
-        <Button title="Send Notes" onPress = {() => {
+        <Button title="写特征/发送（Send Notes）" onPress = {() => {
           this.onPressWrite();
         }}/>
         <BLERead characteristic={this.state.characteristic}/>

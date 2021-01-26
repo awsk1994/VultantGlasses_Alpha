@@ -73,21 +73,21 @@ class NotificationScreen extends React.Component {
       <ScrollView style={{margin: 10}}>
         {/* <Text>NotificationScreen</Text> */}
         <TextInput
-            placeholder="App Name"
+            placeholder="APP名称（App Name）"
             value={this.state.appName}
             onChangeText={v => this.setState({"appName": v})}
           />
         <TextInput
-            placeholder="Contact"
+            placeholder="联络人（Contact）"
             value={this.state.contact}
             onChangeText={v => this.setState({"contact": v})}
           />
         <TextInput
-            placeholder="Content"
+            placeholder="内容（Content）"
             value={this.state.content}
             onChangeText={v => this.setState({"content": v})}
           />
-        <Button title="Write Characteristic" onPress = {() => {
+        <Button title="写特征（Write Characteristic）" onPress = {() => {
           this.onPressWriteCharacteristic();
         }}/>
         <BLERead characteristic={this.state.characteristic}/>

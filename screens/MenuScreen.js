@@ -132,14 +132,16 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <ScrollView>
-        <Text style={styles.h1}>Characteristic Selected: {this.state.characteristic == null ? "False" : "True" }</Text>
-        <Text>Device Name: {this.state.deviceName}</Text>
-        <Text>Device Id: {this.state.deviceId}</Text>
-        <Text>Service Id: {this.state.serviceId}</Text>
-        <Text>Characteristic Id: {this.state.characteristicId}</Text>
+        <Text style={styles.h1}>已链BLE接特征（Characteristic Connected）:</Text>
+        <Text>{this.state.characteristic == null ? "False" : "True" }</Text>
+        <Text style={styles.h1}>已保存BLE特征(Saved BLE)：</Text>
+        <Text>装置名称（Device Name）: {this.state.deviceName}</Text>
+        <Text>装置ID（Device Id）: {this.state.deviceId}</Text>
+        <Text>服务ID（Service Id）: {this.state.serviceId}</Text>
+        <Text>特征ID（Characteristic Id）: {this.state.characteristicId}</Text>
 
         <View style={styles.button}>
-          <Button title="Choose Device" onPress={() => {
+          <Button title="选择BLE装置（Choose Device）" onPress={() => {
                 this.props.navigation.navigate("BLEMenu", {
                   bleManager: this.bleManager,
                   updateMenuCharacteristic: this.updateMenuCharacteristic
@@ -148,21 +150,23 @@ class MenuScreen extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <Button title="Fetch from Storage" onPress={this.fetchCharacteristic}/>
+          <Button title="链接到已保存BLE（Connect to saved BLE）" onPress={this.connectBLE}/>
+        </View>
+
+        <View style={styles.lineStyle}/>
+        <Text style={styles.h2}>高级设置（Advanced Settings）</Text>
+
+        <View style={styles.button}>
+          <Button title="调试（Debug）" onPress={this.debug}/>
         </View>
 
         <View style={styles.button}>
-          <Button title="Start BLE Connection" onPress={this.connectBLE}/>
+          <Button title="重置BLE装置（Reset BLE Connection）" onPress={this.resetBLEConnection}/>
         </View>
 
         <View style={styles.button}>
-          <Button title="Reset BLE Connection" onPress={this.resetBLEConnection}/>
+          <Button title="从内存获取BLE资料（Fetch from Storage）" onPress={this.fetchCharacteristic}/>
         </View>
-
-        <View style={styles.button}>
-          <Button title="Debug" onPress={this.debug}/>
-        </View>
-
 
         {/* <Button title="Reset Characteristic" onPress={this.resetBLEConnection}/> */}
         {/* <BLEMenu
@@ -173,32 +177,33 @@ class MenuScreen extends React.Component {
 
         <View style={styles.lineStyle}/>
         {this.state.characteristic == null && <View>
-          <Text style={styles.h1}>No BLE Connected. Please connect to a device!!!</Text>
+          <Text style={styles.h1}>没有链接的装置，请链接先（No BLE Connected. Please connect to a device!!!）</Text>
         </View>}
         {this.state.characteristic != null && <View>
+          <Text style={styles.h2}>版面(Screens)</Text>
           <View style={styles.button}>
-            <Button title="Notification" onPress={() => {
+            <Button title="APP推送消息（Notification）" onPress={() => {
               this.props.navigation.navigate("Notification", {
                 characteristic: this.state.characteristic 
               });
             }}/>
           </View>
           <View style={styles.button}>
-            <Button title="Notes" onPress={() => {
+            <Button title="记事本（Notes）" onPress={() => {
               this.props.navigation.navigate("Notes", {
                 characteristic: this.state.characteristic
               })
             }}/>
           </View>
           <View style={styles.button}>
-            <Button title="Cue Card" onPress={() => {
+            <Button title="ppt笔记（Cue Card）" onPress={() => {
               this.props.navigation.navigate("CueCard", {
                 characteristic: this.state.characteristic
               })
             }}/>
           </View>
           <View style={styles.button}>
-            <Button title="Settings" onPress={() => {
+            <Button title="设置（Settings）" onPress={() => {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.state.characteristic
               })}

@@ -48,14 +48,14 @@ class CueCardScreen extends React.Component {
     return (
       <View style={{margin: 10}}>
         <View>
-          <Text>Cue Card:</Text>
+          <Text>PPT笔记（Cue Card）:</Text>
           <TextInput
-            placeholder="Cue Card"
+            placeholder="PPT笔记（Cue Card）"
             value={this.state.nocuecardtes}
             onChangeText={v => this.setState({"cuecard": v})}
           />
         </View>
-        <Button title="Send Notes" onPress = {() => {
+        <Button title="写特征/发送（Send Notes）" onPress = {() => {
           this.onPressWrite();
         }}/>
         <BLERead characteristic={this.state.characteristic}/>
