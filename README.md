@@ -75,3 +75,34 @@ cd android && ./gradlew assembleRelease
 ```
 
  - Find your signed apk under android/app/build/outputs/apk/app-release.apk
+
+
+## Appendix:
+```
+Alexs-MacBook-Pro-3:VultantGlassesAlpha2 alexwong$ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+Enter keystore password:  
+Re-enter new password: 
+What is your first and last name?
+  [Unknown]:  Alex
+What is the name of your organizational unit?
+  [Unknown]:  Vultant
+What is the name of your organization?
+  [Unknown]:  Vultant
+What is the name of your City or Locality?
+  [Unknown]:  Hong Kong
+What is the name of your State or Province?
+  [Unknown]:  Hong Kong
+What is the two-letter country code for this unit?
+  [Unknown]:  HK
+Is CN=Alex, OU=Vultant, O=Vultant, L=Hong Kong, ST=Hong Kong, C=HK correct?
+  [no]:  yes
+
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 10,000 days
+	for: CN=Alex, OU=Vultant, O=Vultant, L=Hong Kong, ST=Hong Kong, C=HK
+Enter key password for <my-key-alias>
+	(RETURN if same as keystore password):  
+Re-enter new password: 
+[Storing my-release-key.keystore]
+
+all password is "password"
+```
