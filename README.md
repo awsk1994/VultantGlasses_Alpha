@@ -16,6 +16,14 @@
  - BLEManager issue. Need to share characteristic?
  - Centralize styles
 
+## How to use?
+
+ - Allow location permission for app.
+ - If first-time, select "Choose Device" -> "Start Scanning" -> Choose a Device -> A modal will pop up, select 继续 -> Select a Service -> Select a Characteristics.
+ - Check that the "Characteristics Connected" is True. If so, go to Screens section and choose one of the buttons. If not, this is an error.
+ - If not first-time, you can connect to "Saved BLE" by clicking "Connect to saved ble". Alternatively, you can connect to a new/different device/characteristics by clicking "Choose Device".
+ - In every screen, the top part is used to write the respective messages to the peripheral BLE device. The bottom "READ DEBUG" part is just for debugging purposes; making it easier to check the written message is written properly.
+
 ## Log
  - 20210124: Ensured react-navigation is functional.
  - 20210125: Set up a structure for the entire app.
