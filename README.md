@@ -8,6 +8,7 @@
 
 ## TODO:
  - move BLEMenu to be part of Settings (or better hide/show)
+ - BLE permission stuff.
  - Figure out how to get settings from smartglasses. Can we get notes info as well?
  - Implement persistence storage for notes, cue-card.
  - More work on settings
