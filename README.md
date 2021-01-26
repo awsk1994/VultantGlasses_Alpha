@@ -13,6 +13,7 @@
  - Implement persistence storage for notes, cue-card.
  - More work on settings
  - BLEManager issue. Need to share characteristic?
+ - Centralize styles
 
 ## Log
  - 20210124: Ensured react-navigation is functional.
