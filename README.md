@@ -6,7 +6,8 @@
  - async-storage:
    - https://react-native-async-storage.github.io/async-storage/docs/usage
 
-## TODO:
+## TODO: 
+ - Integrate notification.
  - move BLEMenu to be part of Settings (or better hide/show)
  - BLE permission stuff.
  - Figure out how to get settings from smartglasses. Can we get notes info as well?
