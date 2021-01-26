@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
 import { BleManager } from 'react-native-ble-plx';
@@ -59,6 +59,7 @@ class MenuScreen extends React.Component {
     }
 
     if(device.id != this.state.deviceId){
+      console.log("Cannot find device.");
       return;
     }
 
