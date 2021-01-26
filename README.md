@@ -49,3 +49,23 @@
 <img src="./img/20210125_2_NotesScreen.png" height="300"/>
 <img src="./img/20210125_2_CueCardScreen.png" height="300"/>
 <img src="./img/20210125_2_SettingsScreen.png" height="300"/>
+
+## Export to apk
+https://stackoverflow.com/questions/35935060/how-can-i-generate-an-apk-that-can-run-without-server-with-react-native
+
+ - Specifically, run this in project folder
+```bash
+$ keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+ - Place the my-release-key.keystore file under the android/app directory in your project folder. 
+ 
+ - Edit android/app/build.gradle and android/gradle.properties as seen in https://github.com/awsk1994/Bluetooth-BLE-React-App/commit/a653d0d0b2cf63629c9b2d43a6f92554d94dc316
+   - replace 'vultant' with the password you set for keytool
+
+ - Run this:
+```
+cd android && ./gradlew assembleRelease
+```
+
+ - Find your signed apk under android/app/build/outputs/apk/app-release.apk
