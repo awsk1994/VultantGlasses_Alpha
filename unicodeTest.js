@@ -20,7 +20,15 @@ console.log(singleHexToUnicode('61'));  // a
 console.log(singleHexToUnicode('61', toHexString=true)); // x61
 console.log(singleHexToUnicode('100')); // Ā
 console.log(singleHexToUnicode('400')); // Ѐ
+console.log(singleHexToUnicode('400', toHexString=true)); // Ѐ
+console.log(singleHexToUnicode('4F60')); // 你
+console.log(singleHexToUnicode('4F60', toHexString=true)); // 你 -> unicode = E4 BD A0
+
 console.log(singleHexToUnicode('A0'));
+
 
 console.log(singleHexToUnicode('100') + singleHexToUnicode('400')); // ĀЀ
 
+
+
+console.log(singleHexToUnicode('01').toString('base64'));
