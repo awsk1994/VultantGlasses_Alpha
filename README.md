@@ -11,6 +11,18 @@
    - https://github.com/Polidea/react-native-ble-plx
 
 ## TODO: 
+ - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
+ - You can use this and not need to pass characteristics around:
+   - https://github.com/Polidea/react-native-ble-plx/wiki/Characteristic-Reading
+ ```
+ bleManager.readCharacteristicForDevice(
+  deviceIdentifier: DeviceId,
+  serviceUUID: UUID,
+  characteristicUUID: UUID,
+  transactionId: ?TransactionId
+): Promise<Characteristic>
+```
+ - Follow this: https://www.polidea.com/blog/ReactNative_and_Bluetooth_to_An_Other_level/
  - Add video/screenshot of current version.
  - Integrate notification -> Had to add length limitation.
  - Notification Permission improvement.
