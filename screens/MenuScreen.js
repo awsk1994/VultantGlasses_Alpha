@@ -204,8 +204,21 @@ class MenuScreen extends React.Component {
     this.bleManager = new BleManager();
   }
 
-  updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
-    this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
+  updateMenuCharacteristic = (characteristic, peripheral) => {
+    console.log("Menu Screen | updateMenuCharacteristic");
+
+    const deviceId = peripheral.id;
+    const deviceName = peripheral.name;
+    const serviceId = characteristic.service;
+    const characteristicId = characteristic.characteristic;
+    this.setState({deviceName, deviceId, serviceId, characteristicId});
+
+    console.log("deviceId = " + deviceId + ", deviceName = " + deviceName 
+    + ", serviceId = "  + serviceId + ", characteristicId = " + characteristicId);
+    Storage.saveText("@deviceId", deviceId);
+    Storage.saveText("@serviceId", serviceId);
+    Storage.saveText("@characteristicId", characteristicId);
+    Storage.saveText("@deviceName", deviceName);
   };
 
   render() {
@@ -222,7 +235,6 @@ class MenuScreen extends React.Component {
         <View style={styles.button}>
           <Button title="选择BLE装置（Choose Device）" onPress={() => {
                 this.props.navigation.navigate("BLEMenu", {
-                  bleManager: this.bleManager,
                   updateMenuCharacteristic: this.updateMenuCharacteristic
                 })
               }}/>
@@ -250,7 +262,7 @@ class MenuScreen extends React.Component {
         {/* <Button title="Reset Characteristic" onPress={this.resetBLEConnection}/> */}
         {/* <BLEMenu
             updateCharacteristic={this.updateCharacteristic}
-            updateDeviceName={this.updateDeviceName}
+            updatedeviceName={this.updatedeviceName}
           /> */}
         {/* <DemoComponent/> */}
 
