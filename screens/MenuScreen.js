@@ -2,10 +2,13 @@ import React from 'react';
 import { AppRegistry, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
-import { BleManager } from 'react-native-ble-plx';
+// import { BleManager } from 'react-native-ble-plx';
 import Storage from "../components/Storage";
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BLEUtils from "../components/BLEUtils";
+var Buffer = require('buffer/').Buffer;
+import BleManager from 'react-native-ble-manager';
+import { stringToBytes } from "convert-string";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -27,7 +30,11 @@ class MenuScreen extends React.Component {
       vMsgSAttri2: "00", // Hardcoded
     };
     console.log("MenuScreen");
-    this.bleManager = new BleManager();
+    // this.bleManager = new BleManager();
+    BleManager.start({ showAlert: false }).then(() => {
+      // Success code
+      console.log("Module initialized");
+    });
   };
 
   setNotificationPermission = async () => {
@@ -114,12 +121,22 @@ class MenuScreen extends React.Component {
     setTimeout(() => {
       console.log("DEBUG | Read BLE info");
       this.connectBLE();
-    }, 5000);
+    }, 2000);
     
    };
    
-  connectBLE = async () => {
-    this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
+  connectBLE = () => {
+    BleManager.connect(this.state.deviceId)
+    .then(() => {
+      // Success code
+      console.log("Peripheral (id = " + this.state.deviceId + ") Connected!");
+      ToastAndroid.show("Peripheral (id = " + this.state.deviceId + ") Connected!", ToastAndroid.SHORT);
+    })
+    .catch((error) => {
+      // Failure code
+      console.log(error);
+    });
+    // this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
   }
 
   componentWillUnmount() {
@@ -221,6 +238,69 @@ class MenuScreen extends React.Component {
     Storage.saveText("@deviceName", deviceName);
   };
 
+  debugRead = () => {
+    console.log("DEBUG READ");
+    BleManager.read(
+      this.state.deviceId, 
+      this.state.serviceId, 
+      this.state.characteristicId, 
+    )
+    .then((readData) => {
+      // Success code
+      console.log("Read: " + readData);
+  
+      // const buffer = Buffer.from(readData); //https://github.com/feross/buffer#convert-arraybuffer-to-buffer
+      // const sensorData = buffer.readUInt8(1, true);
+      const hexStr = new Buffer(readData).toString('hex');
+      console.log(hexStr);
+      ToastAndroid.show("Read: " + readData + ", hex = " + hexStr, ToastAndroid.SHORT);
+    })
+    .catch((error) => {
+      // Failure code
+      console.log(error);
+    });
+  };
+
+  debugWrite1 = () => {
+    console.log("DEBUG WRITE");
+    const data = stringToBytes("Test ABC");
+    BleManager.write(
+      this.state.deviceId, 
+      this.state.serviceId, 
+      this.state.characteristicId, 
+      data
+    )
+      .then(() => {
+        // Success code
+        console.log("Write: " + data + " Completed!");
+        ToastAndroid.show("Write: " + data + " Completed!", ToastAndroid.SHORT);
+      })
+      .catch((error) => {
+        // Failure code
+        console.log(error);
+      });
+  };
+
+  debugWrite2 = () => {
+    console.log("DEBUG WRITE");
+    const data = stringToBytes("Hello World");
+    BleManager.write(
+      this.state.deviceId, 
+      this.state.serviceId, 
+      this.state.characteristicId, 
+      data
+    )
+      .then(() => {
+        // Success code
+        console.log("Write: " + data + " Completed!");
+        ToastAndroid.show("Write: " + data + " Completed!", ToastAndroid.SHORT);
+      })
+      .catch((error) => {
+        // Failure code
+        console.log(error);
+      });
+  }
+
   render() {
     return (
       <ScrollView>
@@ -258,6 +338,19 @@ class MenuScreen extends React.Component {
         <View style={styles.button}>
           <Button title="从内存获取BLE资料（Fetch from Storage）" onPress={this.fetchCharacteristic}/>
         </View>
+
+        <View style={styles.lineStyle}/>
+        <Text style={styles.h2}>Debug</Text>
+        <View style={styles.button}>
+          <Button title="Debug Read" onPress={this.debugRead}/>
+        </View>
+        <View style={styles.button}>
+          <Button title="Debug Write 1" onPress={this.debugWrite1}/>
+        </View>
+        <View style={styles.button}>
+          <Button title="Debug Write 2" onPress={this.debugWrite2}/>
+        </View>
+
 
         {/* <Button title="Reset Characteristic" onPress={this.resetBLEConnection}/> */}
         {/* <BLEMenu

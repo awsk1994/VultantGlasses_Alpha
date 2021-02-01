@@ -11,6 +11,7 @@
    - https://github.com/Polidea/react-native-ble-plx
 
 ## TODO: 
+ - BLEMenu2 -> react-native-ble-manager -> Tidy code
  - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
  - You can use this and not need to pass characteristics around:
    - https://github.com/Polidea/react-native-ble-plx/wiki/Characteristic-Reading
