@@ -107,6 +107,15 @@ class BLEUtils {
     return hexMsg;
   }
 
+  static utf8ToUnicode(inptStr){
+    let unicodeArr = [];
+    for(let i=0; i<inptStr.length; i++){
+      let unicode = BLEUtils.utf8ToHex(inptStr[i]).padStart(4, '0');
+      unicodeArr.push(unicode);
+    };
+    return unicodeArr.join("");    
+  }
+
   static getHexSize(hexStr){
     const s = Math.floor(hexStr.length/2);
     let sHexStr = s.toString(16);

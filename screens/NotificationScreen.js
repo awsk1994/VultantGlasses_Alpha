@@ -29,21 +29,21 @@ class NotificationScreen extends React.Component {
       + ", content = " + this.state.content);
     
     const divider = "00";    
-    const appNameHex = BLEUtils.utf8ToHex(this.state.appName);
-    const contactHex = BLEUtils.utf8ToHex(this.state.contact);
-    const contentHex = BLEUtils.utf8ToHex(this.state.content);
+    const appNameHex = BLEUtils.utf8ToUnicode(this.state.appName);
+    const contactHex = BLEUtils.utf8ToUnicode(this.state.contact);
+    const contentHex = BLEUtils.utf8ToUnicode(this.state.content);
 
     console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex
       + ", content = " + contentHex);
     
-    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.getHexSize(appNameHex) 
-      + ", contact = " + BLEUtils.getHexSize(contactHex)
-      + ", content = " + BLEUtils.getHexSize(contentHex));
+    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.numStrToHex(this.state.appName.length) 
+      + ", contact = " + BLEUtils.numStrToHex(this.state.contact.length)
+      + ", content = " + BLEUtils.numStrToHex(this.state.content.length));
 
-    const entireContentHex = BLEUtils.getHexSize(appNameHex) + appNameHex + divider
-    + BLEUtils.getHexSize(contactHex) + contactHex + divider 
-    + BLEUtils.getHexSize(contentHex) + contentHex;
+    const entireContentHex = BLEUtils.numStrToHex(this.state.appName.length) + appNameHex + divider
+    + BLEUtils.numStrToHex(this.state.contact.length) + contactHex + divider 
+    + BLEUtils.numStrToHex(this.state.content.length) + contentHex;
 
     console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
 
