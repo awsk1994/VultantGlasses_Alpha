@@ -9,6 +9,8 @@ import BLEUtils from "../components/BLEUtils";
 import GlobalSettings from "../components/GlobalSettings";
 import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
+import App from '../App';
+import AppSettings from './AppSettings';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -26,7 +28,7 @@ class MenuScreen extends React.Component {
       vMsgHeader: "A0", // Hardcoded
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
-      vMsgSAttri2: "00" // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
     };
     this.bleManager = new BleManager();
   };
@@ -220,6 +222,11 @@ class MenuScreen extends React.Component {
     });
   };
 
+  gotoAppSettings = () => {
+    console.log("go to app settings.");
+    this.props.navigation.navigate("AppSettings", {});
+  };
+
   // debug = () => {
   //   console.log("Debug | characteristic");
   //   console.log(this.state.characteristic);
@@ -261,7 +268,7 @@ class MenuScreen extends React.Component {
         {!this.state.characteristic && <View>
           <Text style={styles.h1}>No BLE Device connected. Choose option below:</Text>
           <View style={styles.button}>
-            <Button title="选择BLE装置（Choose Device）" onPress={() => this.chooseDevice}/>
+            <Button title="选择BLE装置（Choose Device）" onPress={this.chooseDevice}/>
           </View>
 
           <View style={styles.button}>
@@ -269,9 +276,12 @@ class MenuScreen extends React.Component {
             <Text>(Saved BLE device: {this.state.deviceName})</Text>
           </View>
         </View>}
+
         {this.state.characteristic && 
           <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
         }
+
+        <Button title="App Settings" onPress={this.gotoAppSettings}/>
 
         {/* <DemoComponent/> */}
       </ScrollView>

@@ -8,6 +8,7 @@ import CueCardScreen from "./screens/CueCardScreen";
 import NotesScreen from "./screens/NotesScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import BLEMenu from "./components/BLEMenu";
+import AppSettings from './screens/AppSettings';
 
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ function App() {
         <Stack.Screen name="CueCard" component={CueCardScreen} />
         <Stack.Screen name="Notes" component={NotesScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="AppSettings" component={AppSettings} />
       </Stack.Navigator>
     </NavigationContainer>
   );
