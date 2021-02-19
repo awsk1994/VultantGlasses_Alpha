@@ -108,7 +108,7 @@ class SettingsScreen extends React.Component {
   }
 
   sendText = (item, content) => {
-    this.send(item, BLEUtils.utf8ToHex(content))
+    this.send(item, BLEUtils.utf8ToUtf16Hex(content))
   };
 
   send = (item, contentHexStr) => {

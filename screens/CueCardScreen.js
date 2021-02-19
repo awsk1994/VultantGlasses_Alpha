@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../components/BLEUtils";
+import GlobalSettings from '../components/GlobalSettings';
 
 class CueCardScreen extends React.Component {
   constructor({props, route}) {
@@ -17,20 +18,20 @@ class CueCardScreen extends React.Component {
   };
 
   onPressWrite(){
-    console.log("onPressWrite | Input utf8 | cue card = " + this.state.cuecard);
-    
-    const cuecardHex = BLEUtils.utf8ToHex(this.state.cuecard);
-
-    console.log("onPressWrite | utf8 to hex | cue card = " + cuecardHex);
-  
-    const hexMsg = this.state.vMsgHeader 
+    const cuecardHex = BLEUtils.utf8ToUtf16Hex(this.state.cuecard);
+    const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + this.state.vMsgSAttri1
     + this.state.vMsgSAttri2
     + cuecardHex;
+    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+    const hexMsg = hexMsgWithoutCRC + CRCHex;
 
-    const CRCHex = BLEUtils.sumHex(hexMsg);
-    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+    if(GlobalSettings.DEBUG){
+      console.log("onPressWrite | Input utf8 | cue card = " + this.state.cuecard);
+      console.log("onPressWrite | utf8 to hex | cue card = " + cuecardHex);
+      console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);  
+    }
 
     SuccessWriteFn = () => {
       Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
@@ -41,7 +42,7 @@ class CueCardScreen extends React.Component {
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
-    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+    BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
   render() {

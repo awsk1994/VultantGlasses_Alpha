@@ -6,6 +6,7 @@ import { BleManager } from 'react-native-ble-plx';
 import Storage from "../components/Storage";
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BLEUtils from "../components/BLEUtils";
+import GlobalSettings from "../components/GlobalSettings";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -62,9 +63,9 @@ class MenuScreen extends React.Component {
     
     const divider = "00";
     // TODO: when message is too long, getting message timeout.
-    const appNameHex = BLEUtils.utf8ToHex(appName).substring(0,2);
-    const contactHex = BLEUtils.utf8ToHex(contact).substring(0,2);
-    const contentHex = BLEUtils.utf8ToHex(content).substring(0,2);
+    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0,2);
+    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0,2);
+    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0,2);
 
     console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex

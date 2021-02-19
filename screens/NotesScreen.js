@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../components/BLEUtils";
+import GlobalSettings from '../components/GlobalSettings';
 
 class NotesScreen extends React.Component {
   constructor({props, route}) {
@@ -17,27 +18,30 @@ class NotesScreen extends React.Component {
     }
   };
 
-  onPressWrite(){
-    console.log("onPressWrite | Input utf8 | imgId = " + this.state.imgId 
-    + ", notes = " + this.state.notes);
-    
+  onPressWrite(){    
     const imgIdHex = BLEUtils.numStrToHex(this.state.imgId);
-    const notesHex = BLEUtils.utf8ToHex(this.state.notes);
-
-    console.log("onPressWrite | utf8 to hex | imgId = " + imgIdHex 
-    + ", notes = " + notesHex);
-
+    const notesHex = BLEUtils.utf8ToUtf16Hex(this.state.notes);
     const entireContentHex = imgIdHex + notesHex;
-    console.log("onPressWrite | entireContentHex | " + entireContentHex);
 
-    const hexMsg = this.state.vMsgHeader 
+    const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + this.state.vMsgSAttri1
     + this.state.vMsgSAttri2
     + entireContentHex;
+    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+    const hexMsg = hexMsgWithoutCRC + CRCHex;
 
-    const CRCHex = BLEUtils.sumHex(hexMsg);
-    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+    if(GlobalSettings.DEBUG){
+      console.log("onPressWrite | Input utf8 | imgId = " + this.state.imgId 
+      + ", notes = " + this.state.notes);
+  
+      console.log("onPressWrite | utf8 to hex | imgId = " + imgIdHex 
+      + ", notes = " + notesHex);
+  
+      console.log("onPressWrite | entireContentHex | " + entireContentHex);
+  
+      console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);  
+    }
 
     SuccessWriteFn = () => {
       Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
@@ -48,7 +52,7 @@ class NotesScreen extends React.Component {
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
-    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+    BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
   render() {
