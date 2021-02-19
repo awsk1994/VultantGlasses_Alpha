@@ -18,6 +18,7 @@
  - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
  - Try to connect to saved BLE. If fail, re-direct to choose device page.
  - Create 2 different types of settings: Global Settings and Glasses Settings
+ - After connected, add disconnect button.
 
 ## TODO: 
  - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
