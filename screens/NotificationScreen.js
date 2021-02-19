@@ -3,6 +3,8 @@ import { ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Al
 import BLEUtils from "../components/BLEUtils";
 import BLERead from "../components/BLERead";
 
+import GlobalSettings from "../components/GlobalSettings";
+
 // TODO: Debug 内容 into the 3 parts (app name, contact, content)
 // TODO: too many console.log. Remove some.
 // TODO: Implement constants.js to store CONSTANTS.
@@ -33,28 +35,33 @@ class NotificationScreen extends React.Component {
     const contactHex = BLEUtils.utf8ToUtf16Hex(this.state.contact);
     const contentHex = BLEUtils.utf8ToUtf16Hex(this.state.content);
 
-    console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
-      + ", contact = " + contactHex
-      + ", content = " + contentHex);
-    
-    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.numStrToHex(this.state.appName.length) 
-      + ", contact = " + BLEUtils.numStrToHex(this.state.contact.length)
-      + ", content = " + BLEUtils.numStrToHex(this.state.content.length));
-
     const entireContentHex = BLEUtils.numStrToHex(this.state.appName.length) + appNameHex + divider
     + BLEUtils.numStrToHex(this.state.contact.length) + contactHex + divider 
     + BLEUtils.numStrToHex(this.state.content.length) + contentHex;
 
-    console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
-
-    const hexMsg = this.state.vMsgHeader 
+    const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + this.state.vMsgSAttri1
     + this.state.vMsgSAttri2
     + entireContentHex;
+    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+    const hexMsg = hexMsgWithoutCRC + CRCHex;
 
-    const CRCHex = BLEUtils.sumHex(hexMsg);
-    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
+    if(GlobalSettings.DEBUG){
+      console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
+      + ", contact = " + contactHex
+      + ", content = " + contentHex);
+    
+      console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.numStrToHex(this.state.appName.length) 
+        + ", contact = " + BLEUtils.numStrToHex(this.state.contact.length)
+        + ", content = " + BLEUtils.numStrToHex(this.state.content.length));
+      
+      console.log("onPressWriteCharacteristic | CRCHex | " + CRCHex);
+      console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
+    };
+
+
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
 
     SuccessWriteFn = () => {
       Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
@@ -65,7 +72,7 @@ class NotificationScreen extends React.Component {
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
-    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+    BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
   render() {
