@@ -52,7 +52,7 @@ class BLEUtils {
     } else if(sumHexStr.length == 1){
       return "0" + sumHexStr;
     } else {
-      return sumHexStr.slice(-2);
+      return sumHexStr.slice(-2); // get last 2 digits
     };
   };
 
