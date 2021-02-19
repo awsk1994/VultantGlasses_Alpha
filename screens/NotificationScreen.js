@@ -29,9 +29,9 @@ class NotificationScreen extends React.Component {
       + ", content = " + this.state.content);
     
     const divider = "00";    
-    const appNameHex = BLEUtils.utf8ToUnicode(this.state.appName);
-    const contactHex = BLEUtils.utf8ToUnicode(this.state.contact);
-    const contentHex = BLEUtils.utf8ToUnicode(this.state.content);
+    const appNameHex = BLEUtils.utf8ToUtf16Hex(this.state.appName);
+    const contactHex = BLEUtils.utf8ToUtf16Hex(this.state.contact);
+    const contentHex = BLEUtils.utf8ToUtf16Hex(this.state.content);
 
     console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex
