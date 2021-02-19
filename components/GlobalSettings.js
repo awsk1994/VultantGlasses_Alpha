@@ -1,7 +1,8 @@
 let GlobalSettings = {
   DEBUG: true,
-  AutoConnectBLEUponStart: false,
-  SetNotificationPermissionUponStart: false,
+  AutoConnectBLEUponStart: true,
+  SetNotificationPermissionUponStart: true,
+  OpenNotificationPermissionTogglePage: false,
   SearchDeviceById: false
 };
 

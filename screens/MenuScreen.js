@@ -36,15 +36,17 @@ class MenuScreen extends React.Component {
   componentDidMount() {
     console.log("componentDidMount start.");
 
+    // TODO: use .then to reduce time waiting.
+    
     // Get characteristic from Storage
     setTimeout(() => {
       this.fetchCharacteristic();
-    }, 1000);
+    }, 100);
 
     // Open notification permission (Android Settings)
     if(GlobalSettings.SetNotificationPermissionUponStart)
     {
-      setTimeout(this.setNotificationPermission, 1000);
+      setTimeout(this.setNotificationPermission, 200);
     }
 
     // Auto connect to saved BLE upon start
@@ -52,17 +54,17 @@ class MenuScreen extends React.Component {
       setTimeout(() => {
         console.log("DEBUG | Read BLE info");
         this.connectBLE();
-      }, 5000);
+      }, 300);
     };
   };
 
-  componentWillUnmount() {
-    console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
-    if(this.bleManager != null || typeof this.bleManager != "undefined"){
-      // TODO: cancel device connection; bleManager.cancelDeviceConnection(deviceIdentifier: DeviceId): Promise<Device>; refer to https://github.com/Polidea/react-native-ble-plx/wiki/Device-Connecting
-      // this.bleManager.destroy();
-    }
-  }
+  // componentWillUnmount() {
+  //   console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
+  //   if(this.bleManager != null || typeof this.bleManager != "undefined"){
+  //     // TODO: cancel device connection; bleManager.cancelDeviceConnection(deviceIdentifier: DeviceId): Promise<Device>; refer to https://github.com/Polidea/react-native-ble-plx/wiki/Device-Connecting
+  //     // this.bleManager.destroy();
+  //   }
+  // }
 
   // Set up Notification
   setNotificationPermission = async () => {
@@ -72,7 +74,9 @@ class MenuScreen extends React.Component {
     console.log(status) // Result can be 'authorized', 'denied' or 'unknown'
 
     // To open the Android settings so the user can enable it
-    RNAndroidNotificationListener.requestPermission();
+    if(GlobalSettings.OpenNotificationPermissionTogglePage){
+      RNAndroidNotificationListener.requestPermission();
+    }
     AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
   }
 
@@ -276,16 +280,7 @@ class MenuScreen extends React.Component {
     return (
       <ScrollView>
         <Text>Status: {this.state.status}</Text>
-        <View style={styles.lineStyle}/>
-        {/* <View>
-          <Text style={styles.h1}>已链BLE接特征（Characteristic Connected）:</Text>
-          <Text>{this.state.characteristic == null ? "False" : "True" }</Text>
-          <Text style={styles.h1}>已保存BLE特征(Saved BLE)：</Text>
-          <Text>装置名称（Device Name）: {this.state.deviceName}</Text>
-          <Text>装置ID（Device Id）: {this.state.deviceId}</Text>
-          <Text>服务ID（Service Id）: {this.state.serviceId}</Text>
-          <Text>特征ID（Characteristic Id）: {this.state.characteristicId}</Text>
-        </View> */}
+        {/* <View style={styles.lineStyle}/> */}
 
         {!this.state.characteristic && <View>
           <Text style={styles.h1}>No BLE Device connected. Choose option below:</Text>
@@ -307,6 +302,7 @@ class MenuScreen extends React.Component {
           </View>
         }
 
+        <View style={styles.lineStyle}/>
         <Button title="App Settings" onPress={this.gotoAppSettings}/>
 
         {/* <DemoComponent/> */}

@@ -27,7 +27,7 @@ class SettingsScreen extends React.Component {
     };
     setTimeout(() => {
       this.fetchSettingsInfo();
-    }, 1000);
+    }, 100);
   };
 
   fetchSettingsInfo = async () => {
