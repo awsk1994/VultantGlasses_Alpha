@@ -10,6 +10,9 @@
  - bluetooth:
    - https://github.com/Polidea/react-native-ble-plx
 
+## TODO (HIGH Priority):
+ - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
+
 ## TODO: 
  - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
  - You can use this and not need to pass characteristics around:
