@@ -26,7 +26,8 @@ class BLERead extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      readValue: null
+      readValue: null,
+      show: false
     }
   };
 
@@ -44,17 +45,25 @@ class BLERead extends React.Component {
     }
   };
 
+  setShow = (val) => {
+    this.setState({show: val});
+  };
+
   render() {
     return (
       <View>
         <View style={styles.lineStyle}/>
-        <Text style={styles.h2}>READ DEBUG</Text>
-        <Text>读取特征值:</Text>
-        <View >
-          <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressReadOp} title="读取特征值"/>
-        </View>
-        {strToFormatMsgJSX(this.state.readValue)}
-        <Text>{`十六进制: ${BLEUtils.strToHex(this.state.readValue)}`}</Text>
+        {!this.state.show && <Button onPress={() => this.setShow(true)} title="Show BLERead"/>}
+        {this.state.show && <View>
+          <Button onPress={() => this.setShow(false)} title="Hide BLERead"/>
+          <Text style={styles.h2}>READ DEBUG</Text>
+          <Text>读取特征值:</Text>
+          <View >
+            <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressReadOp} title="读取特征值"/>
+          </View>
+          {strToFormatMsgJSX(this.state.readValue)}
+          <Text>{`十六进制: ${BLEUtils.strToHex(this.state.readValue)}`}</Text>
+        </View>}
       </View>
     );
   }
