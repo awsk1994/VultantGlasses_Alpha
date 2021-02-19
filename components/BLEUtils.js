@@ -107,13 +107,20 @@ class BLEUtils {
     return hexMsg;
   }
 
-  static utf8ToUnicode(inptStr){
-    let unicodeArr = [];
-    for(let i=0; i<inptStr.length; i++){
-      let unicode = BLEUtils.utf8ToHex(inptStr[i]).padStart(4, '0');
-      unicodeArr.push(unicode);
-    };
-    return unicodeArr.join("");    
+  // static old_utf8ToUtf16Hex(inptStr){
+  //   let unicodeArr = [];
+  //   for(let i=0; i<inptStr.length; i++){
+  //     let unicode = BLEUtils.utf8ToHex(inptStr[i]).padStart(4, '0');
+  //     console.log("unicode = " + unicode);
+  //     unicodeArr.push(unicode);
+  //   };
+  //   return unicodeArr.join("");    
+  // }
+
+  static utf8ToUtf16Hex(s){
+    return s.split('').map(function(c) {
+      return ('0000' + c.charCodeAt(0).toString(16).toUpperCase()).slice(-4);
+    }).join('');
   }
 
   static getHexSize(hexStr){
