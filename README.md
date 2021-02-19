@@ -10,6 +10,10 @@
  - bluetooth:
    - https://github.com/Polidea/react-native-ble-plx
 
+## Useful link
+
+ - Text format conversion: https://www.branah.com/unicode-converter
+
 ## TODO (HIGH Priority):
  - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
 
@@ -37,6 +41,7 @@
  - More work on settings
  - BLEManager issue. Need to share characteristic?
  - Centralize styles
+
 
 ## How to use?
 
