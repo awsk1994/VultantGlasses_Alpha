@@ -137,12 +137,13 @@ class BLEUtils {
 
   static numStrToHex(numStr){
     numHexStr = parseInt(numStr).toString(16).toString('utf8');
-    if(numHexStr.length == 0){
+    if(numHexStr.length > 2){
+      console.log("ERROR | Cannot parse hex str > length 2.");
+      return;
+    } else if(numHexStr.length == 0){
       return "00";
-    } else if(numHexStr.length % 2 == 1){ // odd
-      return "0" + numHexStr;
-    } else {  // even
-      return numHexStr;
+    } else {  // length = 1 or 2.
+      return numHexStr.padStart(2, '0');
     };
   }
 }
