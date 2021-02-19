@@ -1,5 +1,7 @@
 let GlobalSettings = {
-  DEBUG: true
+  DEBUG: true,
+  AutoConnectBLEUponStart: false,
+  setNotificationPermissionUponStart: false
 };
 
 export default GlobalSettings;

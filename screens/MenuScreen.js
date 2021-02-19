@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { AppRegistry, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
 import { BleManager } from 'react-native-ble-plx';
@@ -7,6 +7,7 @@ import Storage from "../components/Storage";
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BLEUtils from "../components/BLEUtils";
 import GlobalSettings from "../components/GlobalSettings";
+import BLEFunctions from "../components/BLEFunctions";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -25,7 +26,7 @@ class MenuScreen extends React.Component {
       vMsgHeader: "A0", // Hardcoded
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
-      vMsgSAttri2: "00", // Hardcoded
+      vMsgSAttri2: "00" // Hardcoded
     };
     console.log("MenuScreen");
     this.bleManager = new BleManager();
@@ -109,16 +110,20 @@ class MenuScreen extends React.Component {
       this.fetchCharacteristic();
     }, 1000);
 
-    setTimeout(this.setNotificationPermission, 1000);
+    if(GlobalSettings.setNotificationPermissionUponStart)
+    {
+      setTimeout(this.setNotificationPermission, 1000);
+    }
 
     // Below is only for debugging purposes.
-    setTimeout(() => {
-      console.log("DEBUG | Read BLE info");
-      this.connectBLE();
-    }, 5000);
-    
+    if(GlobalSettings.AutoConnectBLEUponStart){
+      setTimeout(() => {
+        console.log("DEBUG | Read BLE info");
+        this.connectBLE();
+      }, 5000);
+    };
    };
-   
+  
   connectBLE = async () => {
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
   }
@@ -233,63 +238,9 @@ class MenuScreen extends React.Component {
           <Button title="链接到已保存BLE（Connect to saved BLE）" onPress={this.connectBLE}/>
         </View>
 
-        <View style={styles.lineStyle}/>
-        <Text style={styles.h2}>高级设置（Advanced Settings）</Text>
+        <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
 
-        <View style={styles.button}>
-          <Button title="调试（Debug）" onPress={this.debug}/>
-        </View>
-
-        <View style={styles.button}>
-          <Button title="重置BLE装置（Reset BLE Connection）" onPress={this.resetBLEConnection}/>
-        </View>
-
-        <View style={styles.button}>
-          <Button title="从内存获取BLE资料（Fetch from Storage）" onPress={this.fetchCharacteristic}/>
-        </View>
-
-        {/* <Button title="Reset Characteristic" onPress={this.resetBLEConnection}/> */}
-        {/* <BLEMenu
-            updateCharacteristic={this.updateCharacteristic}
-            updateDeviceName={this.updateDeviceName}
-          /> */}
         {/* <DemoComponent/> */}
-
-        <View style={styles.lineStyle}/>
-        {this.state.characteristic == null && <View>
-          <Text style={styles.h1}>没有链接的装置，请链接先（No BLE Connected. Please connect to a device!!!）</Text>
-        </View>}
-        {this.state.characteristic != null && <View>
-          <Text style={styles.h2}>版面(Screens)</Text>
-          <View style={styles.button}>
-            <Button title="自定APP推送消息（Custom Notification）" onPress={() => {
-              this.props.navigation.navigate("Notification", {
-                characteristic: this.state.characteristic 
-              });
-            }}/>
-          </View>
-          <View style={styles.button}>
-            <Button title="记事本（Notes）" onPress={() => {
-              this.props.navigation.navigate("Notes", {
-                characteristic: this.state.characteristic
-              })
-            }}/>
-          </View>
-          <View style={styles.button}>
-            <Button title="ppt笔记（Cue Card）" onPress={() => {
-              this.props.navigation.navigate("CueCard", {
-                characteristic: this.state.characteristic
-              })
-            }}/>
-          </View>
-          <View style={styles.button}>
-            <Button title="设置（Settings）" onPress={() => {
-              this.props.navigation.navigate("Settings", {
-                characteristic: this.state.characteristic
-              })}
-            }/>
-          </View>
-        </View>}
       </ScrollView>
     )
   }
