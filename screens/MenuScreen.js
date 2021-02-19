@@ -168,28 +168,35 @@ class MenuScreen extends React.Component {
 
     const connectService = (services) => {
       let service = services.find(service => service.uuid == this.state.serviceId);
-       console.log("Found Service!");
-       this.setState({status: BLEStatus.found_service});
-       service.characteristics().then(connectCharacteristic);
-       // TODO: handle service not found. And set status.
+      if(service == null){
+        console.log("ERROR | cannot find service.");
+        ToastAndroid.show("ERROR | cannot find service.", ToastAndroid.SHORT);
+        // TODO: handle error.
+      } else {
+        console.log("Found Service!");
+        this.setState({status: BLEStatus.found_service});
+        service.characteristics().then(connectCharacteristic);
+      }
     }
 
     const connectCharacteristic = (characteristics) => {
       let characteristic = characteristics.find(c => c.uuid == this.state.characteristicId);
-      console.log("Found characteristic!");
-      this.setState({status: BLEStatus.found_characteristic});
-      this.setState({characteristic});
-      this.setState({status: BLEStatus.connected});
-      // TODO: handle characteristic not found. And set status.
+      if(characteristic == null){
+        console.log("ERROR | cannot find characteristic.");
+        ToastAndroid.show("ERROR | cannot find characteristic.", ToastAndroid.SHORT);
+        // TODO: handle error.
+      } else {
+        console.log("Found characteristic!");
+        this.setState({status: BLEStatus.found_characteristic});
+        this.setState({characteristic});
+        this.setState({status: BLEStatus.connected});
+      }
     };
 
     device.connect()
-      .then((device) => {
-        // TODO: handle device's service not found. And set status.
-        return device.discoverAllServicesAndCharacteristics();
-      })
-      .then((device) => {
-        device.services().then(connectService);
+      .then(async (device) => {
+        await device.discoverAllServicesAndCharacteristics();
+        await device.services().then(connectService);
       })
       .catch((error) => {
         console.log(error);
@@ -225,6 +232,21 @@ class MenuScreen extends React.Component {
   gotoAppSettings = () => {
     console.log("go to app settings.");
     this.props.navigation.navigate("AppSettings", {});
+  };
+
+  disconnectDevice = () => {
+    if(this.state.characteristic == null){
+      console.log("ERROR | characteristic not found");
+      ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
+    };
+    const promise = this.bleManager.cancelDeviceConnection(this.state.characteristic.deviceID);
+    promise.then(() => {
+      console.log("Disconnected from device.");
+      this.setState({
+        characteristic: null,
+        status: BLEStatus.initial
+      });
+    });
   };
 
   // debug = () => {
@@ -277,8 +299,12 @@ class MenuScreen extends React.Component {
           </View>
         </View>}
 
-        {this.state.characteristic && 
-          <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
+        {this.state.characteristic && <View>
+            <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
+            <View style={styles.button}>
+              <Button color="#FF0000" title="Disconnect from device." onPress={this.disconnectDevice}/>
+            </View>
+          </View>
         }
 
         <Button title="App Settings" onPress={this.gotoAppSettings}/>
