@@ -23,7 +23,7 @@ class BLEFunctions extends React.Component {
           </View>
         } */}
         <View>
-          <Text style={styles.h2}>版面(Screens)</Text>
+          {/* <Text style={styles.h2}>版面(Screens)</Text> */}
           <View style={styles.button}>
             <Button title="自定APP推送消息（Custom Notification）" onPress={() => {
               this.props.navigation.navigate("Notification", {
