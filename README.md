@@ -15,7 +15,6 @@
  - Text format conversion: https://www.branah.com/unicode-converter
 
 ## TODO (HIGH Priority):
- - Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
  - Constant loop to try to get to bluetooth device.
 
  - Add global settings to log ToastAndroid.
@@ -23,6 +22,7 @@
  - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
  - Try to connect to saved BLE. If fail, re-direct to choose device page.
  - Create 2 different types of settings: Global Settings and Glasses Settings
+ - Global Settings
 
 ## TODO: 
  - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
@@ -44,11 +44,12 @@
  - move BLEMenu to be part of Settings (or better hide/show)
  - BLE permission stuff.
  - Figure out how to get settings from smartglasses. Can we get notes info as well?
- - Implement persistence storage for notes, cue-card.
+ - Implement persistence storage for notes, cue-card, settings.
  - More work on settings
  - BLEManager issue. Need to share characteristic?
  - Centralize styles
 
+ - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
 ## How to use?
 
