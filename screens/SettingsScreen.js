@@ -6,6 +6,9 @@ import BLERead from "../components/BLERead";
 import SettingsData from "../components/SettingsData";
 import SettingsType from "../components/SettingsType";
 import GlobalSettings from "../components/GlobalSettings";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Moment from 'moment';
+
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
 // TODO: Time/Date Settings
 // Skipping 语音及电话接听设置, 信息文字显示排版方式设置
@@ -23,7 +26,10 @@ class SettingsScreen extends React.Component {
       vMsgHeader: "A0", // Hardcoded
       vMsgPAttri: "05", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
-      characteristic: route.params.characteristic
+      characteristic: route.params.characteristic,
+      timedate: new Date(),
+      showTimeDate: false,
+      timedateMode: "date" // "date" or "time"
     };
     setTimeout(() => {
       this.fetchSettingsInfo();
@@ -73,6 +79,20 @@ class SettingsScreen extends React.Component {
     Storage.saveText("@" + item.id, content);
   }
 
+  sendDateTime = (td) => {
+    console.log(td);
+    const hour = td.getHours();
+    const min = td.getMinutes();
+    const sec = td.getSeconds();
+    const yr = td.getFullYear();
+    const month = td.getMonth();
+    const day = td.getDay();
+
+    console.log("h = " + hour + ", m = " + min + ", s = " + sec + ", yr = " + yr + ", month = " + month + ", day = " + day);
+    
+    // Convert to hex, and send
+  }
+
   send = (item, contentHexStr) => {
     const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
@@ -98,6 +118,22 @@ class SettingsScreen extends React.Component {
     }
 
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
+  };
+
+  changeTimeDate = (mode) => {
+    this.setState({
+      showTimeDate: true,
+      timedateMode: mode
+    });
+  };
+
+  onChangeTimeDate = (event, selectedTimeDate) => {
+    this.setState({showTimeDate: false});
+
+    if(event.type == "set" && selectedTimeDate != null){  // event type can be "dismissed" or "set"
+      console.log("onChangeTimeDate: " + selectedTimeDate);
+      this.setState({timedate: selectedTimeDate});
+    };
   };
 
   gridItem = (itemData) => {
@@ -139,13 +175,41 @@ class SettingsScreen extends React.Component {
     return (
       <ScrollView>
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem}/>
+        <View>
+          <Text>时间日期设置（Time/Date Settings)</Text>
+          <Text>{Moment(this.state.timedate).format('LLL')}</Text>
+          <View style={styles.Button}>
+            <Button title="Modify Time" onPress={() => this.changeTimeDate("time")}/>
+          </View>
+          <View style={styles.Button}>
+            <Button title="Modify Date" onPress={() => this.changeTimeDate("date")}/>
+          </View>
+          <View style={styles.Button}>
+            <Button title="写特征/发送（Send）" onPress={() => this.sendDateTime(this.state.timedate)}/>
+          </View>
+          {this.state.showTimeDate && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={this.state.timedate}
+              mode={this.state.timedateMode}
+              is24Hour={true}
+              display="default"
+              onChange={this.onChangeTimeDate}
+            />
+          )}
+        </View>
+
         <BLERead characteristic={this.state.characteristic}/>
+        
       </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  Button: {
+    margin: 10
+  },
   gridItem: {
     height: 60,
     borderWidth: 0.5,
