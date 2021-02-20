@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { AppRegistry, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import BLEMenu from "../components/BLEMenu";
 import DemoComponent from "../components/DemoComponent";
 import { BleManager } from 'react-native-ble-plx';
@@ -30,7 +30,13 @@ class MenuScreen extends React.Component {
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
     };
-    this.bleManager = new BleManager();
+    // TODO: confirm whether this work?
+    if(this.bleManager == null){
+      console.log("DEBUG | Creating new BleManager.")
+      this.bleManager = new BleManager();
+    } else {
+      console.log("DEBUG | BleManager already exist.")
+    }
   };
 
   componentDidMount() {
@@ -62,7 +68,7 @@ class MenuScreen extends React.Component {
   //   console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
   //   if(this.bleManager != null || typeof this.bleManager != "undefined"){
   //     // TODO: cancel device connection; bleManager.cancelDeviceConnection(deviceIdentifier: DeviceId): Promise<Device>; refer to https://github.com/Polidea/react-native-ble-plx/wiki/Device-Connecting
-  //     // this.bleManager.destroy();
+  //     this.bleManager.destroy();
   //   }
   // }
 
@@ -70,11 +76,11 @@ class MenuScreen extends React.Component {
   setNotificationPermission = async () => {
     // To check if the user has permission
     const status = await RNAndroidNotificationListener.getPermissionStatus()
-    console.log("Notification Permission status");
-    console.log(status) // Result can be 'authorized', 'denied' or 'unknown'
+    console.log("Notification Permission status: " + status); 
+    // status can be 'authorized', 'denied' or 'unknown'
 
     // To open the Android settings so the user can enable it
-    if(GlobalSettings.OpenNotificationPermissionTogglePage){
+    if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
       RNAndroidNotificationListener.requestPermission();
     }
     AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
@@ -100,44 +106,48 @@ class MenuScreen extends React.Component {
       + ", content = " + content);
     
     const divider = "00";
-    // TODO: when message is too long, getting message timeout.
-    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0,2);
-    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0,2);
-    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0,2);
+    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, GlobalSettings.NotificationCutOffLength);
+    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, GlobalSettings.NotificationCutOffLength);
+    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, GlobalSettings.NotificationCutOffLength);
 
-    console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
-      + ", contact = " + contactHex
-      + ", content = " + contentHex);
-    
-    console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.getHexSize(appNameHex) 
-      + ", contact = " + BLEUtils.getHexSize(contactHex)
-      + ", content = " + BLEUtils.getHexSize(contentHex));
+    const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
+    + BLEUtils.numStrToHex(contact.length) + contactHex + divider 
+    + BLEUtils.numStrToHex(content.length) + contentHex;
 
-    const entireContentHex = BLEUtils.getHexSize(appNameHex) + appNameHex + divider
-    + BLEUtils.getHexSize(contactHex) + contactHex + divider 
-    + BLEUtils.getHexSize(contentHex) + contentHex;
-
-    console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
-
-    const hexMsg = this.state.vMsgHeader 
+    const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + this.state.vMsgSAttri1
     + this.state.vMsgSAttri2
     + entireContentHex;
+    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+    const hexMsg = hexMsgWithoutCRC + CRCHex;
 
-    const CRCHex = BLEUtils.sumHex(hexMsg);
-    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + (hexMsg + CRCHex));
-
-    let SuccessWriteFn2 = () => {
-      console.log("Wrote successfully.");
+    if(GlobalSettings.DEBUG){
+      console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
+      + ", contact = " + contactHex
+      + ", content = " + contentHex);
+    
+      console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.numStrToHex(appName.length) 
+        + ", contact = " + BLEUtils.numStrToHex(contact.length)
+        + ", content = " + BLEUtils.numStrToHex(content.length));
+      
+      console.log("onPressWriteCharacteristic | CRCHex | " + CRCHex);
+      console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
     };
 
-    let ErrWriteFn = (err) => {
+    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
+
+    const SuccessWriteFn = () => {
+      console.log('成功写入特征值, 现在点击读取特征值看看吧...');
+      ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+    };
+
+    const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
-    BLEUtils.writeHexOp(hexMsg + CRCHex, this.state.characteristic, SuccessWriteFn2, ErrWriteFn);
+    BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
   
   connectBLE = async () => {
@@ -176,6 +186,7 @@ class MenuScreen extends React.Component {
         console.log("ERROR | cannot find service.");
         ToastAndroid.show("ERROR | cannot find service.", ToastAndroid.SHORT);
         // TODO: handle error.
+        this.setState({status: BLEStatus.err_cannot_find_service});
       } else {
         console.log("Found Service!");
         this.setState({status: BLEStatus.found_service});
@@ -189,6 +200,7 @@ class MenuScreen extends React.Component {
         console.log("ERROR | cannot find characteristic.");
         ToastAndroid.show("ERROR | cannot find characteristic.", ToastAndroid.SHORT);
         // TODO: handle error.
+        this.setState({status: BLEStatus.err_cannot_find_characteristic});
       } else {
         console.log("Found characteristic!");
         this.setState({status: BLEStatus.found_characteristic});
