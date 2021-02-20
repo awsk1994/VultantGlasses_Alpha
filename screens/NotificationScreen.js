@@ -64,7 +64,10 @@ class NotificationScreen extends React.Component {
     console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
 
     SuccessWriteFn = () => {
-      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+      // Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+      console.log('成功写入特征值, 现在点击读取特征值看看吧...');
+      ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+
     };
 
     ErrWriteFn = (err) => {
