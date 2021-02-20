@@ -9,6 +9,11 @@
    - https://github.com/leandrosimoes/react-native-android-notification-listener
  - bluetooth:
    - https://github.com/Polidea/react-native-ble-plx
+ - timedate picker:
+   - https://github.com/react-native-datetimepicker/datetimepicker
+ - moment:
+   - https://github.com/moment/moment
+   
 
 ## Useful link
 
