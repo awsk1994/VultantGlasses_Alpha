@@ -42,6 +42,8 @@ class BLEMenu extends React.Component {
   }
 
   scanDevices = async () => {
+    this.bleManager.stopDeviceScan();
+
     console.log("Scanning Devices");
     this.setState({scanning: true});
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.onScannedDevice);
