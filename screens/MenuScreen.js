@@ -166,12 +166,12 @@ class MenuScreen extends React.Component {
     // Add this option to settings.
     if(GlobalSettings.SearchDeviceById){
       if(device.id != this.state.deviceId){
-        console.log("Cannot find device (searched by deviceId).");
+        // console.log("Cannot find device (searched by deviceId).");
         return;
       }
     } else {
       if(device.name != this.state.deviceName){
-        console.log("Cannot find device (searched by deviceName).");
+        // console.log("Cannot find device (searched by deviceName).");
         return;
       }
     };
