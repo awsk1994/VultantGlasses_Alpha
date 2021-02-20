@@ -1,4 +1,6 @@
 import { Buffer } from 'buffer/'
+import { ToastAndroid } from 'react-native';
+import GlobalSettings from './GlobalSettings';
 
 class BLEUtils {
   static strToHex(str){
@@ -72,7 +74,10 @@ class BLEUtils {
       console.log('ERROR. hexStr is empty. 请输入要写入的特征值')
     }
     const hexMsg = Buffer.from(hexStr, 'hex').toString('base64')
-    console.log('开始写入特征值：' + hexMsg);
+    if(GlobalSettings.DEBUG){
+      console.log('开始写入特征值：' + hexMsg.toString());
+    }
+    ToastAndroid.show('开始写入特征值：' + hexMsg.toString(), ToastAndroid.SHORT);
 
     characteristics.writeWithResponse(hexMsg)
       .then(SuccessWriteFn)
