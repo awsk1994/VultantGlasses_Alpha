@@ -36,6 +36,12 @@ const SettingsData = [
     title: "信息显示停留时间（Message Display Time, seconds）",
     type: SettingsType.numeric,
     sAttri1HexStr: "55" // HARDCODED
+  },
+  {
+    id: "timeDate",
+    title: "时间日期设置（Time/Date Settings）",
+    type: SettingsType.timedate,
+    sAttri1HexStr: "51" // HARDCODED
   }
 ];
 
