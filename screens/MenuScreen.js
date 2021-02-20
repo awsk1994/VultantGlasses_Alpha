@@ -301,7 +301,7 @@ class MenuScreen extends React.Component {
           </View>
 
           <View style={styles.button}>
-            <Button title="Connect to saved BLE" onPress={this.connectBLE}/>
+            <Button title="链接BLE装置（Connect to saved BLE）" onPress={this.connectBLE}/>
             <Text>(Saved BLE device: {this.state.deviceName})</Text>
           </View>
         </View>}
@@ -309,13 +309,13 @@ class MenuScreen extends React.Component {
         {this.state.characteristic && <View>
             <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
             <View style={styles.button}>
-              <Button color="#FF0000" title="Disconnect from device." onPress={this.disconnectDevice}/>
+              <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>
           </View>
         }
 
         <View style={styles.lineStyle}/>
-        <Button title="App Settings" onPress={this.gotoAppSettings}/>
+        <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/>
 
         {/* <DemoComponent/> */}
       </ScrollView>

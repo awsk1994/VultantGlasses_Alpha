@@ -46,7 +46,7 @@ class BLEFunctions extends React.Component {
             }}/>
           </View>
           <View style={styles.button}>
-            <Button title="设置（Settings）" onPress={() => {
+            <Button title="眼镜设置（Glasses Settings）" onPress={() => {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.props.characteristic
               })}
