@@ -15,6 +15,9 @@
  - Text format conversion: https://www.branah.com/unicode-converter
 
 ## TODO (HIGH Priority):
+ - Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
+ - Constant loop to try to get to bluetooth device.
+
  - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
  - Try to connect to saved BLE. If fail, re-direct to choose device page.
  - Create 2 different types of settings: Global Settings and Glasses Settings
