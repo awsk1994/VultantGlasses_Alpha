@@ -6,18 +6,29 @@ class Storage {
     try {
       const value = await AsyncStorage.getItem(key);
       console.log("Fetch complete.");
-      return value;
+      return value !== null ? value : null;
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  static fetchInt = async (key) => {
+    console.log("Fetching number with key(" + key + ")");
+    try {
+      const value = await AsyncStorage.getItem(key);
+      console.log("Fetch complete.");
+      return value !== null ? parseInt(value) : null;
     } catch(e) {
       console.log(e);
     }
   }
 
   static fetchBool = async (key) => {
-    console.log("Fetching text with key(" + key + ")");
+    console.log("Fetching bool with key(" + key + ")");
     try {
       const value = await AsyncStorage.getItem(key);
       console.log("Fetch complete.");
-      return value == "true";
+      return value !== null ? value == "true" : null;
     } catch(e) {
       console.log(e);
     }
@@ -37,6 +48,17 @@ class Storage {
     console.log("Saving Bool with key(" + key + ")");
     try {
       const strVal = value ? "true": "false";
+      await AsyncStorage.setItem(key, strVal);
+      console.log("save Complete.");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  static saveInt = async (key, value) => {
+    console.log("Saving Int with key(" + key + ")");
+    try {
+      const strVal = value.toString();
       await AsyncStorage.setItem(key, strVal);
       console.log("save Complete.");
     } catch (e) {
