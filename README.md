@@ -11,8 +11,10 @@
    - https://github.com/Polidea/react-native-ble-plx
  - timedate picker:
    - https://github.com/react-native-datetimepicker/datetimepicker
- - moment:
+ - moment (time/date processing):
    - https://github.com/moment/moment
+ - react-native-loading-spinner-overlay:
+   - https://github.com/joinspontaneous/react-native-loading-spinner-overlay/blob/master/example/App.js
 
 
 ## Useful link
@@ -20,8 +22,11 @@
  - Text format conversion: https://www.branah.com/unicode-converter
 
 ## TODO (HIGH Priority):
- - !!: When message is too long, there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
+ - !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
  
+ - Consider adding this: https://github.com/crazycodeboy/react-native-splash-screen
+  - Can spinner overlay have a cancel button?
+
  - Notification message -> filter by app name
  - Constant loop to try to get to bluetooth device.
 
@@ -33,7 +38,7 @@
  - Global Settings
 
 ## TODO: 
- - BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
+ - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
  - You can use this and not need to pass characteristics around:
    - https://github.com/Polidea/react-native-ble-plx/wiki/Characteristic-Reading
  ```
@@ -105,7 +110,7 @@ https://stackoverflow.com/questions/35935060/how-can-i-generate-an-apk-that-can-
 
  - Specifically, run this in project folder
 ```bash
-$ keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+$ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
  - Place the my-release-key.keystore file under the android/app directory in your project folder. 
