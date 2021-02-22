@@ -255,14 +255,19 @@ class MenuScreen extends React.Component {
       console.log("ERROR | characteristic not found");
       ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
     };
-    const promise = this.bleManager.cancelDeviceConnection(this.state.characteristic.deviceID);
-    promise.then(() => {
-      console.log("Disconnected from device.");
-      this.setState({
-        characteristic: null,
-        status: BLEStatus.initial
-      });
-    });
+    
+    this.bleManager.cancelDeviceConnection(this.state.characteristic.deviceID)
+      .then(() => {
+        console.log("Disconnected from device.");
+        this.setState({
+          characteristic: null,
+          status: BLEStatus.initial
+        });
+      })
+      .catch(err => {
+        console.log('写入特征值出错：', err)
+        ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      })
   };
 
   // debug = () => {
