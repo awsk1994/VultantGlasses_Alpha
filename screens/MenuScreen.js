@@ -11,6 +11,7 @@ import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
 import App from '../App';
 import AppSettings from './AppSettings';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -29,6 +30,7 @@ class MenuScreen extends React.Component {
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
+      spinner: false
     };
     // TODO: confirm whether this work?
     if(this.bleManager == null){
@@ -151,6 +153,8 @@ class MenuScreen extends React.Component {
   }
   
   connectBLE = async () => {
+    // this.setSpinner(true);
+
     this.setState({status: BLEStatus.connecting_device});
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
   }
@@ -160,6 +164,7 @@ class MenuScreen extends React.Component {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
       ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
+      // this.setSpinner(false);
       return
     }
 
@@ -190,7 +195,8 @@ class MenuScreen extends React.Component {
       } else {
         console.log("Found Service!");
         this.setState({status: BLEStatus.found_service});
-        service.characteristics().then(connectCharacteristic);
+        // service.characteristics().then(connectCharacteristic);
+        return service.characteristics();
       }
     }
 
@@ -205,17 +211,40 @@ class MenuScreen extends React.Component {
         console.log("Found characteristic!");
         this.setState({status: BLEStatus.found_characteristic});
         this.setState({characteristic});
-        this.setState({status: BLEStatus.connected});
       }
     };
 
-    device.connect()
+    // const requestMTU = () => {
+    //   console.log("Requesting MTU size to change to 512 bytes.");
+    //   this.setState({status: BLEStatus.requesting_MTU})
+    //   this.bleManager.requestMTU(this.state.characteristic.deviceID, 512)
+    //   .then((mtu) => {
+    //     // Success code
+    //     console.log("MTU size changed to " + mtu + " bytes");
+    //   })
+    //   .catch((error) => {
+    //     // Failure code
+    //     console.log(error);
+    //     this.setState({status: BLEStatus.error});
+    //   });
+    // };
+
+    this.bleManager.connectToDevice(device.id, {
+      requestMTU: 512
+    })
       .then(async (device) => {
         await device.discoverAllServicesAndCharacteristics();
-        await device.services().then(connectService);
+        await device.services()
+          .then(connectService)
+          .then(connectCharacteristic)
+          // .then(requestMTU)
+          .then(() => this.setState({status: BLEStatus.connected}));
+        // this.setSpinner(false);
       })
       .catch((error) => {
         console.log(error);
+        this.setState({status: BLEStatus.error});
+        // this.setSpinner(false);
       });
   };
 
@@ -239,21 +268,28 @@ class MenuScreen extends React.Component {
   };
 
   chooseDevice = () => {
+    this.bleManager.stopDeviceScan();
     this.props.navigation.navigate("BLEMenu", {
       bleManager: this.bleManager,
-      updateMenuCharacteristic: this.updateMenuCharacteristic
+      updateMenuCharacteristic: this.updateMenuCharacteristic,
+      setSpinner: this.setSpinner
     });
   };
 
   gotoAppSettings = () => {
     console.log("go to app settings.");
-    this.props.navigation.navigate("AppSettings", {});
+    this.props.navigation.navigate("AppSettings", {
+      setSpinner: this.setSpinner
+    });
   };
 
   disconnectDevice = () => {
+    this.setSpinner(true);
+
     if(this.state.characteristic == null){
       console.log("ERROR | characteristic not found");
       ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
+      this.setSpinner(false);
     };
     
     this.bleManager.cancelDeviceConnection(this.state.characteristic.deviceID)
@@ -263,12 +299,18 @@ class MenuScreen extends React.Component {
           characteristic: null,
           status: BLEStatus.initial
         });
+        this.setSpinner(false);
       })
       .catch(err => {
         console.log('写入特征值出错：', err)
         ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-      })
+        this.setSpinner(false);
+      });
   };
+
+  setSpinner = (condition) => {
+    this.setState({spinner: condition});
+  }
 
   // debug = () => {
   //   console.log("Debug | characteristic");
@@ -296,6 +338,11 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <ScrollView>
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />
         <Text>Status: {this.state.status}</Text>
         {/* <View style={styles.lineStyle}/> */}
 
@@ -312,7 +359,7 @@ class MenuScreen extends React.Component {
         </View>}
 
         {this.state.characteristic && <View>
-            <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation}/>
+            <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
             <View style={styles.button}>
               <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>
@@ -329,6 +376,9 @@ class MenuScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  spinnerTextStyle: {
+    color: '#FFF'
+  },
   "button": {
     margin: 10
   },

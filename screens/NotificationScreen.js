@@ -23,9 +23,11 @@ class NotificationScreen extends React.Component {
       characteristic: route.params.characteristic,
       readVal: ""
     };
+    this.setSpinner = route.params.setSpinner;
   };
 
   onPressWriteCharacteristic(){
+    this.setSpinner(true);
     console.log("onPressWriteCharacteristic | Input utf8 | appName = " + this.state.appName 
       + ", contact = " + this.state.contact
       + ", content = " + this.state.content);
@@ -67,11 +69,13 @@ class NotificationScreen extends React.Component {
       // Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
       ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+      this.setSpinner(false);
     };
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
     }
 
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
@@ -99,7 +103,7 @@ class NotificationScreen extends React.Component {
         <Button title="写特征（Write Characteristic）" onPress = {() => {
           this.onPressWriteCharacteristic();
         }}/>
-        <BLERead characteristic={this.state.characteristic}/>
+        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>
     )
   };

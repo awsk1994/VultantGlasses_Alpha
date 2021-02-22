@@ -40,6 +40,7 @@ class SettingsScreen extends React.Component {
       showTimeDate: false,
       timedateMode: "date" // "date" or "time"
     };
+    this.setSpinner = route.params.setSpinner;
     setTimeout(() => {
       this.fetchSettingsInfo();
     }, 100);
@@ -120,6 +121,7 @@ class SettingsScreen extends React.Component {
   };
 
   send = (item, contentHexStr) => {
+    this.setSpinner(true);
     const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
     + item.sAttri1HexStr
@@ -136,11 +138,14 @@ class SettingsScreen extends React.Component {
 
     const SuccessWriteFn = () => {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
+      ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+      this.setSpinner(false);
     };
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
     }
 
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
@@ -225,7 +230,7 @@ class SettingsScreen extends React.Component {
             />
           )}
         </View>
-        <BLERead characteristic={this.state.characteristic}/>
+        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>
     );
   }

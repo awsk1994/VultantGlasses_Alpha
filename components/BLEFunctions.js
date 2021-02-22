@@ -8,10 +8,10 @@ class BLEFunctions extends React.Component {
   };
 
   componentDidUpdate(prevProps){
-    if(GlobalSettings.DEBUG){
-      console.log("BLEFunctions | componentDidUpdate | props is ");
-      console.log(this.props);
-    }
+    // if(GlobalSettings.DEBUG){
+    //   console.log("BLEFunctions | componentDidUpdate | props is ");
+    //   console.log(this.props);
+    // }
   };
 
   render() {
@@ -27,28 +27,32 @@ class BLEFunctions extends React.Component {
           <View style={styles.button}>
             <Button title="自定APP推送消息（Custom Notification）" onPress={() => {
               this.props.navigation.navigate("Notification", {
-                characteristic: this.props.characteristic 
+                characteristic: this.props.characteristic,
+                setSpinner:  this.props.setSpinner
               });
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="记事本（Notes）" onPress={() => {
               this.props.navigation.navigate("Notes", {
-                characteristic: this.props.characteristic
+                characteristic: this.props.characteristic,
+                setSpinner:  this.props.setSpinner
               })
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="ppt笔记（Cue Card）" onPress={() => {
               this.props.navigation.navigate("CueCard", {
-                characteristic: this.props.characteristic
+                characteristic: this.props.characteristic,
+                setSpinner:  this.props.setSpinner
               })
             }}/>
           </View>
           <View style={styles.button}>
             <Button title="眼镜设置（Glasses Settings）" onPress={() => {
               this.props.navigation.navigate("Settings", {
-                characteristic: this.props.characteristic
+                characteristic: this.props.characteristic,
+                setSpinner:  this.props.setSpinner
               })}
             }/>
           </View>

@@ -32,16 +32,19 @@ class BLERead extends React.Component {
   };
 
   onPressReadOp = async() => {
+    this.props.setSpinner(true);
     console.log("onPressReadOp");
     try{
       let char = await this.props.characteristic.read();
       console.log("Characteristics Read Value: " + char.value);
       // ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
       this.setState({readValue: char.value});
+      this.props.setSpinner(false);
     } catch(err){
       console.log("ERROR:");
       console.log(err);
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.props.setSpinner(false);
     }
   };
 

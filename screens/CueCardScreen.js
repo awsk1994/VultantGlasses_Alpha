@@ -14,10 +14,13 @@ class CueCardScreen extends React.Component {
       vMsgSAttri1: "16", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
       characteristic: route.params.characteristic
-    }
+    };
+    this.setSpinner = route.params.setSpinner;
   };
 
   onPressWrite(){
+    this.setSpinner(true);
+
     const cuecardHex = BLEUtils.utf8ToUtf16Hex(this.state.cuecard);
     const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
@@ -36,11 +39,13 @@ class CueCardScreen extends React.Component {
     const SuccessWriteFn = () => {
       console.log('成功写入特征值', '现在点击读取特征值看看吧...');
       ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+      this.setSpinner(false);
     };
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
     }
 
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
@@ -60,7 +65,7 @@ class CueCardScreen extends React.Component {
         <Button title="写特征/发送（Send Notes）" onPress = {() => {
           this.onPressWrite();
         }}/>
-        <BLERead characteristic={this.state.characteristic}/>
+        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </View>
     )
   };

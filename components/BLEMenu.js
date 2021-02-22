@@ -32,6 +32,7 @@ class BLEMenu extends React.Component {
     console.log(props);
     this.bleManager = props.route.params.bleManager;
     this.updateMenuCharacteristic = props.route.params.updateMenuCharacteristic;
+    this.setSpinner = props.route.params.setSpinner;
   };
 
   componentWillUnmount() {
@@ -87,9 +88,12 @@ class BLEMenu extends React.Component {
 
   connectDevice = async (device) => {
     try{
+      this.setSpinner(true);
       this.stopScan() // Stop Scanning
       console.group("Connecting to Device.");
-      await device.connect();
+      await this.bleManager.connectToDevice(device.id, {
+        requestMTU: 512
+      });
       console.log('Connected to Device：', device.id)
       ToastAndroid.show("Connected to Device：" + device.id, ToastAndroid.SHORT);
 
@@ -97,6 +101,8 @@ class BLEMenu extends React.Component {
       console.log('Getting services and characteristics...');
       console.log(serviceAndChar);
   
+      this.setSpinner(false);
+
       Alert.alert('成功链接到设备（Connected to Device）', null, [
         { text: '取消' },
         { text: "继续", onPress: () => this.onPressDevice(device)}
@@ -105,40 +111,50 @@ class BLEMenu extends React.Component {
       console.log("connectDevice | ERROR");
       console.log(err);
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
     }
   };
 
   onPressDevice = async (device) => {
+    this.setSpinner(true);
     let services = await device.services();
     this.setState({services});
     this.setState({
       deviceName: device.localName
     })
+    this.setSpinner(false);
   };
 
   onPressService = async(service) => {
+    this.setSpinner(true);
     let characteristics = await service.characteristics()
     this.setState({characteristics});
+    this.setSpinner(false);
   };
 
   onPressCharacteristic = async(characteristic) => {
+    this.setSpinner(true);
     console.log("onPressCharacteristic")
     this.setState({characteristic});
     this.updateCharacteristic(characteristic);
     this.props.navigation.goBack();
+    this.setSpinner(false);
   }
 
   onPressReadOp = async() => {
     console.log("onPressReadOp");
+    this.setSpinner(true);
     try{
       let char = await this.state.characteristic.read();
       console.log("Characteristics Read Value: " + char.value);
       ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
       this.setState({readValue: char.value});
+      this.setSpinner(false);
     } catch(err){
       console.log("ERROR:");
       console.log(err);
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
     }
   };
 
