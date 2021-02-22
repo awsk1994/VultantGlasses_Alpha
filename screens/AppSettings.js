@@ -29,8 +29,7 @@ class AppSettings extends React.Component {
       this.fetchCharacteristic();
       // this.fetchAppSettings();
     }, 100);
-    console.log(this.state);
-
+    // console.log(this.state);
   };
 
   AppSettingsComponentJSX = (key) => {
