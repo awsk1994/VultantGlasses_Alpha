@@ -66,7 +66,7 @@ class NotificationScreen extends React.Component {
     const SuccessWriteFn = () => {
       // Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
-      ToastAndroid.show('成功写入特征值', '现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+      ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
     };
 
     const ErrWriteFn = (err) => {
