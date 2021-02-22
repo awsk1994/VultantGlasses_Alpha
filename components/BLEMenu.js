@@ -88,10 +88,11 @@ class BLEMenu extends React.Component {
   connectDevice = async (device) => {
     try{
       this.stopScan() // Stop Scanning
-      ToastAndroid.show("链接中（Connecting to Device）...", ToastAndroid.SHORT);
       console.group("Connecting to Device.");
       await device.connect();
       console.log('Connected to Device：', device.id)
+      ToastAndroid.show("Connected to Device：" + device.id, ToastAndroid.SHORT);
+
       let serviceAndChar = await device.discoverAllServicesAndCharacteristics();
       console.log('Getting services and characteristics...');
       console.log(serviceAndChar);
