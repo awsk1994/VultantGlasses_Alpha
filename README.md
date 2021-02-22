@@ -13,13 +13,16 @@
    - https://github.com/react-native-datetimepicker/datetimepicker
  - moment:
    - https://github.com/moment/moment
-   
+
 
 ## Useful link
 
  - Text format conversion: https://www.branah.com/unicode-converter
 
 ## TODO (HIGH Priority):
+ - !!: When message is too long, there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
+ 
+ - Notification message -> filter by app name
  - Constant loop to try to get to bluetooth device.
 
  - Add global settings to log ToastAndroid.
@@ -106,7 +109,7 @@ $ keytool -genkey -v -keystore my-upload-key.keystore -alias my-key-alias -keyal
  - Edit android/app/build.gradle and android/gradle.properties as seen in https://github.com/awsk1994/Bluetooth-BLE-React-App/commit/a653d0d0b2cf63629c9b2d43a6f92554d94dc316
    - replace 'vultant' with the password you set for keytool
 
- - Run this:
+ - Run this (in the future, you just need to run below to export a new apk):
 ```
 cd android && ./gradlew assembleRelease
 ```
