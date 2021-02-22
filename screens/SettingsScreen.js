@@ -13,6 +13,14 @@ import Moment from 'moment';
 // TODO: Time/Date Settings
 // Skipping 语音及电话接听设置, 信息文字显示排版方式设置
 
+const INIT_VALUES = {
+  displayTimeOut: 0,
+  language: "1",
+  bluetoothName: "(NO NAME)",
+  msgDispTime: 0,
+  timedate: new Date()
+};
+
 class SettingsScreen extends React.Component { 
   constructor({props, route}) {
     super();
@@ -21,6 +29,7 @@ class SettingsScreen extends React.Component {
       doNotDisturb: null,
       language: null,
       appEnable: null,
+      msgDispTime: null,
       bluetoothName: null,
       audioLoudness: null,
       vMsgHeader: "A0", // Hardcoded
@@ -38,35 +47,41 @@ class SettingsScreen extends React.Component {
 
   fetchSettingsInfo = async () => {
     console.log("Fetching Settings information from AsyncStorage");
-    // TODO: change this to save object instead of text.
 
-    const displayTimeOutPromise = Storage.fetchText('@displayTimeOut');
-    displayTimeOutPromise.then((v) => this.setState({'displayTimeOut': v}));
+    Storage.fetchInt('@displayTimeOut')
+      .then((v) => this.setState({'displayTimeOut': v == null ? INIT_VALUES.displayTimeOut : v}));
+
+    Storage.fetchInt('@msgDispTime')
+      .then((v) => this.setState({'msgDispTime': v == null ? INIT_VALUES.msgDispTime : v}));
+
+    Storage.fetchText('@language')
+      .then((v) => this.setState({'language': v == null ? INIT_VALUES.language : v}));
+
+
+    Storage.fetchText('@bluetoothName')
+      .then((v) => this.setState({'bluetoothName': v == null ? INIT_VALUES.bluetoothName : v}));
+
+    Storage.fetchText('@timedate')
+      .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
 
     // const doNotDisturbPromise = Storage.fetchText('@doNotDisturb');
     // doNotDisturbPromise.then((v) => this.setState({'doNotDisturb': v}));
 
-    const languagePromise = Storage.fetchText('@language');
-    languagePromise.then((v) => this.setState({'language': v}));
-
     // const appEnablePromise = Storage.fetchText('@appEnable');
     // appEnablePromise.then((v) => this.setState({'appEnable': v}));
 
-    const bluetoothNamePromise = Storage.fetchText('@bluetoothName');
-    bluetoothNamePromise.then((v) => this.setState({'bluetoothName': v}));
-
-    const audioLoudnessPromise = Storage.fetchText('@audioLoudness');
-    audioLoudnessPromise.then((v) => this.setState({'audioLoudness': v}));
+    // const audioLoudnessPromise = Storage.fetchText('@audioLoudness');
+    // audioLoudnessPromise.then((v) => this.setState({'audioLoudness': v == null ? INIT_VALUES.audioLoudness : v}));
   }
 
   updateState = (item, text) => {
     this.setState({[item.id]: text});
   }
 
-  sendLanguageAndSave = (item, text) => {
-    this.updateState(item, text);
+  sendLanguageAndSave = (item, content) => {
+    this.updateState(item, content);
     this.send(item, BLEUtils.numStrToHex(content)); // language is a number. 1 = chinese, 2 = english
-    Storage.saveText("@" + item.id, text);
+    Storage.saveText("@" + item.id, content);
   }
 
   sendTextAndSave = (item, content) => {
@@ -76,22 +91,33 @@ class SettingsScreen extends React.Component {
 
   sendNumberAndSave = (item, content) => {
     this.send(item, BLEUtils.numStrToHex(content));
-    Storage.saveText("@" + item.id, content);
+    Storage.saveInt("@" + item.id, content);
   }
 
   sendDateTime = (td) => {
-    console.log(td);
-    const hour = td.getHours();
-    const min = td.getMinutes();
-    const sec = td.getSeconds();
-    const yr = td.getFullYear();
-    const month = td.getMonth();
-    const day = td.getDay();
+    const hourHex = td.getHours().toString(16).padStart(2, '0');;
+    const minHex = td.getMinutes().toString(16).padStart(2, '0');
+    const secHex = td.getSeconds().toString(16).padStart(2, '0');
+    const yrHex = td.getFullYear().toString(16).padStart(4, '0');
+    const month = td.getMonth()+1;
+    const monthHex = month.toString(16).padStart(2, '0');
+    const dayHex = td.getDate().toString(16).padStart(2, '0');
 
-    console.log("h = " + hour + ", m = " + min + ", s = " + sec + ", yr = " + yr + ", month = " + month + ", day = " + day);
-    
-    // Convert to hex, and send
-  }
+    if(GlobalSettings.DEBUG){
+      console.log("Time = ");
+      console.log(td);
+      console.log("sendDateTime | hex | h = " + hourHex + ", m = " + minHex + ", s = " + secHex + ", yr = " + yrHex + ", month = " + monthHex + ", day = " + dayHex);
+    }
+
+    const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
+
+    this.send({
+      id: "timeDate",
+      title: "时间日期设置（Time/Date Settings）",
+      type: SettingsType.timedate,
+      sAttri1HexStr: "51" // HARDCODED
+    }, contentHexStr)
+  };
 
   send = (item, contentHexStr) => {
     const hexMsgWithoutCRC = this.state.vMsgHeader 
@@ -108,11 +134,11 @@ class SettingsScreen extends React.Component {
       console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
     }
 
-    SuccessWriteFn = () => {
-      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+    const SuccessWriteFn = () => {
+      console.log('成功写入特征值, 现在点击读取特征值看看吧...');
     };
 
-    ErrWriteFn = (err) => {
+    const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
@@ -149,7 +175,7 @@ class SettingsScreen extends React.Component {
           <Text>{itemData.item.title}</Text>
           <TextInput keyboardType='numeric' 
             onChangeText={(text) => this.updateState(itemData.item, text)}
-            value={this.state[itemData.item.id]}
+            value={this.state[itemData.item.id] !== null ? this.state[itemData.item.id].toString() : null}
             maxLength={10}  //setting limit of input
           />
           <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
@@ -176,13 +202,14 @@ class SettingsScreen extends React.Component {
       <ScrollView>
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem}/>
         <View>
+          <View style={styles.lineStyle}/>
           <Text>时间日期设置（Time/Date Settings)</Text>
           <Text>{Moment(this.state.timedate).format('LLL')}</Text>
           <View style={styles.Button}>
-            <Button title="Modify Time" onPress={() => this.changeTimeDate("time")}/>
+            <Button title="更改时间（Modify Time）" onPress={() => this.changeTimeDate("time")}/>
           </View>
           <View style={styles.Button}>
-            <Button title="Modify Date" onPress={() => this.changeTimeDate("date")}/>
+            <Button title="更改日期（Modify Date）" onPress={() => this.changeTimeDate("date")}/>
           </View>
           <View style={styles.Button}>
             <Button title="写特征/发送（Send）" onPress={() => this.sendDateTime(this.state.timedate)}/>
@@ -198,9 +225,7 @@ class SettingsScreen extends React.Component {
             />
           )}
         </View>
-
         <BLERead characteristic={this.state.characteristic}/>
-        
       </ScrollView>
     );
   }
