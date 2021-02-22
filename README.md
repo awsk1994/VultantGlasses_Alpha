@@ -68,8 +68,12 @@
  - In every screen, the top part is used to write the respective messages to the peripheral BLE device. The bottom "READ DEBUG" part is just for debugging purposes; making it easier to check the written message is written properly.
 
 ## Log
- - 20210220: Refined many small things, made UI more simplistic.
+ - 20210220: Refined many small things, made UI and workflow more simplistic, bug fixes, made utilization of bleManager more smooth.
 
+<img src="./img/20210222_MainMenu_Disconnected.jpg" height="300"/>
+<img src="./img/20210222_MainMenu_Connected.jpg" height="300"/>
+<img src="./img/20210222_GlassesSettings.jpg" height="300"/>
+<img src="./img/20210222_AppSettings.jpg" height="300"/>
 
  - 20210124: Ensured react-navigation is functional.
  - 20210125: Set up a structure for the entire app.
