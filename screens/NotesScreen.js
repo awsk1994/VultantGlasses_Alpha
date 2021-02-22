@@ -43,11 +43,12 @@ class NotesScreen extends React.Component {
       console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);  
     }
 
-    SuccessWriteFn = () => {
-      Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...');
+    const SuccessWriteFn = () => {
+      console.log('成功写入特征值', '现在点击读取特征值看看吧...');
+      ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
     };
 
-    ErrWriteFn = (err) => {
+    const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
       ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
