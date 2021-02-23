@@ -55,7 +55,7 @@ class BLEMenu extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
-      ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
       return
     }
     
@@ -95,7 +95,7 @@ class BLEMenu extends React.Component {
         requestMTU: 512
       });
       console.log('Connected to Device：', device.id)
-      ToastAndroid.show("Connected to Device：" + device.id, ToastAndroid.SHORT);
+      // ToastAndroid.show("Connected to Device：" + device.id, ToastAndroid.SHORT);
 
       let serviceAndChar = await device.discoverAllServicesAndCharacteristics();
       console.log('Getting services and characteristics...');
@@ -110,7 +110,7 @@ class BLEMenu extends React.Component {
     } catch(err){
       console.log("connectDevice | ERROR");
       console.log(err);
-      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       this.setSpinner(false);
     }
   };
@@ -147,13 +147,13 @@ class BLEMenu extends React.Component {
     try{
       let char = await this.state.characteristic.read();
       console.log("Characteristics Read Value: " + char.value);
-      ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
+      // ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
       this.setState({readValue: char.value});
       this.setSpinner(false);
     } catch(err){
       console.log("ERROR:");
       console.log(err);
-      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       this.setSpinner(false);
     }
   };
@@ -175,7 +175,7 @@ class BLEMenu extends React.Component {
   };
 
   onPressWriteOp = (msg) => {
-    ToastAndroid.show('开始写入特征值：' + msg, ToastAndroid.SHORT);
+    // ToastAndroid.show('开始写入特征值：' + msg, ToastAndroid.SHORT);
 
     this.state.characteristic.writeWithResponse(msg)
       .then(() => {
@@ -183,7 +183,7 @@ class BLEMenu extends React.Component {
       })
       .catch(err => {
         console.log('写入特征值出错：', err)
-        ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+        // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       })
   };
 

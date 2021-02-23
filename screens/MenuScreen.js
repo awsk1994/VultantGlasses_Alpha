@@ -1,17 +1,13 @@
 import React from 'react';
-import { AppRegistry, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
-import BLEMenu from "../components/BLEMenu";
-import DemoComponent from "../components/DemoComponent";
+import { AppRegistry, Platform, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import Storage from "../components/Storage";
-import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BLEUtils from "../components/BLEUtils";
 import GlobalSettings from "../components/GlobalSettings";
 import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
-import App from '../App';
-import AppSettings from './AppSettings';
 import Spinner from 'react-native-loading-spinner-overlay';
+import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -52,7 +48,7 @@ class MenuScreen extends React.Component {
     }, 100);
 
     // Open notification permission (Android Settings)
-    if(GlobalSettings.SetNotificationPermissionUponStart)
+    if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android')
     {
       setTimeout(this.setNotificationPermission, 200);
     }
@@ -141,12 +137,12 @@ class MenuScreen extends React.Component {
 
     const SuccessWriteFn = () => {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
-      // ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
+      // // ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
     };
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
-      ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
@@ -163,7 +159,7 @@ class MenuScreen extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
-      ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
       // this.setSpinner(false);
       return
     }
@@ -189,7 +185,7 @@ class MenuScreen extends React.Component {
       let service = services.find(service => service.uuid == this.state.serviceId);
       if(service == null){
         console.log("ERROR | cannot find service.");
-        ToastAndroid.show("ERROR | cannot find service.", ToastAndroid.SHORT);
+        // ToastAndroid.show("ERROR | cannot find service.", ToastAndroid.SHORT);
         // TODO: handle error.
         this.setState({status: BLEStatus.err_cannot_find_service});
       } else {
@@ -204,7 +200,7 @@ class MenuScreen extends React.Component {
       let characteristic = characteristics.find(c => c.uuid == this.state.characteristicId);
       if(characteristic == null){
         console.log("ERROR | cannot find characteristic.");
-        ToastAndroid.show("ERROR | cannot find characteristic.", ToastAndroid.SHORT);
+        // ToastAndroid.show("ERROR | cannot find characteristic.", ToastAndroid.SHORT);
         // TODO: handle error.
         this.setState({status: BLEStatus.err_cannot_find_characteristic});
       } else {
@@ -288,7 +284,7 @@ class MenuScreen extends React.Component {
 
     if(this.state.characteristic == null){
       console.log("ERROR | characteristic not found");
-      ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
+      // ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
       this.setSpinner(false);
     };
     
@@ -303,7 +299,7 @@ class MenuScreen extends React.Component {
       })
       .catch(err => {
         console.log('写入特征值出错：', err)
-        ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+        // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
         this.setSpinner(false);
       });
   };

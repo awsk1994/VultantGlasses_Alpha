@@ -77,7 +77,7 @@ class BLEUtils {
     if(GlobalSettings.DEBUG){
       console.log('开始写入特征值：' + hexMsg.toString());
     }
-    // ToastAndroid.show('开始写入特征值：' + hexMsg.toString(), ToastAndroid.SHORT);
+    // // ToastAndroid.show('开始写入特征值：' + hexMsg.toString(), ToastAndroid.SHORT);
 
     characteristics.writeWithResponse(hexMsg)
       .then(SuccessWriteFn)
