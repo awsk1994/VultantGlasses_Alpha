@@ -18,27 +18,19 @@
 
 
 ## Useful link
+ - Text/Data format conversion: https://www.branah.com/unicode-converter
 
- - Text format conversion: https://www.branah.com/unicode-converter
-
-## TODO (HIGH Priority):
- - !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
- 
- - Consider adding this: https://github.com/crazycodeboy/react-native-splash-screen
-  - Can spinner overlay have a cancel button?
-
+## TODO:
  - Notification message -> filter by app name
- - Constant loop to try to get to bluetooth device.
-
  - Add global settings to log ToastAndroid.
+ - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
+ - Turn on Bluetooth (Android) design
+ - Implement persistence storage for notes, cue-card, settings.
+ - Centralize styles
+ - Can spinner overlay have a cancel button?
+ - Confirm iOS user workflow is ok.
 
- - make it work on iOS; Might need to add if-else statement to enable/disable different functions that don't work on iOS; Might need to do pod install.etc.
- - Try to connect to saved BLE. If fail, re-direct to choose device page.
- - Create 2 different types of settings: Global Settings and Glasses Settings
- - Global Settings
-
-## TODO: 
- - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
+## TODO (Super Low Priority):
  - You can use this and not need to pass characteristics around:
    - https://github.com/Polidea/react-native-ble-plx/wiki/Characteristic-Reading
  ```
@@ -49,23 +41,13 @@
   transactionId: ?TransactionId
 ): Promise<Characteristic>
 ```
- - Follow this: https://www.polidea.com/blog/ReactNative_and_Bluetooth_to_An_Other_level/
- - Add video/screenshot of current version.
- - Integrate notification -> Had to add length limitation.
- - Notification Permission improvement.
- - BLE message limitation problem.
- - move BLEMenu to be part of Settings (or better hide/show)
- - BLE permission stuff.
- - Figure out how to get settings from smartglasses. Can we get notes info as well?
- - Implement persistence storage for notes, cue-card, settings.
- - More work on settings
- - BLEManager issue. Need to share characteristic?
- - Centralize styles
-
  - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
-## How to use?
+## Bug
+ - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
+ - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
 
+## How to use?
  - Allow location permission for app.
  - If first-time, select "Choose Device" -> "Start Scanning" -> Choose a Device -> A modal will pop up, select 继续 -> Select a Service -> Select a Characteristics.
  - Check that the "Characteristics Connected" is True. If so, go to Screens section and choose one of the buttons. If not, this is an error.
@@ -73,6 +55,8 @@
  - In every screen, the top part is used to write the respective messages to the peripheral BLE device. The bottom "READ DEBUG" part is just for debugging purposes; making it easier to check the written message is written properly.
 
 ## Log
+ - 20210226: Deployed Test App on physical iPhone device.
+
  - 20210220: Refined many small things, made UI and workflow more simplistic, bug fixes, made utilization of bleManager more smooth.
 
 <img src="./img/20210222_MainMenu_Disconnected.jpg" height="300"/>
