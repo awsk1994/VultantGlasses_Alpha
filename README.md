@@ -21,16 +21,20 @@
  - Text/Data format conversion: https://www.branah.com/unicode-converter
 
 ## TODO:
+### High (Essential) Priority:
  - Notification message -> filter by app name
- - Add global settings to log ToastAndroid.
- - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
- - Turn on Bluetooth (Android) design
  - Implement persistence storage for notes, cue-card, settings.
- - Centralize styles
- - Can spinner overlay have a cancel button?
- - Confirm iOS user workflow is ok.
+ - Turn on Bluetooth (Android) design
 
-## TODO (Super Low Priority):
+### Medium (Good to have) Priority:
+ - Centralize styles
+ - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
+ - Add global settings to log ToastAndroid.
+
+### Low Priority:
+ - Can spinner overlay have a cancel button?
+
+### Super Low Priority:
  - You can use this and not need to pass characteristics around:
    - https://github.com/Polidea/react-native-ble-plx/wiki/Characteristic-Reading
  ```
