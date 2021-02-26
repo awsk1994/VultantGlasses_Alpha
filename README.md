@@ -126,6 +126,18 @@ cd android && ./gradlew assembleRelease
  - Find your signed apk under android/app/build/outputs/apk/app-release.apk
 
 
+## Make it work on ios
+
+1. open xcode and open project directory's ios folder
+2. Project -> Vultant* -> Deployment Target -> iOS deployment target -> set to the iOS version running on the iPhone
+3. Targets -> Vultant* -> Signing and Capabilities -> select team (may need to login to Apple developer account, but no need Apple developer membership at this stage yet)
+4. Make sure you link/follow instructions for linking libraries that you use. For example you might need to run 'react-native link <library>' or Insert things into InfoList.
+5. On top (where the play button is), look to the right and select your connected iPhone.
+6. Then build (by pressing the play button)
+
+Might be useful link: https://www.cnblogs.com/lude1994/p/11078095.html
+
+
 ## Appendix:
 ```
 Alexs-MacBook-Pro-3:VultantGlassesAlpha2 alexwong$ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
@@ -155,3 +167,4 @@ Re-enter new password:
 
 all password is "password"
 ```
+
