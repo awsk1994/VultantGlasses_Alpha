@@ -25,12 +25,12 @@
  - Notification message -> filter by app name
  - Implement persistence storage for notes, cue-card, settings.
  - Turn on Bluetooth (Android) design
- - Create list of filter for notifications.
-
+ - Alert on BleError and suggest actions (eg. restart bluetooth)
+ 
 ### Medium (Good to have) Priority:
  - Centralize styles
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
- - Add global settings to log ToastAndroid.
+ - Add global settings to log ToastAndroid (Developer mode settings)
 
 ### Low Priority:
  - Can spinner overlay have a cancel button?
