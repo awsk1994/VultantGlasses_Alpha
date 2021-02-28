@@ -40,16 +40,16 @@ class SettingsScreen extends React.Component {
       timedate: new Date(),
       showTimeDate: false,
       timedateMode: "date", // "date" or "time"
-      allowAppList: [
+      allowAppSelectionList: [
         {title: "com.whatsapp", toggle: false},
         {title: "com.facebook.orca", toggle: false},
         {title: "com.google.android.talk", toggle: false},
         {title: "com.google.android.calendar", toggle: false},
         {title: "com.tencent.mm", toggle: false}
-      ],   // TODO: fetch from InitAllowAPpList, save in persistence storage and fetch accordingly.
+      ],   // TODO: fetch from InitAllowAppList, save in persistence storage and fetch accordingly.
     };
     this.setSpinner = route.params.setSpinner;
-    this.setAllowAppFilter = route.params.setAllowAppFilter;
+    this.setAllowAppList = route.params.setAllowAppList;
     setTimeout(() => {
       this.fetchSettingsInfo();
     }, 100);
@@ -72,6 +72,19 @@ class SettingsScreen extends React.Component {
 
     Storage.fetchText('@timedate')
       .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
+
+    Storage.fetchList('@allowAppList')
+      .then((vLst) => {
+        const newAllowAppSelectionList = this.state.allowAppSelectionList;
+        for(var i=0; i<vLst.length; i++){
+          for(var j=0; j<this.state.allowAppSelectionList.length; j++){
+            if(vLst[i] == this.state.allowAppSelectionList[j].title){
+              newAllowAppSelectionList[j].toggle = true;
+            }
+          }
+        };
+        this.setState({allowAppSelectionList: newAllowAppSelectionList});
+      });
 
     // const doNotDisturbPromise = Storage.fetchText('@doNotDisturb');
     // doNotDisturbPromise.then((v) => this.setState({'doNotDisturb': v}));
@@ -210,9 +223,19 @@ class SettingsScreen extends React.Component {
     )
   }
 
-  render() {
-    const AllowAppList = this.state.allowAppList;
+  updateAllowAppList = () => {
+    const newAllowAppList = [];
+    this.state.allowAppSelectionList.map((item, idx) => {
+      if(item.toggle == true){
+        newAllowAppList.push(item.title);
+      }
+    });
+    this.setAllowAppList(newAllowAppList);
+    Storage.saveList("@allowAppList", newAllowAppList);
+  };
 
+  render() {
+    const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
       <ScrollView>
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem}/>
@@ -244,36 +267,26 @@ class SettingsScreen extends React.Component {
         <View>
           <View style={styles.lineStyle}/>
           <Text>Set Notification Allow App List</Text>
-          {AllowAppList.map((item, idx) => (
+          {AllowAppSelectionList.map((item, idx) => (
             <View>
               <Text>{item.title}: {item.toggle ? "on": "off"}</Text>
               <Button title="on" onPress={() => {
-                const newAllowAppList = this.state.allowAppList;
-                newAllowAppList[idx].toggle = true;
+                const newAllowAppSelectionList = this.state.allowAppSelectionList;
+                newAllowAppSelectionList[idx].toggle = true;
                 this.setState({
-                  allowAppList: newAllowAppList,
+                  allowAppSelectionList: newAllowAppSelectionList,
                 });
               }}/>
               <Button title="off" onPress={() => {
-                const newAllowAppList = this.state.allowAppList;
-                newAllowAppList[idx].toggle = false;
+                const newAllowAppSelectionList = this.state.allowAppSelectionList;
+                newAllowAppSelectionList[idx].toggle = false;
                 this.setState({
-                  allowAppList: newAllowAppList,
+                  allowAppSelectionList: newAllowAppSelectionList,
                 });
               }}/>
             </View>
           ))}
-          <Button title="Update" onPress={() => {
-            const lst = [];
-            this.state.allowAppList.map((item, idx) => {
-              if(item.toggle == true){
-                lst.push(item.title);
-              }
-            });
-            this.setAllowAppFilter(lst);
-            console.log("setAllowAppFilter");
-            console.log(lst);
-          }}/>
+          <Button title="Update" onPress={() => this.updateAllowAppList()}/>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>
