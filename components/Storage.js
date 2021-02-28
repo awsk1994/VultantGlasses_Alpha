@@ -38,7 +38,11 @@ class Storage {
     console.log("Fetching list with key(" + key + ")");
     try {
       const value = await AsyncStorage.getItem(key);
-      return value.split(",");
+      if(value == null){
+        return [];
+      } else {
+        return value.split(",");
+      }
     } catch(e) {
       console.log(e);
     }
