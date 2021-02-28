@@ -8,7 +8,7 @@ import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
-import FilterAppData from "../data/FilterAppData";
+import BlockAppTitleList from "../data/BlockAppTitleList";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -28,7 +28,7 @@ class MenuScreen extends React.Component {
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
       spinner: false,
-      softAppFilter: []
+      allowAppList: []
     };
     // TODO: confirm whether this work?
     if(this.bleManager == null){
@@ -98,11 +98,11 @@ class MenuScreen extends React.Component {
     const { app, title, text } = notification;
     console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
     
-    console.log("c1 | softAppFilter");
-    console.log(this.state.softAppFilter);
+    console.log("c1 | allowAppList");
+    console.log(this.state.allowAppList);
 
-    if(this.state.softAppFilter.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
-      if(FilterAppData.hasOwnProperty(app) && FilterAppData[app].indexOf(title) != -1){  // TODO: FilterAppData rename to blockTitleList --> app is in blockList and title is in blockList
+    if(this.state.allowAppList.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
+      if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
         console.log("Notification App and Title is in block list. Will not display notification.");
         return;
       }
@@ -322,8 +322,8 @@ class MenuScreen extends React.Component {
     this.setState({spinner: condition});
   }
 
-  setSoftAppFilter = (v) => {
-    this.setState({"softAppFilter": v});
+  setAllowAppFilter = (v) => {
+    this.setState({"allowAppList": v});
   }
 
   // debug = () => {
@@ -373,7 +373,7 @@ class MenuScreen extends React.Component {
         </View>}
 
         {this.state.characteristic && <View>
-            <BLEFunctions setSoftAppFilter={this.setSoftAppFilter} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
+            <BLEFunctions setAllowAppFilter={this.setAllowAppFilter} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
             <View style={styles.button}>
               <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>

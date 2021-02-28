@@ -49,7 +49,7 @@ class SettingsScreen extends React.Component {
       ],   // TODO: fetch from InitAllowAPpList, save in persistence storage and fetch accordingly.
     };
     this.setSpinner = route.params.setSpinner;
-    this.setSoftAppFilter = route.params.setSoftAppFilter;
+    this.setAllowAppFilter = route.params.setAllowAppFilter;
     setTimeout(() => {
       this.fetchSettingsInfo();
     }, 100);
@@ -270,8 +270,8 @@ class SettingsScreen extends React.Component {
                 lst.push(item.title);
               }
             });
-            this.setSoftAppFilter(lst);
-            console.log("setSoftAppFilter");
+            this.setAllowAppFilter(lst);
+            console.log("setAllowAppFilter");
             console.log(lst);
           }}/>
         </View>

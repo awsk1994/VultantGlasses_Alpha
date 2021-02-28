@@ -53,7 +53,7 @@ class BLEFunctions extends React.Component {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner,
-                setSoftAppFilter: this.props.setSoftAppFilter
+                setAllowAppFilter: this.props.setAllowAppFilter
               })}
             }/>
           </View>
