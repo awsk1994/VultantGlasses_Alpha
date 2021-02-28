@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { TextInput, Platform, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import Storage from "../components/Storage";
 import BLEUtils from "../components/BLEUtils";
 import BLERead from "../components/BLERead";
@@ -43,7 +43,9 @@ class SettingsScreen extends React.Component {
       allowAppSelectionList: [{title: "unknown", toggle: false}], // declaring unknown to prevent UI error. This will be populated after retriving from Storage.
     };
     this.setSpinner = route.params.setSpinner;
-    this.setAllowAppList = route.params.setAllowAppList;
+    if(Platform.OS === 'android'){
+      this.setAllowAppList = route.params.setAllowAppList;
+    };
     setTimeout(() => {
       this.fetchSettingsInfo();
     }, 100);
@@ -232,7 +234,9 @@ class SettingsScreen extends React.Component {
         newAllowAppList.push(item.title);
       }
     });
-    this.setAllowAppList(newAllowAppList);
+    if(Platform.OS === 'android'){
+      this.setAllowAppList(newAllowAppList);
+    };
     Storage.saveList("@allowAppList", newAllowAppList);
   };
 
