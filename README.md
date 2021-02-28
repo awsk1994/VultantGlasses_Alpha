@@ -25,6 +25,7 @@
  - Notification message -> filter by app name
  - Implement persistence storage for notes, cue-card, settings.
  - Turn on Bluetooth (Android) design
+ - Create list of filter for notifications.
 
 ### Medium (Good to have) Priority:
  - Centralize styles
