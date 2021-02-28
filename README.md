@@ -23,9 +23,11 @@
 ## TODO:
 ### High (Essential) Priority:
  - Notification message -> filter by app name
+ - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
  - Implement persistence storage for notes, cue-card, settings.
  - Turn on Bluetooth (Android) design
  - Alert on BleError and suggest actions (eg. restart bluetooth)
+ - Prettify Settings
  
 ### Medium (Good to have) Priority:
  - Centralize styles
