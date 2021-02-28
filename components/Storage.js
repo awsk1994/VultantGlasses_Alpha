@@ -34,6 +34,16 @@ class Storage {
     }
   }
 
+  static fetchList = async (key) => {
+    console.log("Fetching list with key(" + key + ")");
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value.split(",");
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   static saveText = async (key, value) => {
     console.log("Saving Text with key(" + key + ")");
     try {
@@ -59,6 +69,17 @@ class Storage {
     console.log("Saving Int with key(" + key + ")");
     try {
       const strVal = value.toString();
+      await AsyncStorage.setItem(key, strVal);
+      console.log("save Complete.");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  static saveList = async (key, value) => {
+    console.log("Saving list with key(" + key + ")");
+    try {
+      const strVal = value.join(",");
       await AsyncStorage.setItem(key, strVal);
       console.log("save Complete.");
     } catch (e) {
