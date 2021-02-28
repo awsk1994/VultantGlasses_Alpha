@@ -278,6 +278,7 @@ class SettingsScreen extends React.Component {
                 this.setState({
                   allowAppSelectionList: newAllowAppSelectionList,
                 });
+                this.updateAllowAppList();
               }}/>
               <Button title="off" onPress={() => {
                 const newAllowAppSelectionList = this.state.allowAppSelectionList;
@@ -285,10 +286,10 @@ class SettingsScreen extends React.Component {
                 this.setState({
                   allowAppSelectionList: newAllowAppSelectionList,
                 });
+                this.updateAllowAppList();
               }}/>
             </View>
           ))}
-          <Button title="Update" onPress={() => this.updateAllowAppList()}/>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>
