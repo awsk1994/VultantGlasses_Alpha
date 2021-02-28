@@ -79,6 +79,8 @@ class MenuScreen extends React.Component {
     console.log("Notification Permission status: " + status); 
     // status can be 'authorized', 'denied' or 'unknown'
 
+    await this.updateAllowAppListFromStorage();
+
     // To open the Android settings so the user can enable it
     if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
       RNAndroidNotificationListener.requestPermission();
@@ -98,9 +100,6 @@ class MenuScreen extends React.Component {
     const { app, title, text } = notification;
     console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
     
-    console.log("c1 | allowAppList");
-    console.log(this.state.allowAppList);
-
     if(this.state.allowAppList.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
       if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
         console.log("Notification App and Title is in block list. Will not display notification.");
@@ -110,6 +109,11 @@ class MenuScreen extends React.Component {
     } else {
       console.log("Notification Title is in not in allow list. Will not display notification.");
     }
+  };
+
+  updateAllowAppListFromStorage = async () => {
+    await Storage.fetchList('@allowAppList')
+      .then((v) => this.setState({'allowAppList': v}));
   };
 
   onPressWriteCharacteristic(appName, contact, content){
@@ -322,7 +326,7 @@ class MenuScreen extends React.Component {
     this.setState({spinner: condition});
   }
 
-  setAllowAppFilter = (v) => {
+  setAllowAppList = (v) => {
     this.setState({"allowAppList": v});
   }
 
@@ -373,7 +377,7 @@ class MenuScreen extends React.Component {
         </View>}
 
         {this.state.characteristic && <View>
-            <BLEFunctions setAllowAppFilter={this.setAllowAppFilter} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
+            <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
             <View style={styles.button}>
               <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>
