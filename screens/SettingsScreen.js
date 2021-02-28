@@ -8,6 +8,7 @@ import SettingsType from "../components/SettingsType";
 import GlobalSettings from "../components/GlobalSettings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
+import InitAllowAppList from "../data/InitAllowAppList";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
 // TODO: Time/Date Settings
@@ -39,8 +40,13 @@ class SettingsScreen extends React.Component {
       timedate: new Date(),
       showTimeDate: false,
       timedateMode: "date", // "date" or "time"
-      softAppFilterString: "",  // TODO: remove after entire feature is done.
-      softAppFilter: []
+      allowAppList: [
+        {title: "com.whatsapp", toggle: false},
+        {title: "com.facebook.orca", toggle: false},
+        {title: "com.google.android.talk", toggle: false},
+        {title: "com.google.android.calendar", toggle: false},
+        {title: "com.tencent.mm", toggle: false}
+      ],   // TODO: fetch from InitAllowAPpList, save in persistence storage and fetch accordingly.
     };
     this.setSpinner = route.params.setSpinner;
     this.setSoftAppFilter = route.params.setSoftAppFilter;
@@ -60,7 +66,6 @@ class SettingsScreen extends React.Component {
 
     Storage.fetchText('@language')
       .then((v) => this.setState({'language': v == null ? INIT_VALUES.language : v}));
-
 
     Storage.fetchText('@bluetoothName')
       .then((v) => this.setState({'bluetoothName': v == null ? INIT_VALUES.bluetoothName : v}));
@@ -206,6 +211,8 @@ class SettingsScreen extends React.Component {
   }
 
   render() {
+    const AllowAppList = this.state.allowAppList;
+
     return (
       <ScrollView>
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem}/>
@@ -233,23 +240,40 @@ class SettingsScreen extends React.Component {
             />
           )}
         </View>
-        <View>         {/* // TODO: remove after entire feature is done. */}
-          <TextInput
-              placeholder="App Filter String"
-              value={this.state.softAppFilterString}
-              onChangeText={v => {
-                this.setState({softAppFilterString: v});
-              }}              
-            />
-          <Button title="save" onPress={() => {
-            const lst = this.state.softAppFilterString.split(",");
-            this.setState({
-              softAppFilter: lst
+
+        <View>
+          <View style={styles.lineStyle}/>
+          <Text>Set Notification Allow App List</Text>
+          {AllowAppList.map((item, idx) => (
+            <View>
+              <Text>{item.title}: {item.toggle ? "on": "off"}</Text>
+              <Button title="on" onPress={() => {
+                const newAllowAppList = this.state.allowAppList;
+                newAllowAppList[idx].toggle = true;
+                this.setState({
+                  allowAppList: newAllowAppList,
+                });
+              }}/>
+              <Button title="off" onPress={() => {
+                const newAllowAppList = this.state.allowAppList;
+                newAllowAppList[idx].toggle = false;
+                this.setState({
+                  allowAppList: newAllowAppList,
+                });
+              }}/>
+            </View>
+          ))}
+          <Button title="Update" onPress={() => {
+            const lst = [];
+            this.state.allowAppList.map((item, idx) => {
+              if(item.toggle == true){
+                lst.push(item.title);
+              }
             });
             this.setSoftAppFilter(lst);
+            console.log("setSoftAppFilter");
+            console.log(lst);
           }}/>
-          <Text>softAppFilterString: {this.state.softAppFilterString}</Text>
-          <Text>softAppFilter: {this.state.softAppFilter.join(",")}</Text>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>

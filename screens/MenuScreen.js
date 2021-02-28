@@ -8,7 +8,7 @@ import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
-import FilterAppData from "../components/FilterAppData";
+import FilterAppData from "../data/FilterAppData";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -101,26 +101,15 @@ class MenuScreen extends React.Component {
     console.log("c1 | softAppFilter");
     console.log(this.state.softAppFilter);
 
-    const combinedFilterAppData = combineFilterList(FilterAppData, this.state.softAppFilter);
-    if(combinedFilterAppData.hasOwnProperty(app)){  // app is in filter list (of apps)
-      if(combinedFilterAppData[app].indexOf(title) == -1){  // title is not in filter list (of titles for this app)
-        this.onPressWriteCharacteristic(app, title, text);
-      } else {
-        console.log("Notification is filtered away. Will not show.");
+    if(this.state.softAppFilter.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
+      if(FilterAppData.hasOwnProperty(app) && FilterAppData[app].indexOf(title) != -1){  // TODO: FilterAppData rename to blockTitleList --> app is in blockList and title is in blockList
+        console.log("Notification App and Title is in block list. Will not display notification.");
+        return;
       }
-    } else {
       this.onPressWriteCharacteristic(app, title, text);
+    } else {
+      console.log("Notification Title is in not in allow list. Will not display notification.");
     }
-  };
-
-  combineFilterList = (hardList, softList) => {
-    const res = {};
-    softList.forEach((item,index,array)=>{
-      if(hardList.hasOwnProperty(item)){
-        res[item] = hardList[item];
-      }
-    });
-    return res;
   };
 
   onPressWriteCharacteristic(appName, contact, content){
