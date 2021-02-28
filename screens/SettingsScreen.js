@@ -38,9 +38,12 @@ class SettingsScreen extends React.Component {
       characteristic: route.params.characteristic,
       timedate: new Date(),
       showTimeDate: false,
-      timedateMode: "date" // "date" or "time"
+      timedateMode: "date", // "date" or "time"
+      softAppFilterString: "",  // TODO: remove after entire feature is done.
+      softAppFilter: []
     };
     this.setSpinner = route.params.setSpinner;
+    this.setSoftAppFilter = route.params.setSoftAppFilter;
     setTimeout(() => {
       this.fetchSettingsInfo();
     }, 100);
@@ -229,6 +232,24 @@ class SettingsScreen extends React.Component {
               onChange={this.onChangeTimeDate}
             />
           )}
+        </View>
+        <View>         {/* // TODO: remove after entire feature is done. */}
+          <TextInput
+              placeholder="App Filter String"
+              value={this.state.softAppFilterString}
+              onChangeText={v => {
+                this.setState({softAppFilterString: v});
+              }}              
+            />
+          <Button title="save" onPress={() => {
+            const lst = this.state.softAppFilterString.split(",");
+            this.setState({
+              softAppFilter: lst
+            });
+            this.setSoftAppFilter(lst);
+          }}/>
+          <Text>softAppFilterString: {this.state.softAppFilterString}</Text>
+          <Text>softAppFilter: {this.state.softAppFilter.join(",")}</Text>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>

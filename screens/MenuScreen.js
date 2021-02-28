@@ -8,6 +8,7 @@ import BLEFunctions from "../components/BLEFunctions";
 import BLEStatus from "../components/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
+import FilterAppData from "../components/FilterAppData";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -26,7 +27,8 @@ class MenuScreen extends React.Component {
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
-      spinner: false
+      spinner: false,
+      softAppFilter: []
     };
     // TODO: confirm whether this work?
     if(this.bleManager == null){
@@ -34,7 +36,7 @@ class MenuScreen extends React.Component {
       this.bleManager = new BleManager();
     } else {
       console.log("DEBUG | BleManager already exist.")
-    }
+    };
   };
 
   componentDidMount() {
@@ -95,8 +97,31 @@ class MenuScreen extends React.Component {
   handleNotification = (notification) => {
     const { app, title, text } = notification;
     console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
-    this.onPressWriteCharacteristic(app, title, text);
-  }
+    
+    console.log("c1 | softAppFilter");
+    console.log(this.state.softAppFilter);
+
+    const combinedFilterAppData = combineFilterList(FilterAppData, this.state.softAppFilter);
+    if(combinedFilterAppData.hasOwnProperty(app)){  // app is in filter list (of apps)
+      if(combinedFilterAppData[app].indexOf(title) == -1){  // title is not in filter list (of titles for this app)
+        this.onPressWriteCharacteristic(app, title, text);
+      } else {
+        console.log("Notification is filtered away. Will not show.");
+      }
+    } else {
+      this.onPressWriteCharacteristic(app, title, text);
+    }
+  };
+
+  combineFilterList = (hardList, softList) => {
+    const res = {};
+    softList.forEach((item,index,array)=>{
+      if(hardList.hasOwnProperty(item)){
+        res[item] = hardList[item];
+      }
+    });
+    return res;
+  };
 
   onPressWriteCharacteristic(appName, contact, content){
     console.log("onPressWriteCharacteristic | Input utf8 | appName = " + appName 
@@ -308,6 +333,10 @@ class MenuScreen extends React.Component {
     this.setState({spinner: condition});
   }
 
+  setSoftAppFilter = (v) => {
+    this.setState({"softAppFilter": v});
+  }
+
   // debug = () => {
   //   console.log("Debug | characteristic");
   //   console.log(this.state.characteristic);
@@ -355,7 +384,7 @@ class MenuScreen extends React.Component {
         </View>}
 
         {this.state.characteristic && <View>
-            <BLEFunctions characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
+            <BLEFunctions setSoftAppFilter={this.setSoftAppFilter} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
             <View style={styles.button}>
               <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>
