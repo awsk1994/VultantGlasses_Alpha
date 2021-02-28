@@ -40,13 +40,7 @@ class SettingsScreen extends React.Component {
       timedate: new Date(),
       showTimeDate: false,
       timedateMode: "date", // "date" or "time"
-      allowAppSelectionList: [
-        {title: "com.whatsapp", toggle: false},
-        {title: "com.facebook.orca", toggle: false},
-        {title: "com.google.android.talk", toggle: false},
-        {title: "com.google.android.calendar", toggle: false},
-        {title: "com.tencent.mm", toggle: false}
-      ],   // TODO: fetch from InitAllowAppList, save in persistence storage and fetch accordingly.
+      allowAppSelectionList: [{title: "unknown", toggle: false}], // declaring unknown to prevent UI error. This will be populated after retriving from Storage.
     };
     this.setSpinner = route.params.setSpinner;
     this.setAllowAppList = route.params.setAllowAppList;
@@ -74,14 +68,22 @@ class SettingsScreen extends React.Component {
       .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
 
     Storage.fetchList('@allowAppList')
-      .then((vLst) => {
-        const newAllowAppSelectionList = this.state.allowAppSelectionList;
-        for(var i=0; i<vLst.length; i++){
-          for(var j=0; j<this.state.allowAppSelectionList.length; j++){
-            if(vLst[i] == this.state.allowAppSelectionList[j].title){
-              newAllowAppSelectionList[j].toggle = true;
+      .then((allowAppList) => {
+        const newAllowAppSelectionList = [];
+        for(var j=0; j<InitAllowAppList.length; j++){
+          const appInfo = {
+            title: InitAllowAppList[j],
+            toggle: false
+          };
+
+          for(var i=0; i<allowAppList.length; i++){
+            if(allowAppList[i] == InitAllowAppList[j]){
+              appInfo.toggle = true;
+              break;
             }
-          }
+          };
+
+          newAllowAppSelectionList.push(appInfo);
         };
         this.setState({allowAppSelectionList: newAllowAppSelectionList});
       });
