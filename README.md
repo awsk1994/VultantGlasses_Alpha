@@ -22,7 +22,7 @@
 
 ## TODO:
 ### High (Essential) Priority:
- - Notification message -> filter by app name
+ - Notification message -> filter by app name -> add a boolean switch thing.
  - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
  - Implement persistence storage for notes, cue-card, settings.
  - Turn on Bluetooth (Android) design + permissions
