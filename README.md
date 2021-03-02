@@ -28,6 +28,7 @@
  - Turn on Bluetooth (Android) design + permissions
  - Alert on BleError and suggest actions (eg. restart bluetooth)
  - Prettify Settings
+ - Start implementing slides part.
  
 ### Medium (Good to have) Priority:
  - Centralize styles
