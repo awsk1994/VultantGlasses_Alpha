@@ -25,22 +25,22 @@ class SettingsScreen extends React.Component {
   constructor({props, route}) {
     super();
     this.state = {
-      displayTimeOut: null,
       doNotDisturb: null,
-      language: null,
       appEnable: null,
+      audioLoudness: null,
+
+      displayTimeOut: null,
+      language: null,
       msgDispTime: null,
       bluetoothName: null,
-      audioLoudness: null,
-      vMsgHeader: "A0", // Hardcoded
-      vMsgPAttri: "05", // Hardcoded
-      vMsgSAttri2: "00", // Hardcoded
+
       characteristic: route.params.characteristic,
+
       timedate: new Date(),
       showTimeDate: false,
       timedateMode: "date", // "date" or "time"
-      allowAppSelectionList: [{title: "unknown", toggle: false}], // declaring unknown to prevent UI error. This will be populated after retriving from Storage.
     };
+
     this.setSpinner = route.params.setSpinner;
     if(Platform.OS === 'android'){
       this.setAllowAppList = route.params.setAllowAppList;
@@ -68,8 +68,6 @@ class SettingsScreen extends React.Component {
     Storage.fetchText('@timedate')
       .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
 
-  
-
     // const doNotDisturbPromise = Storage.fetchText('@doNotDisturb');
     // doNotDisturbPromise.then((v) => this.setState({'doNotDisturb': v}));
 
@@ -90,40 +88,15 @@ class SettingsScreen extends React.Component {
     Storage.saveText("@" + item.id, content);
   }
 
-  sendTextAndSave = (item, content) => {
-    this.send(item, BLEUtils.utf8ToUtf16Hex(content))
-    Storage.saveText("@" + item.id, content);
-  }
+  // sendTextAndSave = (item, content) => {
+  //   this.send(item, BLEUtils.utf8ToUtf16Hex(content))
+  //   Storage.saveText("@" + item.id, content);
+  // }
 
-  sendNumberAndSave = (item, content) => {
-    this.send(item, BLEUtils.numStrToHex(content));
-    Storage.saveInt("@" + item.id, content);
-  }
-
-  sendDateTime = (td) => {
-    const hourHex = td.getHours().toString(16).padStart(2, '0');;
-    const minHex = td.getMinutes().toString(16).padStart(2, '0');
-    const secHex = td.getSeconds().toString(16).padStart(2, '0');
-    const yrHex = td.getFullYear().toString(16).padStart(4, '0');
-    const month = td.getMonth()+1;
-    const monthHex = month.toString(16).padStart(2, '0');
-    const dayHex = td.getDate().toString(16).padStart(2, '0');
-
-    if(GlobalSettings.DEBUG){
-      console.log("Time = ");
-      console.log(td);
-      console.log("sendDateTime | hex | h = " + hourHex + ", m = " + minHex + ", s = " + secHex + ", yr = " + yrHex + ", month = " + monthHex + ", day = " + dayHex);
-    }
-
-    const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
-
-    this.send({
-      id: "timeDate",
-      title: "时间日期设置（Time/Date Settings）",
-      type: SettingsType.timedate,
-      sAttri1HexStr: "51" // HARDCODED
-    }, contentHexStr)
-  };
+  // sendNumberAndSave = (item, content) => {
+  //   this.send(item, BLEUtils.numStrToHex(content));
+  //   Storage.saveInt("@" + item.id, content);
+  // }
 
   send = (item, contentHexStr) => {
     this.setSpinner(true);
@@ -156,6 +129,33 @@ class SettingsScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   };
 
+  sendDateTime = (td) => {
+    const hourHex = td.getHours().toString(16).padStart(2, '0');;
+    const minHex = td.getMinutes().toString(16).padStart(2, '0');
+    const secHex = td.getSeconds().toString(16).padStart(2, '0');
+    const yrHex = td.getFullYear().toString(16).padStart(4, '0');
+    const month = td.getMonth()+1;
+    const monthHex = month.toString(16).padStart(2, '0');
+    const dayHex = td.getDate().toString(16).padStart(2, '0');
+
+    if(GlobalSettings.DEBUG){
+      console.log("Time = ");
+      console.log(td);
+      console.log("sendDateTime | hex | h = " + hourHex + ", m = " + minHex + ", s = " + secHex + ", yr = " + yrHex + ", month = " + monthHex + ", day = " + dayHex);
+    }
+
+    const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
+
+    this.send({
+      id: "timeDate",
+      title: "时间日期设置（Time/Date Settings）",
+      type: SettingsType.timedate,
+      sAttri1HexStr: "51" // HARDCODED
+    }, contentHexStr)
+  };
+
+
+
   changeTimeDate = (mode) => {
     this.setState({
       showTimeDate: true,
@@ -170,63 +170,70 @@ class SettingsScreen extends React.Component {
       console.log("onChangeTimeDate: " + selectedTimeDate);
       this.setState({timedate: selectedTimeDate});
     };
+    this.sendDateTime(selectedTimeDate);
   };
 
-  gridItem = (itemData) => {
+  setParentState = (key, val) => {
+    console.log("this parent state. key = " + key + ", val = " + val);
+    this.setState({[key]: val});
+  };
+
+  gridItem2 = (itemData) => {
     return (
       <View>
         <View style={styles.lineStyle}/>
-        {itemData.item.type == SettingsType.numeric && <View>
-          <Text>{itemData.item.title}</Text>
-          <View style={styles.item1}>
-            <TextInput keyboardType='numeric' 
-              onChangeText={(text) => this.updateState(itemData.item, text)}
-              value={this.state[itemData.item.id] !== null ? this.state[itemData.item.id].toString() : null}
-              maxLength={10}  //setting limit of input
-            />
-            <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
+        {(itemData.item.type == SettingsType.text || itemData.item.type == SettingsType.numeric) &&
+        <TouchableHighlight style={styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
+          this.props.navigation.navigate("SettingsItemScreen", {
+            itemData: itemData.item,
+            itemVal: this.state[itemData.item.id],
+            characteristic: this.state.characteristic,
+            setSpinner: this.setSpinner,
+            setParentState: this.setParentState
+          });
+        }}>
+          <View>
+            <Text>{itemData.item.title}</Text>
+            <Text style={styles.grayText}>{this.state[itemData.item.id]}</Text>
           </View>
-        </View>}
-        {itemData.item.type == SettingsType.text && <View>
-          <Text>{itemData.item.title}</Text>
-          <View style={styles.item1}>
-            <TextInput
-              onChangeText={(text) => this.updateState(itemData.item, text)}
-              value={this.state[itemData.item.id]}
-            />
-            <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
+        </TouchableHighlight>
+        }
+        
+        {itemData.item.type == SettingsType.language && 
+          <View style={styles.settingsItem}>
+            <Text>{itemData.item.title}</Text>
+            <View style={styles.item1}>
+              <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
+              <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
+            </View>
           </View>
-        </View>}
-        {itemData.item.type == SettingsType.language && <View>
-          <Text>{itemData.item.title}</Text>
-          <View style={styles.item1}>
-            <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
-            <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
-          </View>
-        </View>}
+        }
       </View>
     )
-  }
+  };
 
 
   render() {
     const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
       <ScrollView>
-        <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem}/>
-        <View>
+        <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
+        <View style={styles.settingsItem}>
           <View style={styles.lineStyle}/>
           <Text>时间日期设置（Time/Date Settings)</Text>
-          <Text>{Moment(this.state.timedate).format('LLL')}</Text>
-          <View style={styles.Button}>
-            <Button title="更改时间（Modify Time）" onPress={() => this.changeTimeDate("time")}/>
+          <Text style={styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
+          <View style={styles.item1}>
+            <View style={styles.Button}>
+              <Button title="更改时间(modfiy Time)" onPress={() => this.changeTimeDate("time")}/>
+            </View>
+            <View style={styles.Button}>
+              <Button title="更改日期(modify Date)" onPress={() => this.changeTimeDate("date")}/>
+            </View>
           </View>
-          <View style={styles.Button}>
-            <Button title="更改日期（Modify Date）" onPress={() => this.changeTimeDate("date")}/>
-          </View>
-          <View style={styles.Button}>
+          
+          {/* <View style={styles.Button}>
             <Button title="写特征/发送（Send）" onPress={() => this.sendDateTime(this.state.timedate)}/>
-          </View>
+          </View> */}
           {this.state.showTimeDate && (
             <DateTimePicker
               testID="dateTimePicker"
@@ -251,6 +258,7 @@ class SettingsScreen extends React.Component {
           </TouchableHighlight>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
+        <Button title="Debug" onPress={() => console.log(this.state)}/>
       </ScrollView>
     );
   }
@@ -288,7 +296,16 @@ const styles = StyleSheet.create({
   },
   settingsItem: {
     padding: 30
-  }
+  },
+  h1: {
+    fontSize: 20,
+    fontWeight: "bold"
+  },
+  h2: {
+    fontSize: 15,
+    fontWeight: "bold"
+  },
+  grayText: {color: '#9e9e9e'}
 })
 
 export default SettingsScreen;

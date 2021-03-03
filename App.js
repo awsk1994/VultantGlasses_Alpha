@@ -10,6 +10,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import BLEMenu from "./components/BLEMenu";
 import AppSettings from './screens/AppSettings';
 import NotificationAllowAppListScreen from './screens/NotificationAllowAppListScreen';
+import SettingsItemScreen from './screens/SettingsItemScreen';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ function App() {
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="AppSettings" component={AppSettings} />
         <Stack.Screen name="NotificationAllowAppListScreen" component={NotificationAllowAppListScreen}/>
+        <Stack.Screen name="SettingsItemScreen" component={SettingsItemScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
