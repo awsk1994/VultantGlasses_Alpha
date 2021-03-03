@@ -27,17 +27,17 @@
 ### High (Essential) Priority:
  - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
 
- - Turn on Bluetooth (Android) design + permissions
-   - control bleState (in MenuScreen)
  - Alert on BleError and suggest actions (eg. restart bluetooth)
  - Implement persistence storage for notes, cue-card, settings.
 
- - react-native permissions implementation on iOS.
+ - [Need to test] react-native permissions implementation on iOS.
 
  - Notification message -> filter by app name & add a boolean switch thing.
  - notification name filter: eg. com.whatsapp -> whatsapp
- - Prettify Settings
+ - Prettify Settings --> Should do custom modal to change text and numbers, instead of going ot next screen...
  - Language selection
+
+ - Logging/Debugging
 
 ### Medium (Good to have) Priority:
  - Centralize styles
