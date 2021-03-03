@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, Platform, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { TextInput, Platform, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import Storage from "../components/Storage";
 import BLEUtils from "../components/BLEUtils";
 import BLERead from "../components/BLERead";
@@ -196,32 +196,33 @@ class SettingsScreen extends React.Component {
     return (
       <View>
         <View style={styles.lineStyle}/>
-        {/* {itemData.item.type == SettingsType.boolean && <View>
-          <Text>{itemData.item.title}</Text>
-          <Button title="True" onPress={() => this.updateStateAndSendSave(itemData.item, "true")}/>
-          <Button title="False" onPress={() => this.updateStateAndSendSave(itemData.item, "false")}/>
-        </View>} */}
         {itemData.item.type == SettingsType.numeric && <View>
           <Text>{itemData.item.title}</Text>
-          <TextInput keyboardType='numeric' 
-            onChangeText={(text) => this.updateState(itemData.item, text)}
-            value={this.state[itemData.item.id] !== null ? this.state[itemData.item.id].toString() : null}
-            maxLength={10}  //setting limit of input
-          />
-          <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          <View style={styles.item1}>
+            <TextInput keyboardType='numeric' 
+              onChangeText={(text) => this.updateState(itemData.item, text)}
+              value={this.state[itemData.item.id] !== null ? this.state[itemData.item.id].toString() : null}
+              maxLength={10}  //setting limit of input
+            />
+            <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          </View>
         </View>}
         {itemData.item.type == SettingsType.text && <View>
           <Text>{itemData.item.title}</Text>
-          <TextInput
-            onChangeText={(text) => this.updateState(itemData.item, text)}
-            value={this.state[itemData.item.id]}
-          />
-          <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          <View style={styles.item1}>
+            <TextInput
+              onChangeText={(text) => this.updateState(itemData.item, text)}
+              value={this.state[itemData.item.id]}
+            />
+            <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(itemData.item, this.state[itemData.item.id])}}/>
+          </View>
         </View>}
         {itemData.item.type == SettingsType.language && <View>
           <Text>{itemData.item.title}</Text>
-          <Button title="选择中文（Chinese）并发送" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
-          <Button title="选择英文（English）并发送" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
+          <View style={styles.item1}>
+            <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
+            <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
+          </View>
         </View>}
       </View>
     )
@@ -238,6 +239,14 @@ class SettingsScreen extends React.Component {
       this.setAllowAppList(newAllowAppList);
     };
     Storage.saveList("@allowAppList", newAllowAppList);
+  };
+
+  toggleSwitch = (val, idx) => {
+    console.log("toggle switch new val = " + val + ", idx = " + idx);
+    const newAllowAppSelectionList = this.state.allowAppSelectionList;
+    newAllowAppSelectionList[idx].toggle = val;
+    this.setState({allowAppSelectionList: newAllowAppSelectionList});
+    this.updateAllowAppList();
   };
 
   render() {
@@ -269,29 +278,19 @@ class SettingsScreen extends React.Component {
             />
           )}
         </View>
-
         <View>
           <View style={styles.lineStyle}/>
-          <Text>Set Notification Allow App List</Text>
-          {AllowAppSelectionList.map((item, idx) => (
+          <Text>Notification Allow App List</Text>
+          {this.state.allowAppSelectionList.map((item, idx) => (
             <View>
-              <Text>{item.title}: {item.toggle ? "on": "off"}</Text>
-              <Button title="on" onPress={() => {
-                const newAllowAppSelectionList = this.state.allowAppSelectionList;
-                newAllowAppSelectionList[idx].toggle = true;
-                this.setState({
-                  allowAppSelectionList: newAllowAppSelectionList,
-                });
-                this.updateAllowAppList();
-              }}/>
-              <Button title="off" onPress={() => {
-                const newAllowAppSelectionList = this.state.allowAppSelectionList;
-                newAllowAppSelectionList[idx].toggle = false;
-                this.setState({
-                  allowAppSelectionList: newAllowAppSelectionList,
-                });
-                this.updateAllowAppList();
-              }}/>
+              <View style={styles.appAllowItem}>
+                <Text>{item.title}</Text>
+                <Switch
+                  onValueChange={(val) => this.toggleSwitch(val, idx)}
+                  value={item.toggle}
+                />
+              </View>
+              <View style={styles.lineStyle}/>
             </View>
           ))}
         </View>
@@ -314,6 +313,22 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor:'black',
     margin:10,
+  },
+  appAllowItem: {
+    margin: 20,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  flexRow: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  item1: {
+    margin: 10,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   }
 })
 
