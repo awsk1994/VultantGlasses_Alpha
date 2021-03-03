@@ -15,6 +15,9 @@
    - https://github.com/moment/moment
  - react-native-loading-spinner-overlay:
    - https://github.com/joinspontaneous/react-native-loading-spinner-overlay/blob/master/example/App.js
+ - react-native-permissions
+   - https://github.com/zoontek/react-native-permissions
+
 
 
 ## Useful link
@@ -22,14 +25,20 @@
 
 ## TODO:
 ### High (Essential) Priority:
- - Notification message -> filter by app name -> add a boolean switch thing.
  - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
- - Implement persistence storage for notes, cue-card, settings.
+
  - Turn on Bluetooth (Android) design + permissions
+   - control bleState (in MenuScreen)
  - Alert on BleError and suggest actions (eg. restart bluetooth)
+ - Implement persistence storage for notes, cue-card, settings.
+
+ - react-native permissions implementation on iOS.
+
+ - Notification message -> filter by app name & add a boolean switch thing.
+ - notification name filter: eg. com.whatsapp -> whatsapp
  - Prettify Settings
- - Start implementing slides part.
- 
+ - Language selection
+
 ### Medium (Good to have) Priority:
  - Centralize styles
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.

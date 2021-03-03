@@ -9,6 +9,7 @@ import BLEStatus from "../components/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BlockAppTitleList from "../data/BlockAppTitleList";
+import {checkMultiple, requestMultiple, PERMISSIONS, openSettings} from 'react-native-permissions';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -34,87 +35,167 @@ class MenuScreen extends React.Component {
     if(this.bleManager == null){
       console.log("DEBUG | Creating new BleManager.")
       this.bleManager = new BleManager();
+      this.bleManager.onStateChange(this.onStateChange);
     } else {
       console.log("DEBUG | BleManager already exist.")
     };
   };
 
+  
   componentDidMount() {
-    console.log("componentDidMount start.");
-
     // TODO: use .then to reduce time waiting.
-    
-    // Get characteristic from Storage
-    setTimeout(() => {
-      this.fetchCharacteristic();
-    }, 100);
+    console.log("componentDidMount start.");
+    this._checkBleState();
+    this._requestBluetoothPermissionAndStartSearch(true);
+    setTimeout(() => {this.fetchCharacteristicFromStorage()}, 100);
 
-    // Open notification permission (Android Settings)
     if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android')
     {
       setTimeout(this.setNotificationPermission, 200);
     }
+  };
 
-    // Auto connect to saved BLE upon start
-    if(GlobalSettings.AutoConnectBLEUponStart){
-      setTimeout(() => {
-        console.log("DEBUG | Read BLE info");
-        this.connectBLE();
-      }, 300);
+  componentWillUnmount() {
+    console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
+    this.bleManager.destroy();
+  }
+
+  // Permissions
+  _requestBluetoothPermissionAndStartSearch = (debug = false) => {    
+    if (Platform.OS === 'ios') {
+      // TODO: need to request permission? I don't think so.
+    } else {  // Android
+      const requestedPermissions = [PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION, PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION];
+
+      const debugPermissionStatus = (statuses, note) => {
+        console.log(note + ' | coarse status: ', statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION]);
+        console.log(note + ' | fine status: ', statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION]);
+      };
+
+      const isPermissionsGranted = (statuses) => statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION] == 'granted' && statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] == 'granted';
+
+      const onCheckPermission = (statuses) => {
+        if(isPermissionsGranted(statuses)) {
+          return true;
+        } else {
+          return requestMultiple(requestedPermissions).then((statuses) => {
+            debug ? debugPermissionStatus(statuses, "check#1") : null;
+            return isPermissionsGranted(statuses);
+          });
+        }
+      };
+
+      autoConnectBLEUponStart = (granted) => {
+        console.log("autoConnectBLEUponStart | granted = " + granted);
+        if(granted){
+          console.log("autoConnect");
+          // Auto connect to saved BLE upon start
+          if(GlobalSettings.AutoConnectBLEUponStart){
+            setTimeout(() => {
+              console.log("DEBUG | Read BLE info");
+              this.connectBLE();
+            }, 300);
+          };
+        } else {
+          Alert.alert('Permission not granted','Bluetooth-related functionalities will not work!',[{ text: '取消' }]);
+        }
+      };
+
+      checkMultiple(requestedPermissions)
+        .then(onCheckPermission)
+        .then((granted) => autoConnectBLEUponStart(granted));
     };
   };
 
-  // componentWillUnmount() {
-  //   console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
-  //   if(this.bleManager != null || typeof this.bleManager != "undefined"){
-  //     // TODO: cancel device connection; bleManager.cancelDeviceConnection(deviceIdentifier: DeviceId): Promise<Device>; refer to https://github.com/Polidea/react-native-ble-plx/wiki/Device-Connecting
-  //     this.bleManager.destroy();
-  //   }
-  // }
+  // Bluetooth setting on/off
+  onStateChange = (state) => {
+    console.log('蓝牙状态发生变化，新的状态为：', state)
+    this.setState({
+      bleState: state
+    })
+    if (state === 'PoweredOff') {
+      this._showBluetoothNotOpenAlert();
+    }
+  };
+
+  _checkBleState = () => {
+    this.bleManager.state()
+      .then(state => {
+        console.log('检查蓝牙状态：', state)
+        this.setState({
+          bleState: state
+        })
+        if (state === 'PoweredOff') {
+          this._showBluetoothNotOpenAlert()
+        }
+      });
+  };
+
+  _showBluetoothNotOpenAlert() {
+    const _onOpenBluetooth = () => {
+      if (Platform.OS === 'ios') {
+        Linking.openURL('App-Prefs:root=Bluetooth');
+      } else {
+        this.bleManager.enable();
+      }
+    };
+
+    Alert.alert(
+      '蓝牙未开启',
+      '需要您开启蓝牙才能使用后续功能',
+      [
+        { text: '取消' },
+        { text: '开启蓝牙', onPress: _onOpenBluetooth }
+      ]
+    );
+  };
 
   // Set up Notification
   setNotificationPermission = async () => {
-    // To check if the user has permission
+    const updateAllowAppListFromStorage = async () => {
+      await Storage.fetchList('@allowAppList')
+        .then((v) => this.setState({'allowAppList': v}));
+    };
+
+    const handleNotification = (notification) => {
+      const { app, title, text } = notification;
+      console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
+      
+      if(this.state.allowAppList.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
+        if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
+          console.log("Notification App and Title is in block list. Will not display notification.");
+          return;
+        }
+        this.onPressWriteCharacteristic(app, title, text);
+      } else {
+        console.log("Notification Title is in not in allow list. Will not display notification.");
+      }
+    };
+
+    const headlessNotificationListener = async (notification) => {
+      if(this.state.characteristic != null){
+        handleNotification(notification);
+      } else {
+        console.log("No characteristic connected. Cannot send notification.");
+      }
+    };
+
+    // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
     const status = await RNAndroidNotificationListener.getPermissionStatus()
     console.log("Notification Permission status: " + status); 
-    // status can be 'authorized', 'denied' or 'unknown'
-
-    await this.updateAllowAppListFromStorage();
+    
+    await updateAllowAppListFromStorage();
 
     // To open the Android settings so the user can enable it
+    // TODO: text needs to update.
     if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
-      RNAndroidNotificationListener.requestPermission();
+      Alert.alert('Requesting notification permission. Please enable.', null, [
+        { text: '取消' },
+        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
+      ]);
     }
-    AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
+    AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      
   }
-
-  headlessNotificationListener = async (notification) => {
-    if(this.state.characteristic != null){
-      this.handleNotification(notification);
-    } else {
-      console.log("No characteristic connected. Cannot send notification.");
-    }
-  };
-
-  handleNotification = (notification) => {
-    const { app, title, text } = notification;
-    console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
-    
-    if(this.state.allowAppList.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
-      if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
-        console.log("Notification App and Title is in block list. Will not display notification.");
-        return;
-      }
-      this.onPressWriteCharacteristic(app, title, text);
-    } else {
-      console.log("Notification Title is in not in allow list. Will not display notification.");
-    }
-  };
-
-  updateAllowAppListFromStorage = async () => {
-    await Storage.fetchList('@allowAppList')
-      .then((v) => this.setState({'allowAppList': v}));
-  };
 
   onPressWriteCharacteristic(appName, contact, content){
     console.log("onPressWriteCharacteristic | Input utf8 | appName = " + appName 
@@ -177,6 +258,8 @@ class MenuScreen extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
+      console.log("error code = " + error.errorCode);
+
       // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
       // this.setSpinner(false);
       return
@@ -262,7 +345,7 @@ class MenuScreen extends React.Component {
       });
   };
 
-  fetchCharacteristic = async () => {
+  fetchCharacteristicFromStorage = async () => {
     console.log("Fetching BLE information.");
     const deviceNamePromise = Storage.fetchText('@deviceName');
     deviceNamePromise.then((v) => this.setState({'deviceName': v}));
