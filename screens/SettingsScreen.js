@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, Platform, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import Storage from "../components/Storage";
 import BLEUtils from "../components/BLEUtils";
 import BLERead from "../components/BLERead";
@@ -8,7 +8,6 @@ import SettingsType from "../components/SettingsType";
 import GlobalSettings from "../components/GlobalSettings";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
-import InitAllowAppList from "../data/InitAllowAppList";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
 // TODO: Time/Date Settings
@@ -69,26 +68,7 @@ class SettingsScreen extends React.Component {
     Storage.fetchText('@timedate')
       .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
 
-    Storage.fetchList('@allowAppList')
-      .then((allowAppList) => {
-        const newAllowAppSelectionList = [];
-        for(var j=0; j<InitAllowAppList.length; j++){
-          const appInfo = {
-            title: InitAllowAppList[j],
-            toggle: false
-          };
-
-          for(var i=0; i<allowAppList.length; i++){
-            if(allowAppList[i] == InitAllowAppList[j]){
-              appInfo.toggle = true;
-              break;
-            }
-          };
-
-          newAllowAppSelectionList.push(appInfo);
-        };
-        this.setState({allowAppSelectionList: newAllowAppSelectionList});
-      });
+  
 
     // const doNotDisturbPromise = Storage.fetchText('@doNotDisturb');
     // doNotDisturbPromise.then((v) => this.setState({'doNotDisturb': v}));
@@ -228,26 +208,6 @@ class SettingsScreen extends React.Component {
     )
   }
 
-  updateAllowAppList = () => {
-    const newAllowAppList = [];
-    this.state.allowAppSelectionList.map((item, idx) => {
-      if(item.toggle == true){
-        newAllowAppList.push(item.title);
-      }
-    });
-    if(Platform.OS === 'android'){
-      this.setAllowAppList(newAllowAppList);
-    };
-    Storage.saveList("@allowAppList", newAllowAppList);
-  };
-
-  toggleSwitch = (val, idx) => {
-    console.log("toggle switch new val = " + val + ", idx = " + idx);
-    const newAllowAppSelectionList = this.state.allowAppSelectionList;
-    newAllowAppSelectionList[idx].toggle = val;
-    this.setState({allowAppSelectionList: newAllowAppSelectionList});
-    this.updateAllowAppList();
-  };
 
   render() {
     const AllowAppSelectionList = this.state.allowAppSelectionList;
@@ -280,19 +240,15 @@ class SettingsScreen extends React.Component {
         </View>
         <View>
           <View style={styles.lineStyle}/>
-          <Text>Notification Allow App List</Text>
-          {this.state.allowAppSelectionList.map((item, idx) => (
+          <TouchableHighlight style={styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
+            this.props.navigation.navigate("NotificationAllowAppListScreen", {
+              setAllowAppList: this.setAllowAppList
+            });
+          }}>
             <View>
-              <View style={styles.appAllowItem}>
-                <Text>{item.title}</Text>
-                <Switch
-                  onValueChange={(val) => this.toggleSwitch(val, idx)}
-                  value={item.toggle}
-                />
-              </View>
-              <View style={styles.lineStyle}/>
+              <Text>Notification Allow App List</Text>
             </View>
-          ))}
+          </TouchableHighlight>
         </View>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </ScrollView>
@@ -311,8 +267,8 @@ const styles = StyleSheet.create({
   },
   lineStyle:{
     borderWidth: 0.5,
-    borderColor:'black',
-    margin:10,
+    borderColor:'#e0e0e0',
+    margin: 10
   },
   appAllowItem: {
     margin: 20,
@@ -329,6 +285,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  settingsItem: {
+    padding: 30
   }
 })
 
