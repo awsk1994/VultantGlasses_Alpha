@@ -35,12 +35,11 @@ class MenuScreen extends React.Component {
     if(this.bleManager == null){
       console.log("DEBUG | Creating new BleManager.")
       this.bleManager = new BleManager();
-      this.bleManager.onStateChange(this.onStateChange);
+      this.bleManager.onStateChange(this.onBleManagerStateChange);
     } else {
       console.log("DEBUG | BleManager already exist.")
     };
   };
-
   
   componentDidMount() {
     // TODO: use .then to reduce time waiting.
@@ -108,31 +107,29 @@ class MenuScreen extends React.Component {
   };
 
   // Bluetooth setting on/off
-  onStateChange = (state) => {
+  onBleManagerStateChange = (state) => {
     console.log('蓝牙状态发生变化，新的状态为：', state)
     this.setState({
       bleState: state
     })
     if (state === 'PoweredOff') {
-      this._showBluetoothNotOpenAlert();
+      this._enableBluetoothAlert();
     }
   };
 
   _checkBleState = () => {
     this.bleManager.state()
-      .then(state => {
-        console.log('检查蓝牙状态：', state)
-        this.setState({
-          bleState: state
-        })
+      .then(bleState => {
+        console.log('_checkBleState | 检查蓝牙状态：', bleState)
+        this.setState({bleState})
         if (state === 'PoweredOff') {
-          this._showBluetoothNotOpenAlert()
+          this._enableBluetoothAlert();
         }
       });
   };
 
-  _showBluetoothNotOpenAlert() {
-    const _onOpenBluetooth = () => {
+  _enableBluetoothAlert() {
+    const enableBluetooth = () => {
       if (Platform.OS === 'ios') {
         Linking.openURL('App-Prefs:root=Bluetooth');
       } else {
@@ -145,7 +142,7 @@ class MenuScreen extends React.Component {
       '需要您开启蓝牙才能使用后续功能',
       [
         { text: '取消' },
-        { text: '开启蓝牙', onPress: _onOpenBluetooth }
+        { text: '开启蓝牙', onPress: enableBluetooth }
       ]
     );
   };
@@ -153,23 +150,7 @@ class MenuScreen extends React.Component {
   // Set up Notification
   setNotificationPermission = async () => {
     const updateAllowAppListFromStorage = async () => {
-      await Storage.fetchList('@allowAppList')
-        .then((v) => this.setState({'allowAppList': v}));
-    };
-
-    const handleNotification = (notification) => {
-      const { app, title, text } = notification;
-      console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
-      
-      if(this.state.allowAppList.indexOf(app) != -1){  // TODO: rename this to allowAppList --> app is in allowList
-        if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
-          console.log("Notification App and Title is in block list. Will not display notification.");
-          return;
-        }
-        this.onPressWriteCharacteristic(app, title, text);
-      } else {
-        console.log("Notification Title is in not in allow list. Will not display notification.");
-      }
+      Storage.fetchList('@allowAppList').then((allowAppList) => this.setState({allowAppList}));
     };
 
     const headlessNotificationListener = async (notification) => {
@@ -180,25 +161,39 @@ class MenuScreen extends React.Component {
       }
     };
 
+    const handleNotification = async (notification) => {
+      const { app, title, text } = notification;
+      console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
+      
+      await updateAllowAppListFromStorage();
+      if(this.state.allowAppList.indexOf(app) != -1){ 
+        if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
+          console.log("Notification App and Title is in block list. Will not display notification.");
+          return;
+        }
+        this.writeNotificationMsg(app, title, text);
+      } else {
+        console.log("Notification Title is in not in allow list. Will not display notification.");
+      }
+    };
+
     // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
-    const status = await RNAndroidNotificationListener.getPermissionStatus()
+    const status = await RNAndroidNotificationListener.getPermissionStatus();
     console.log("Notification Permission status: " + status); 
-    
-    await updateAllowAppListFromStorage();
 
     // To open the Android settings so the user can enable it
     // TODO: text needs to update.
     if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
       Alert.alert('Requesting notification permission. Please enable.', null, [
         { text: '取消' },
-        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
+        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission}
       ]);
-    }
+    };
     AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      
   }
 
-  onPressWriteCharacteristic(appName, contact, content){
-    console.log("onPressWriteCharacteristic | Input utf8 | appName = " + appName 
+  writeNotificationMsg(appName, contact, content){
+    console.log("writeNotificationMsg | Input utf8 | appName = " + appName 
       + ", contact = " + contact
       + ", content = " + content);
     
@@ -220,19 +215,19 @@ class MenuScreen extends React.Component {
     const hexMsg = hexMsgWithoutCRC + CRCHex;
 
     if(GlobalSettings.DEBUG){
-      console.log("onPressWriteCharacteristic | utf8 to hex | appName = " + appNameHex 
+      console.log("writeNotificationMsg | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex
       + ", content = " + contentHex);
     
-      console.log("onPressWriteCharacteristic | getSize | appName = " + BLEUtils.numStrToHex(appName.length) 
+      console.log("writeNotificationMsg | getSize | appName = " + BLEUtils.numStrToHex(appName.length) 
         + ", contact = " + BLEUtils.numStrToHex(contact.length)
         + ", content = " + BLEUtils.numStrToHex(content.length));
       
-      console.log("onPressWriteCharacteristic | CRCHex | " + CRCHex);
-      console.log("onPressWriteCharacteristic | entireContentHex | " + entireContentHex);
+      console.log("writeNotificationMsg | CRCHex | " + CRCHex);
+      console.log("writeNotificationMsg | entireContentHex | " + entireContentHex);
     };
 
-    console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
+    console.log("writeNotificationMsg | hexMsg with CRC | " + hexMsg);
 
     const SuccessWriteFn = () => {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
@@ -249,7 +244,6 @@ class MenuScreen extends React.Component {
   
   connectBLE = async () => {
     // this.setSpinner(true);
-
     this.setState({status: BLEStatus.connecting_device});
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.scanAndConnect);
   }
@@ -311,21 +305,6 @@ class MenuScreen extends React.Component {
       }
     };
 
-    // const requestMTU = () => {
-    //   console.log("Requesting MTU size to change to 512 bytes.");
-    //   this.setState({status: BLEStatus.requesting_MTU})
-    //   this.bleManager.requestMTU(this.state.characteristic.deviceID, 512)
-    //   .then((mtu) => {
-    //     // Success code
-    //     console.log("MTU size changed to " + mtu + " bytes");
-    //   })
-    //   .catch((error) => {
-    //     // Failure code
-    //     console.log(error);
-    //     this.setState({status: BLEStatus.error});
-    //   });
-    // };
-
     this.bleManager.connectToDevice(device.id, {
       requestMTU: 512
     })
@@ -360,15 +339,15 @@ class MenuScreen extends React.Component {
     characteristicPromise.then((v) => this.setState({'characteristicId': v}));
   }
 
-  updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
-    this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
-  };
-
   chooseDevice = () => {
+    const updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
+      this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
+    };
+
     this.bleManager.stopDeviceScan();
     this.props.navigation.navigate("BLEMenu", {
       bleManager: this.bleManager,
-      updateMenuCharacteristic: this.updateMenuCharacteristic,
+      updateMenuCharacteristic: updateMenuCharacteristic,
       setSpinner: this.setSpinner
     });
   };
@@ -412,29 +391,7 @@ class MenuScreen extends React.Component {
   setAllowAppList = (v) => {
     this.setState({"allowAppList": v});
   }
-
-  // debug = () => {
-  //   console.log("Debug | characteristic");
-  //   console.log(this.state.characteristic);
-  // }
-
-  // resetBLEConnection = () => {
-  //   this.setState({
-  //     deviceName: null,
-  //     deviceId: null,
-  //     serviceId: null,
-  //     characteristicId: null,
-  //     selectedDevice: null,
-  //     selectedService: null,
-  //     selectedCharacteristic: null,
-  //     characteristic: null
-  //   });
-  //   Storage.clearBLEStorage();
-  //   // TODO: confirm below 2 lines of code.
-  //   this.bleManager.destroy();
-  //   this.bleManager = new BleManager();
-  // }
-
+  
   // TODO: Button should have title: connect to {deviceName} <-- don't know how to make this dyanmic text possible.
   render() {
     return (
