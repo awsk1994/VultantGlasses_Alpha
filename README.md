@@ -42,6 +42,12 @@
  - Centralize styles
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
  - Add global settings to log ToastAndroid (Developer mode settings)
+ - Cover as much error cases as possible: permissions not enabled error, bluetooth not enabled error, repeat on/off scanning continuously error, 
+   - repeat on/off scanning continuously error:
+     - errorCode: 600
+     - Solution: turn off bluetooth, wait for 5 seconds, turn on bluetooth, try again
+   - Device already connected error:
+   
 
 ### Low Priority:
  - Can spinner overlay have a cancel button?
