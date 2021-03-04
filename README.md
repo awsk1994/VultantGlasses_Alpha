@@ -25,21 +25,21 @@
 
 # TODO:
 ### High (Essential) Priority:
- - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
-
- - Alert on BleError and suggest actions (eg. restart bluetooth)
  - Implement persistence storage for notes, cue-card, settings.
+ - Implement cue-card change slide functionality.
 
  - [Need to test] react-native permissions implementation on iOS.
- - Prettify Settings --> Should do custom modal to change text and numbers, instead of going ot next screen...
+
  - Language selection
 
  - [Notification message] -> appName conversion (eg. com.whatsapp -> whatsapp), get app list name from android/ios
 
+  - Prettify Settings --> Should do custom modal to change text and numbers, instead of going to next screen...
+
  - Logging/Debugging
 
 ### Medium (Good to have) Priority:
- - Centralize styles
+ - move appSettings to top right
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
  - Add global settings to log ToastAndroid (Developer mode settings)
  - Cover as much error cases as possible: permissions not enabled error, bluetooth not enabled error, repeat on/off scanning continuously error, 
@@ -47,8 +47,8 @@
      - errorCode: 600
      - Solution: turn off bluetooth, wait for 5 seconds, turn on bluetooth, try again
    - Device already connected error:
+     - how to fix?
    
-
 ### Low Priority:
  - Can spinner overlay have a cancel button?
 
@@ -66,8 +66,9 @@
  - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
 # Bug
- - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
  - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
+ - [Bug?] How to handle connecting to 2 different glasses?
+ - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
 
 # How to use?
  - Allow location permission for app.
@@ -85,7 +86,7 @@
  - Persistence Storage
  - Send/Save
  
-# Error Solve:
+# Error Solutions:
  - Make sure bluetooth is on
  - Restart bluetooth
  - Restart app
