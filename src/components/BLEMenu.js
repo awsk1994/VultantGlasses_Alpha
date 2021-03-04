@@ -6,6 +6,7 @@ import { Buffer } from 'buffer/'
 import Storage from "../class/Storage";
 import Utils from "../class/Utils";
 import Styles from "../class/Styles";
+import BLEStatus from "../data/BLEStatus";
 
 // TODO: Move this to screens folder.
 
@@ -114,6 +115,7 @@ class BLEMenu extends React.Component {
   };
 
   onPressDevice = async (device) => {
+    console.log("onPressDevice");
     this.setSpinner(true);
     let services = await device.services();
     this.setState({services});
@@ -124,6 +126,7 @@ class BLEMenu extends React.Component {
   };
 
   onPressService = async(service) => {
+    console.log("onPresService");
     this.setSpinner(true);
     let characteristics = await service.characteristics()
     this.setState({characteristics});

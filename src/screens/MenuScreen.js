@@ -256,6 +256,7 @@ class MenuScreen extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR(" + error.errorCode + "):");
       console.log(error);
+      this.setState({status: BLEStatus.error});
       Utils.genericErrAlert(error);
       return
     }
@@ -342,6 +343,7 @@ class MenuScreen extends React.Component {
   chooseDevice = () => {
     const updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
       this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
+      this.setState({status: BLEStatus.connected});
     };
 
     this.bleManager.stopDeviceScan();
