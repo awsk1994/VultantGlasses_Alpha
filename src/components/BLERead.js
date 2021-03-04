@@ -1,6 +1,7 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import BLEUtils from "../class/BLEUtils.js";
+import Styles from "../class/Styles";
 
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);
@@ -55,11 +56,11 @@ class BLERead extends React.Component {
   render() {
     return (
       <View>
-        <View style={styles.lineStyle}/>
+        <View style={Styles.lineStyle}/>
         {!this.state.show && <Button onPress={() => this.setShow(true)} title="Show BLERead"/>}
         {this.state.show && <View>
           <Button onPress={() => this.setShow(false)} title="Hide BLERead"/>
-          <Text style={styles.h2}>READ DEBUG</Text>
+          <Text style={Styles.h2}>READ DEBUG</Text>
           <Text>读取特征值:</Text>
           <View >
             <Button type="primary" style={{ marginTop: 8 }} onPress={this.onPressReadOp} title="读取特征值"/>
@@ -71,25 +72,5 @@ class BLERead extends React.Component {
     );
   }
 }
-
-// TODO: generate styles
-const styles = StyleSheet.create({
-  "button": {
-    margin: 10
-  },
-  lineStyle:{
-      borderWidth: 0.5,
-      borderColor:'black',
-      margin:10,
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  }
-})
 
 export default BLERead;
