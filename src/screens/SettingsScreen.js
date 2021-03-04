@@ -8,6 +8,7 @@ import SettingsType from "../data/SettingsType";
 import GlobalSettings from '../data/GlobalSettings';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
+import Styles from "../class/Styles";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
 // TODO: Time/Date Settings
@@ -158,8 +159,6 @@ class SettingsScreen extends React.Component {
     }, contentHexStr)
   };
 
-
-
   changeTimeDate = (mode) => {
     this.setState({
       showTimeDate: true,
@@ -185,131 +184,108 @@ class SettingsScreen extends React.Component {
   gridItem2 = (itemData) => {
     return (
       <View>
-        <View style={styles.lineStyle}/>
-        {(itemData.item.type == SettingsType.text || itemData.item.type == SettingsType.numeric) &&
-        <TouchableHighlight style={styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
-          this.props.navigation.navigate("SettingsItemScreen", {
-            itemData: itemData.item,
-            itemVal: this.state[itemData.item.id],
-            characteristic: this.state.characteristic,
-            setSpinner: this.setSpinner,
-            setParentState: this.setParentState
-          });
-        }}>
-          <View>
-            <Text>{itemData.item.title}</Text>
-            <Text style={styles.grayText}>{this.state[itemData.item.id]}</Text>
-          </View>
-        </TouchableHighlight>
-        }
+        <View style={Styles.lineStyle}/>
         
+        {(itemData.item.type == SettingsType.text || itemData.item.type == SettingsType.numeric) &&
+          this.TextAndNumericComponent(itemData)
+        }
         {itemData.item.type == SettingsType.language && 
-          <View style={styles.settingsItem}>
-            <Text>{itemData.item.title}</Text>
-            <View style={styles.item1}>
-              <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
-              <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
-            </View>
-          </View>
+          this.LanguageComponent(itemData)
         }
       </View>
     )
   };
 
+  TextAndNumericComponent = (itemData) => {
+    return (<View>
+      <TouchableHighlight style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
+            this.props.navigation.navigate("SettingsItemScreen", {
+              itemData: itemData.item,
+              itemVal: this.state[itemData.item.id],
+              characteristic: this.state.characteristic,
+              setSpinner: this.setSpinner,
+              setParentState: this.setParentState
+            });
+          }}>
+            <View>
+              <Text>{itemData.item.title}</Text>
+              <Text style={Styles.grayText}>{this.state[itemData.item.id]}</Text>
+            </View>
+          </TouchableHighlight>
+    </View>)
+  };
+
+  LanguageComponent = (itemData) => {
+    return (
+      <View style={Styles.settingsItem}>
+        <Text>{itemData.item.title}</Text>
+        <View style={Styles.settingsButtonItem}>
+          <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
+          <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
+        </View>
+      </View>
+    )
+  }
+
+  TimeDateComponent = () => {
+    return (
+      <View>
+        <View style={Styles.lineStyle}/>
+        <View style={Styles.settingsItem}>
+            <Text>时间日期设置（Time/Date Settings)</Text>
+            <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
+            
+            <View style={Styles.settingsButtonItem}>
+              <View style={Styles.button}>
+                <Button title="更改时间(modfiy Time)" onPress={() => this.changeTimeDate("time")}/>
+              </View>
+              <View style={Styles.button}>
+                <Button title="更改日期(modify Date)" onPress={() => this.changeTimeDate("date")}/>
+              </View>
+            </View>
+            
+            {this.state.showTimeDate && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={this.state.timedate}
+                mode={this.state.timedateMode}
+                is24Hour={true}
+                display="default"
+                onChange={this.onChangeTimeDate}
+              />
+            )}
+          </View>
+        </View>
+      );
+  }
+  
+  AllowAppSelectionComponent = () => {
+    return (<View>
+      <View style={Styles.lineStyle}/>
+      <TouchableHighlight style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
+        this.props.navigation.navigate("NotificationAllowAppListScreen", {
+          setAllowAppList: this.setAllowAppList
+        });
+      }}>
+        <View>
+          <Text>Notification Allow App List</Text>
+        </View>
+      </TouchableHighlight>
+    </View>)
+  }
 
   render() {
     const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
       <ScrollView>
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
-        <View style={styles.settingsItem}>
-          <View style={styles.lineStyle}/>
-          <Text>时间日期设置（Time/Date Settings)</Text>
-          <Text style={styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
-          <View style={styles.item1}>
-            <View style={styles.Button}>
-              <Button title="更改时间(modfiy Time)" onPress={() => this.changeTimeDate("time")}/>
-            </View>
-            <View style={styles.Button}>
-              <Button title="更改日期(modify Date)" onPress={() => this.changeTimeDate("date")}/>
-            </View>
-          </View>
-          
-          {/* <View style={styles.Button}>
-            <Button title="写特征/发送（Send）" onPress={() => this.sendDateTime(this.state.timedate)}/>
-          </View> */}
-          {this.state.showTimeDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={this.state.timedate}
-              mode={this.state.timedateMode}
-              is24Hour={true}
-              display="default"
-              onChange={this.onChangeTimeDate}
-            />
-          )}
-        </View>
-        <View>
-          <View style={styles.lineStyle}/>
-          <TouchableHighlight style={styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
-            this.props.navigation.navigate("NotificationAllowAppListScreen", {
-              setAllowAppList: this.setAllowAppList
-            });
-          }}>
-            <View>
-              <Text>Notification Allow App List</Text>
-            </View>
-          </TouchableHighlight>
-        </View>
+        {this.TimeDateComponent()}
+        {this.AllowAppSelectionComponent()}
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
         <Button title="Debug" onPress={() => console.log(this.state)}/>
       </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  Button: {
-    margin: 10
-  },
-  gridItem: {
-    height: 60,
-    borderWidth: 0.5,
-    borderColor: 'gray',
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'#e0e0e0',
-    margin: 10
-  },
-  appAllowItem: {
-    margin: 20,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  flexRow: {
-    flex: 1,
-    flexDirection: 'row'
-  },
-  item1: {
-    margin: 10,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  settingsItem: {
-    padding: 30
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  },
-  grayText: {color: '#9e9e9e'}
-})
 
 export default SettingsScreen;

@@ -80,7 +80,7 @@ class SettingsItemScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.item1}>
+      <View>
         <Text>{this.state.itemData.title}</Text>
         {this.state.itemData.type == SettingsType.numeric && 
           <View>
@@ -103,7 +103,7 @@ class SettingsItemScreen extends React.Component {
         }
         {this.state.itemData.type == SettingsType.language && <View>
           <Text>{itemData.item.title}</Text>
-          <View style={styles.item1}>
+          <View>
             <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
             <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
           </View>
@@ -112,19 +112,5 @@ class SettingsItemScreen extends React.Component {
     )
   };
 }
-
-// TODO: generate styles
-const styles = StyleSheet.create({
-  appAllowItem: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'#e0e0e0',
-    margin: 10
-  }
-})
 
 export default SettingsItemScreen;  

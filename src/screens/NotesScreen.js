@@ -89,16 +89,4 @@ class NotesScreen extends React.Component {
   };
 }
 
-// TODO: generate styles
-const styles = StyleSheet.create({
-  "button": {
-    margin: 10
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'black',
-    margin:10,
-  }
-})
-
 export default NotesScreen;

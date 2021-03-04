@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import Storage from "../class/Storage";
 import InitAllowAppList from "../data/InitAllowAppList";
+import Styles from "../class/Styles";
 
 class NotificationAllowAppListScreen extends React.Component {
   constructor({props, route}) {
@@ -64,33 +65,19 @@ class NotificationAllowAppListScreen extends React.Component {
       <View>
         {this.state.allowAppSelectionList.map((item, idx) => (
           <View>
-            <View style={styles.appAllowItem}>
+            <View style={Styles.appAllowItem}>
               <Text>{item.title}</Text>
               <Switch
                 onValueChange={(val) => this.toggleSwitch(val, idx)}
                 value={item.toggle}
               />
             </View>
-            <View style={styles.lineStyle}/>
+            <View style={Styles.lineStyle}/>
           </View>
         ))}
       </View>
     )
   };
 }
-
-// TODO: generate styles
-const styles = StyleSheet.create({
-  appAllowItem: {
-    margin: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'#e0e0e0',
-    margin: 10
-  }
-})
 
 export default NotificationAllowAppListScreen;

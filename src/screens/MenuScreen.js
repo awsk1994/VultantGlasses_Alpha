@@ -11,6 +11,7 @@ import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsN
 import BlockAppTitleList from "../data/BlockAppTitleList";
 import {checkMultiple, requestMultiple, PERMISSIONS, openSettings} from 'react-native-permissions';
 import Utils from "../class/Utils";
+import Styles from "../class/Styles";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -399,18 +400,17 @@ class MenuScreen extends React.Component {
         <Spinner
           visible={this.state.spinner}
           textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
+          textStyle={Styles.spinnerTextStyle}
         />
         <Text>Status: {this.state.status}</Text>
-        {/* <View style={styles.lineStyle}/> */}
 
         {!this.state.characteristic && <View>
-          <Text style={styles.h1}>No BLE Device connected. Choose option below:</Text>
-          <View style={styles.button}>
+          <Text style={Styles.h1}>No BLE Device connected. Choose option below:</Text>
+          <View style={Styles.button}>
             <Button title="选择BLE装置（Choose Device）" onPress={this.chooseDevice}/>
           </View>
 
-          <View style={styles.button}>
+          <View style={Styles.button}>
             <Button title="链接BLE装置（Connect to saved BLE）" onPress={this.connectBLE}/>
             <Text>(Saved BLE device: {this.state.deviceName})</Text>
           </View>
@@ -418,40 +418,18 @@ class MenuScreen extends React.Component {
 
         {this.state.characteristic && <View>
             <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
-            <View style={styles.button}>
+            <View style={Styles.button}>
               <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
             </View>
           </View>
         }
 
-        <View style={styles.lineStyle}/>
+        <View style={Styles.lineStyle}/>
         <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/>
         {/* <DemoComponent/> */}
       </ScrollView>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  spinnerTextStyle: {
-    color: '#FFF'
-  },
-  "button": {
-    margin: 10
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'black',
-    margin:10,
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  },
-})
 
 export default MenuScreen;

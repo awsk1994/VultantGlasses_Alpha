@@ -109,24 +109,4 @@ class NotificationScreen extends React.Component {
   };
 }
 
-// TODO: generate styles
-const styles = StyleSheet.create({
-  "button": {
-    margin: 10
-  },
-  lineStyle:{
-      borderWidth: 0.5,
-      borderColor:'black',
-      margin:10,
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  }
-})
-
 export default NotificationScreen;

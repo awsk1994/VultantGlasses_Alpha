@@ -1,9 +1,8 @@
 import React from "react";
-import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Button, ScrollView } from 'react-native';
 import Storage from "../class/Storage";
 import GlobalSettings from '../data/GlobalSettings';
-
-
+import Styles from "../class/Styles";
 
 class AppSettings extends React.Component { 
   constructor({props, route}) {
@@ -81,16 +80,16 @@ class AppSettings extends React.Component {
     return (
       <ScrollView>
         <View>
-          <Text style={styles.h1}>已保存BLE特征(Saved BLE)：</Text>
+          <Text style={Styles.h1}>已保存BLE特征(Saved BLE)：</Text>
           <Text>装置名称（Device Name）: {this.state.deviceName}</Text>
           <Text>装置ID（Device Id）: {this.state.deviceId}</Text>
           <Text>服务ID（Service Id）: {this.state.serviceId}</Text>
           <Text>特征ID（Characteristic Id）: {this.state.characteristicId}</Text>
         </View>
 
-        {/* <View style={styles.lineStyle}/>
+        {/* <View style={Styles.lineStyle}/>
         <View>
-          <Text style={styles.h1}>App Settings：</Text>
+          <Text style={Styles.h1}>App Settings：</Text>
           {this.AppSettingsComponentJSX("DEBUG")}
           {this.AppSettingsComponentJSX("AutoConnectBLEUponStart")}
           {this.AppSettingsComponentJSX("SetNotificationPermissionUponStart")}
@@ -100,26 +99,5 @@ class AppSettings extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  gridItem: {
-    height: 60,
-    borderWidth: 0.5,
-    borderColor: 'gray',
-  },
-  lineStyle:{
-    borderWidth: 0.5,
-    borderColor:'black',
-    margin:10,
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  }
-})
 
 export default AppSettings;
