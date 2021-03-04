@@ -2,15 +2,15 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import MenuScreen from "./screens/MenuScreen";
-import NotificationScreen from "./screens/NotificationScreen";
-import CueCardScreen from "./screens/CueCardScreen";
-import NotesScreen from "./screens/NotesScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import BLEMenu from "./components/BLEMenu";
-import AppSettings from './screens/AppSettings';
-import NotificationAllowAppListScreen from './screens/NotificationAllowAppListScreen';
-import SettingsItemScreen from './screens/SettingsItemScreen';
+import MenuScreen from "./src/screens/MenuScreen";
+import NotificationScreen from "./src/screens/NotificationScreen";
+import CueCardScreen from "./src/screens/CueCardScreen";
+import NotesScreen from "./src/screens/NotesScreen";
+import SettingsScreen from "./src/screens/SettingsScreen";
+import BLEMenu from "./src/components/BLEMenu";
+import AppSettings from './src/screens/AppSettings';
+import NotificationAllowAppListScreen from './src/screens/NotificationAllowAppListScreen';
+import SettingsItemScreen from './src/screens/SettingsItemScreen';
 
 const Stack = createStackNavigator();
 
