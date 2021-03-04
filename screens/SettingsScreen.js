@@ -1,11 +1,11 @@
 import React from "react";
 import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
-import Storage from "../components/Storage";
-import BLEUtils from "../components/BLEUtils";
+import Storage from "../class/Storage";
+import BLEUtils from "../class/BLEUtils";
 import BLERead from "../components/BLERead";
-import SettingsData from "../components/SettingsData";
-import SettingsType from "../components/SettingsType";
-import GlobalSettings from "../components/GlobalSettings";
+import SettingsData from "../data/SettingsData";
+import SettingsType from "../class/SettingsType";
+import GlobalSettings from '../data/GlobalSettings';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 
@@ -33,6 +33,10 @@ class SettingsScreen extends React.Component {
       language: null,
       msgDispTime: null,
       bluetoothName: null,
+
+      vMsgHeader: "A0", // Hardcoded
+      vMsgPAttri: "05", // Hardcoded
+      vMsgSAttri2: "00", // Hardcoded
 
       characteristic: route.params.characteristic,
 

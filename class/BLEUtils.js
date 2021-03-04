@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer/'
 import { ToastAndroid } from 'react-native';
-import GlobalSettings from './GlobalSettings';
+import GlobalSettings from '../data/GlobalSettings';
 
 class BLEUtils {
   static strToHex(str){

@@ -1,9 +1,9 @@
 import React from 'react';
 import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
-import Storage from "../components/Storage";
-import BLEUtils from "../components/BLEUtils";
-import GlobalSettings from "../components/GlobalSettings";
-import SettingsType from "../components/SettingsType";
+import Storage from "../class/Storage";
+import BLEUtils from "../class/BLEUtils";
+import GlobalSettings from '../data/GlobalSettings';
+import SettingsType from "../class/SettingsType";
 
 class SettingsItemScreen extends React.Component {
   constructor({props, route}) {

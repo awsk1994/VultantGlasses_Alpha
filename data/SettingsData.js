@@ -1,4 +1,4 @@
-import SettingsType from "./SettingsType";
+import SettingsType from "../class/SettingsType";
 
 const SettingsData = [
   {

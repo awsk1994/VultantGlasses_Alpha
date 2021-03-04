@@ -1,6 +1,6 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
-import BLEUtils from "./BLEUtils.js";
+import BLEUtils from "../class/BLEUtils.js";
 
 function strToFormatMsgJSX(inpt){
   let strInpt = BLEUtils.strToHex(inpt);

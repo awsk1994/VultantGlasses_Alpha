@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
-import Storage from "../components/Storage";
+import Storage from "../class/Storage";
 import InitAllowAppList from "../data/InitAllowAppList";
 
 class NotificationAllowAppListScreen extends React.Component {

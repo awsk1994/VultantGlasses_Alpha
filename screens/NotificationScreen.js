@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
-import BLEUtils from "../components/BLEUtils";
+import BLEUtils from "../class/BLEUtils";
 import BLERead from "../components/BLERead";
 
-import GlobalSettings from "../components/GlobalSettings";
+import GlobalSettings from '../data/GlobalSettings';
 
 // TODO: Debug 内容 into the 3 parts (app name, contact, content)
 // TODO: too many console.log. Remove some.

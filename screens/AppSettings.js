@@ -1,7 +1,7 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
-import Storage from "../components/Storage";
-import GlobalSettings from "../components/GlobalSettings";
+import Storage from "../class/Storage";
+import GlobalSettings from '../data/GlobalSettings';
 
 
 

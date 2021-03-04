@@ -1,11 +1,11 @@
 import React from 'react';
 import { AppRegistry, Platform, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
-import Storage from "../components/Storage";
-import BLEUtils from "../components/BLEUtils";
-import GlobalSettings from "../components/GlobalSettings";
+import Storage from "../class/Storage";
+import BLEUtils from "../class/BLEUtils";
+import GlobalSettings from '../data/GlobalSettings';
 import BLEFunctions from "../components/BLEFunctions";
-import BLEStatus from "../components/BLEStatus";
+import BLEStatus from "../class/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BlockAppTitleList from "../data/BlockAppTitleList";
@@ -73,10 +73,11 @@ class MenuScreen extends React.Component {
 
       const isPermissionsGranted = (statuses) => statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION] == 'granted' && statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] == 'granted';
 
-      const onCheckPermission = (statuses) => {
+      const requestPermissionIfNotGranted = (statuses) => {
         if(isPermissionsGranted(statuses)) {
           return true;
         } else {
+          // TODO: add alert to remind user before proceeding.
           return requestMultiple(requestedPermissions).then((statuses) => {
             debug ? debugPermissionStatus(statuses, "check#1") : null;
             return isPermissionsGranted(statuses);
@@ -84,7 +85,7 @@ class MenuScreen extends React.Component {
         }
       };
 
-      autoConnectBLEUponStart = (granted) => {
+      const autoConnectBLEUponStart = (granted) => {
         console.log("autoConnectBLEUponStart | granted = " + granted);
         if(granted){
           console.log("autoConnect");
@@ -101,7 +102,7 @@ class MenuScreen extends React.Component {
       };
 
       checkMultiple(requestedPermissions)
-        .then(onCheckPermission)
+        .then(requestPermissionIfNotGranted)
         .then((granted) => autoConnectBLEUponStart(granted));
     };
   };
@@ -186,7 +187,7 @@ class MenuScreen extends React.Component {
     if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
       Alert.alert('Requesting notification permission. Please enable.', null, [
         { text: '取消' },
-        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission}
+        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
       ]);
     };
     AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      

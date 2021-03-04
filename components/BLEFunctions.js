@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from 'react-native';
-import GlobalSettings from "./GlobalSettings";
+import GlobalSettings from '../data/GlobalSettings';
 
 class BLEFunctions extends React.Component { 
   constructor(props) {

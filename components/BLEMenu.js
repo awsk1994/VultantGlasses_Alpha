@@ -1,9 +1,9 @@
 import React from "react";
 import { TextInput, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
-import BLEUtils from "./BLEUtils";
+import BLEUtils from "../class/BLEUtils";
 import { Buffer } from 'buffer/'
-import Storage from "../components/Storage";
+import Storage from "../class/Storage";
 
 // TODO: Move this to screens folder.
 
