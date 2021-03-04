@@ -4,7 +4,7 @@ import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import BLERead from "../components/BLERead";
 import SettingsData from "../data/SettingsData";
-import SettingsType from "../class/SettingsType";
+import SettingsType from "../data/SettingsType";
 import GlobalSettings from '../data/GlobalSettings';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';

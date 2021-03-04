@@ -5,7 +5,7 @@ import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
 import BLEFunctions from "../components/BLEFunctions";
-import BLEStatus from "../class/BLEStatus";
+import BLEStatus from "../data/BLEStatus";
 import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BlockAppTitleList from "../data/BlockAppTitleList";

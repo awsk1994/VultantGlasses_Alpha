@@ -3,7 +3,7 @@ import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, Vie
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
-import SettingsType from "../class/SettingsType";
+import SettingsType from "../data/SettingsType";
 
 class SettingsItemScreen extends React.Component {
   constructor({props, route}) {

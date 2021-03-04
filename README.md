@@ -23,7 +23,7 @@
 ## Useful link
  - Text/Data format conversion: https://www.branah.com/unicode-converter
 
-## TODO:
+# TODO:
 ### High (Essential) Priority:
  - [BUG] status is "connecting to device" after choosing a device to connect and connected successfully.
 
@@ -31,11 +31,10 @@
  - Implement persistence storage for notes, cue-card, settings.
 
  - [Need to test] react-native permissions implementation on iOS.
-
- - Notification message -> filter by app name & add a boolean switch thing.
- - notification name filter: eg. com.whatsapp -> whatsapp
  - Prettify Settings --> Should do custom modal to change text and numbers, instead of going ot next screen...
  - Language selection
+
+ - [Notification message] -> appName conversion (eg. com.whatsapp -> whatsapp), get app list name from android/ios
 
  - Logging/Debugging
 
@@ -60,18 +59,33 @@
 ```
  - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
-## Bug
+# Bug
  - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
  - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
 
-## How to use?
+# How to use?
  - Allow location permission for app.
  - If first-time, select "Choose Device" -> "Start Scanning" -> Choose a Device -> A modal will pop up, select 继续 -> Select a Service -> Select a Characteristics.
  - Check that the "Characteristics Connected" is True. If so, go to Screens section and choose one of the buttons. If not, this is an error.
  - If not first-time, you can connect to "Saved BLE" by clicking "Connect to saved ble". Alternatively, you can connect to a new/different device/characteristics by clicking "Choose Device".
  - In every screen, the top part is used to write the respective messages to the peripheral BLE device. The bottom "READ DEBUG" part is just for debugging purposes; making it easier to check the written message is written properly.
 
-## Log
+# Test Coverage:
+ - notification appAllowList, blockList (can test via Hangout)
+ - Permissions Request
+ - Enable bluetooth upon bluetooth status change
+ - Notifications Request (for Android)
+ - Search + Connect bluetooth device
+ - Persistence Storage
+ - Send/Save
+ 
+# Error Solve:
+ - Make sure bluetooth is on
+ - Restart bluetooth
+ - Restart app
+ - Bluetooth permission, Notification Permission, bluetooth is on.
+
+# Log
  - 20210226: Deployed Test App on physical iPhone device.
 
  - 20210220: Refined many small things, made UI and workflow more simplistic, bug fixes, made utilization of bleManager more smooth.
