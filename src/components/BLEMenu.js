@@ -5,6 +5,7 @@ import BLEUtils from "../class/BLEUtils";
 import { Buffer } from 'buffer/'
 import Storage from "../class/Storage";
 import Utils from "../class/Utils";
+import Styles from "../class/Styles";
 
 // TODO: Move this to screens folder.
 
@@ -225,31 +226,31 @@ class BLEMenu extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         {this.state.characteristic == null && <ScrollView>
           <Text>Vultant Testing App</Text>
           <Text>扫描中: {this.state.scanning.toString()}</Text>
-          <View style={styles.b1}>
+          <View style={Styles.button}>
             <Button title="扫描设备(start scanning)" onPress={this.scanDevices}/>
           </View>
-          <View style={styles.b1}>
+          <View style={Styles.button}>
             <Button title="停止扫描(stop scanning)" onPress={this.stopScan}/>
           </View>
-          <View style={styles.b1}>
+          <View style={Styles.button}>
             <Button title="Debug" onPress={this.debugState}/>
           </View>
-          <View style={styles.b1}>
+          <View style={Styles.button}>
             <Button title="重置(reset)" onPress={this.reset}/>
           </View>
 
-          <Text style={styles.h1}>设备（Devices）:</Text>
+          <Text style={Styles.h1}>设备（Devices）:</Text>
           {this.state.scanning && <View>
             <FlatList 
               keyExtractor={(item, index) => index.toString()}
               data={this.state.devices}
               renderItem={itemData => (
               <TouchableOpacity onPress = {() => {this.connectDevice(itemData.item)}}>
-                <View style={styles.card}>
+                <View style={Styles.bleMenuItem}>
                   <Text>{itemData.item.id}</Text>
                   <Text>({itemData.item.name || itemData.item.localName})</Text>
                   <Text>(serviceUUIDs = {itemData.item.serviceUUIDs})</Text>
@@ -260,14 +261,14 @@ class BLEMenu extends React.Component {
             />
           </View>}
 
-          <Text style={styles.h1}>服务（Services）:</Text>
+          <Text style={Styles.h1}>服务（Services）:</Text>
           {this.state.services && <View>
             <FlatList 
               keyExtractor={(item, index) => index.toString()}
               data={this.state.services}
               renderItem={itemData => (
               <TouchableOpacity onPress = {() => {this.onPressService(itemData.item)}}>
-                <View style={styles.card}>
+                <View style={Styles.bleMenuItem}>
                   <Text>{`UUID: ${itemData.item.uuid}`}</Text>
                 </View>
               </TouchableOpacity>
@@ -275,14 +276,14 @@ class BLEMenu extends React.Component {
             />
           </View>}
 
-          <Text style={styles.h1}>特征（Characteristics）:</Text>
+          <Text style={Styles.h1}>特征（Characteristics）:</Text>
           {this.state.characteristics && <View>
             <FlatList 
               keyExtractor={(item, index) => index.toString()}
               data={this.state.characteristics}
               renderItem={itemData => (
               <TouchableOpacity onPress = {() => {this.onPressCharacteristic(itemData.item)}}>
-                <View style={styles.card}>
+                <View style={Styles.bleMenuItem}>
                   <Text>{`UUID: ${itemData.item.uuid}`}</Text>
                   <Text>{`可读（isReadable）: ${itemData.item.isReadable}`}</Text>
                   <Text>{`可写有回应（isWritableWithResponse）: ${itemData.item.isWritableWithResponse}`}</Text>
@@ -298,31 +299,5 @@ class BLEMenu extends React.Component {
     );
   }
 };
-
-const styles = StyleSheet.create({
-  card: {
-    marginTop: 5,
-    marginBottom: 5,
-    borderColor: 'black',
-    borderWidth: 1
-  },
-  input: {
-    height: 40
-  },
-  h1: {
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  h2: {
-    fontSize: 15,
-    fontWeight: "bold"
-  },
-  b1: {
-    margin: 10
-  },
-  container: {
-    margin: 20
-  }
-});
 
 export default BLEMenu;

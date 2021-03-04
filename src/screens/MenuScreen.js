@@ -392,20 +392,11 @@ class MenuScreen extends React.Component {
   setAllowAppList = (v) => {
     this.setState({"allowAppList": v});
   }
-  
-  // TODO: Button should have title: connect to {deviceName} <-- don't know how to make this dyanmic text possible.
-  render() {
-    return (
-      <ScrollView>
-        <Spinner
-          visible={this.state.spinner}
-          textContent={'Loading...'}
-          textStyle={Styles.spinnerTextStyle}
-        />
-        <Text>Status: {this.state.status}</Text>
 
-        {!this.state.characteristic && <View>
-          <Text style={Styles.h1}>No BLE Device connected. Choose option below:</Text>
+  noCharacteristicView = () => {
+    return (
+      <View>
+          <Text style={Styles.h1}>No BLE Device connected...</Text>
           <View style={Styles.button}>
             <Button title="选择BLE装置（Choose Device）" onPress={this.chooseDevice}/>
           </View>
@@ -414,18 +405,37 @@ class MenuScreen extends React.Component {
             <Button title="链接BLE装置（Connect to saved BLE）" onPress={this.connectBLE}/>
             <Text>(Saved BLE device: {this.state.deviceName})</Text>
           </View>
-        </View>}
+      </View>
+    )
+  }
 
-        {this.state.characteristic && <View>
-            <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
-            <View style={Styles.button}>
-              <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
-            </View>
-          </View>
-        }
+  hasCharacteristicView = () => {
+    return (
+      <View>
+        <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
+        <View style={Styles.button}>
+          <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
+        </View>
+      </View>
+    )
+  }
+  
+  // TODO: Button should have title: connect to {deviceName} <-- don't know how to make this dyanmic text possible.
+  render() {
+    return (
+      <ScrollView>
+        <Text>Status: {this.state.status}</Text>
+        {!this.state.characteristic && this.noCharacteristicView()}
+        {this.state.characteristic && this.hasCharacteristicView()}
 
         <View style={Styles.lineStyle}/>
         <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/>
+
+        <Spinner
+          visible={this.state.spinner}
+          textContent={'Loading...'}
+          textStyle={Styles.spinnerTextStyle}
+        />
         {/* <DemoComponent/> */}
       </ScrollView>
     )

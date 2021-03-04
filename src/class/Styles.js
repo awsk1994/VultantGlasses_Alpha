@@ -34,6 +34,12 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  bleMenuItem: {
+    marginTop: 5,
+    marginBottom: 5,
+    borderColor: 'black',
+    borderWidth: 1
+  },
 
   // View
   lineStyle:{
@@ -50,4 +56,7 @@ export default StyleSheet.create({
   button: {
     margin: 10
   },
+  container: {
+    margin: 20
+  }
 });
