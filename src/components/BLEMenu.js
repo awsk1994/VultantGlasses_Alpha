@@ -4,6 +4,7 @@ import { BleManager } from 'react-native-ble-plx';
 import BLEUtils from "../class/BLEUtils";
 import { Buffer } from 'buffer/'
 import Storage from "../class/Storage";
+import Utils from "../class/Utils";
 
 // TODO: Move this to screens folder.
 
@@ -44,7 +45,6 @@ class BLEMenu extends React.Component {
 
   scanDevices = async () => {
     this.bleManager.stopDeviceScan();
-
     console.log("Scanning Devices");
     this.setState({scanning: true});
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.onScannedDevice);
@@ -55,6 +55,7 @@ class BLEMenu extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
+      Utils.genericErrAlert(error);
       // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
       return
     }
@@ -100,16 +101,12 @@ class BLEMenu extends React.Component {
       let serviceAndChar = await device.discoverAllServicesAndCharacteristics();
       console.log('Getting services and characteristics...');
       console.log(serviceAndChar);
-  
+      this.onPressDevice(device);
       this.setSpinner(false);
-
-      Alert.alert('成功链接到设备（Connected to Device）', null, [
-        { text: '取消' },
-        { text: "继续", onPress: () => this.onPressDevice(device)}
-      ]);
     } catch(err){
       console.log("connectDevice | ERROR");
       console.log(err);
+      Utils.genericErrAlert(err);
       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       this.setSpinner(false);
     }
@@ -153,6 +150,7 @@ class BLEMenu extends React.Component {
     } catch(err){
       console.log("ERROR:");
       console.log(err);
+      Utils.genericErrAlert(err);
       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       this.setSpinner(false);
     }
@@ -182,7 +180,8 @@ class BLEMenu extends React.Component {
         Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...')
       })
       .catch(err => {
-        console.log('写入特征值出错：', err)
+        console.log('写入特征值出错：', err);
+        Utils.genericErrAlert(err);
         // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
       })
   };

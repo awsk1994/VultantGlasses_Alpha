@@ -10,6 +10,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener';
 import BlockAppTitleList from "../data/BlockAppTitleList";
 import {checkMultiple, requestMultiple, PERMISSIONS, openSettings} from 'react-native-permissions';
+import Utils from "../class/Utils";
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -237,6 +238,7 @@ class MenuScreen extends React.Component {
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
+      Utils.genericErrAlert(err);
       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
 
@@ -251,12 +253,9 @@ class MenuScreen extends React.Component {
 
   scanAndConnect = (error, device) => {
     if (error) {
-      console.log("onScannedDevice | ERROR:");
+      console.log("onScannedDevice | ERROR(" + error.errorCode + "):");
       console.log(error);
-      console.log("error code = " + error.errorCode);
-
-      // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
-      // this.setSpinner(false);
+      Utils.genericErrAlert(error);
       return
     }
 
@@ -281,8 +280,7 @@ class MenuScreen extends React.Component {
       let service = services.find(service => service.uuid == this.state.serviceId);
       if(service == null){
         console.log("ERROR | cannot find service.");
-        // ToastAndroid.show("ERROR | cannot find service.", ToastAndroid.SHORT);
-        // TODO: handle error.
+        Utils.connectErrAlert("Cannot find service.");
         this.setState({status: BLEStatus.err_cannot_find_service});
       } else {
         console.log("Found Service!");
@@ -296,8 +294,7 @@ class MenuScreen extends React.Component {
       let characteristic = characteristics.find(c => c.uuid == this.state.characteristicId);
       if(characteristic == null){
         console.log("ERROR | cannot find characteristic.");
-        // ToastAndroid.show("ERROR | cannot find characteristic.", ToastAndroid.SHORT);
-        // TODO: handle error.
+        Utils.connectErrAlert("Cannot find characteristic.");
         this.setState({status: BLEStatus.err_cannot_find_characteristic});
       } else {
         console.log("Found characteristic!");
@@ -320,6 +317,7 @@ class MenuScreen extends React.Component {
       })
       .catch((error) => {
         console.log(error);
+        Utils.genericErrAlert(error);
         this.setState({status: BLEStatus.error});
         // this.setSpinner(false);
       });
@@ -365,7 +363,7 @@ class MenuScreen extends React.Component {
 
     if(this.state.characteristic == null){
       console.log("ERROR | characteristic not found");
-      // ToastAndroid.show("ERROR: characteristic not found", ToastAndroid.SHORT);
+      Utils.connectErrAlert("characteristic not found");
       this.setSpinner(false);
     };
     
@@ -380,6 +378,7 @@ class MenuScreen extends React.Component {
       })
       .catch(err => {
         console.log('写入特征值出错：', err)
+        Utils.genericErrAlert(error);
         // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
         this.setSpinner(false);
       });
@@ -427,7 +426,6 @@ class MenuScreen extends React.Component {
 
         <View style={styles.lineStyle}/>
         <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/>
-
         {/* <DemoComponent/> */}
       </ScrollView>
     )
