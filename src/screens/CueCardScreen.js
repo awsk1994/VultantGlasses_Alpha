@@ -72,9 +72,9 @@ class CueCardScreen extends React.Component {
           <View style={Styles.lineStyle}/>
           <View style={Styles.settingsItem}>
             <Button title="-" onPress={() => delElement(itemData.index)}/>
-            <Text>Notes</Text>
+            <Text>Cue Card</Text>
             <TextInput
-              placeholder="Enter notes here..."
+              placeholder="Enter cue card content here..."
               value={itemData.item.content}
               onChangeText={v => onChangeContent(v, itemData.index)}
             />
