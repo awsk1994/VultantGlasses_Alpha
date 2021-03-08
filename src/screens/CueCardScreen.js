@@ -16,7 +16,8 @@ class CueCardScreen extends React.Component {
       vMsgSAttri1: "16", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
       characteristic: route.params.characteristic,
-      cuecards: []
+      cuecards: [],
+      focusedIdx: 0
     };
     this.setSpinner = route.params.setSpinner;
   };
@@ -34,7 +35,10 @@ class CueCardScreen extends React.Component {
   onPressWrite(){
     this.setSpinner(true);
 
-    const content = this.state.cuecards.length > 0 ? this.state.cuecards[0].content : "";
+    const content = this.state.cuecards.length > 0 ? this.state.cuecards[this.state.focusedIdx].content : "";
+    
+    console.log("Content = " + content);
+
     const cuecardHex = BLEUtils.utf8ToUtf16Hex(content);
     const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri 
@@ -68,11 +72,13 @@ class CueCardScreen extends React.Component {
   cuecardList = () => {
     listItem = (itemData) => {
       return (
-        <View>
+        <View style={itemData.index == this.state.focusedIdx ? Styles.redThickBorder : {}}>
           <View style={Styles.lineStyle}/>
           <View style={Styles.settingsItem}>
-            <Button title="-" onPress={() => delElement(itemData.index)}/>
-            <Text>Cue Card</Text>
+            <View style={{width: 50}}>
+              <Button title="-" onPress={() => delElement(itemData.index)}/>
+            </View>
+            <Text>Slide {itemData.index + 1}</Text>
             <TextInput
               placeholder="Enter cue card content here..."
               value={itemData.item.content}
@@ -112,14 +118,69 @@ class CueCardScreen extends React.Component {
       changeCueCardsParentFnBefore();
       let newLst = this.state.cuecards;
       newLst.splice(idx, 1);  // change splice method
-      changeCueCardsParentFnBefore(newLst);
+
+      if(this.state.cuecards.length == 0){
+        this.setState({focusedIdx: 0})
+      }
+
+      // 0 1 2 ==> 0 1 
+      // focus idx = 2
+
+      else if(this.state.focusedIdx == this.state.cuecards.length){
+        this.setState({focusedIdx: this.state.cuecards.length-1})
+      }
+
+      else if(this.state.focusedIdx == this.state.cuecards.length){
+        this.setState({focusedIdx: this.state.cuecards.length-1})
+      }
+
+      setTimeout(() => changeCueCardsParentFnBefore(newLst), 10);
     };
 
     return (
       <View>
-        <Button title="+" onPress={() => addElement()}/>
+        <View style={{width: 50}}>
+          <Button title="+" onPress={() => addElement()}/>
+        </View>
         <FlatList keyExtractor={(item, index) => item.id} data={this.state.cuecards} renderItem={listItem}/>
-        {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
+      </View>
+    )
+  }
+
+  focusNav = () => {
+    const changeFocus = (changeVal) => {
+      if(this.state.cuecards.length == 0){
+        console.log("cuecard length is 0. Ignoring this.");
+        return;
+      }
+
+      if(this.state.focusedIdx == 0 && changeVal == -1){
+        console.log("Out of (lower) bound. Ignoring this.");
+        return;
+      }
+
+      if(this.state.focusedIdx == this.state.cuecards.length-1 && changeVal == 1){
+        console.log("Out of (upper) bound. Ignoring this.");
+        return;
+      }
+      
+      const newFocusedIdx = this.state.focusedIdx + changeVal;
+      this.setState({focusedIdx: newFocusedIdx});
+      console.log("focusNav | focusedIdx = " + this.state.focusedIdx + ", newFocusedIdx = " + newFocusedIdx);
+      setTimeout(() => this.onPressWrite(), 10);
+    };
+
+    return (
+      <View>
+        <Text>Focused Idx: {this.state.focusedIdx}</Text>
+        <View style={Styles.settingsButtonItem}>
+          <View style={{width: 120}}> 
+            <Button title="<" onPress={() => changeFocus(-1)}/>
+          </View>
+          <View style={{width: 120}}>
+            <Button title=">" onPress={() => changeFocus(1)}/>
+          </View>
+        </View>
       </View>
     )
   }
@@ -127,19 +188,10 @@ class CueCardScreen extends React.Component {
   render() {
     return (
       <ScrollView style={{margin: 10}}>
-        {/* <View>
-          <Text>PPT笔记（Cue Card）:</Text>
-          <TextInput
-            placeholder="PPT笔记（Cue Card）"
-            value={this.state.nocuecardtes}
-            onChangeText={v => this.setState({"cuecard": v})}
-          />
-        </View>
-        <Button title="写特征/发送（Send Notes）" onPress = {() => {
-          this.onPressWrite();
-        }}/> */}
+        {this.focusNav()}
+        <View style={Styles.lineStyle}/>
         {this.cuecardList()}
-        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
+        {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
       </ScrollView>
     )
   };

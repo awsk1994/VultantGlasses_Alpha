@@ -51,6 +51,10 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'row'
   },
+  redThickBorder: {
+    borderColor: "red",
+    borderWidth: 5
+  },
   
   // Components
   button: {
