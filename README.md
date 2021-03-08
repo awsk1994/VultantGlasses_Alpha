@@ -26,7 +26,7 @@
 # TODO:
 ### High (Essential) Priority:
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
- 
+
  - [Need to test] react-native permissions implementation on iOS.
 
  - Language selection
@@ -66,6 +66,7 @@
  - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
 # Bug
+ - connect to peripheral, then turn off peripheral device and then press disconnect from device -> Loads forever.
  - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
  - [Bug?] How to handle connecting to 2 different glasses?
  - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
