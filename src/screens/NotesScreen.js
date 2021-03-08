@@ -1,35 +1,56 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
+import { FlatList, View, Text, TextInput, Button, ScrollView } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
+import Styles from "../class/Styles";
+import Storage from '../class/Storage';
+
+const msgInfo = {
+  vMsgHeader: "A0", // Hardcoded
+  vMsgPAttri: "01", // Hardcoded
+  vMsgSAttri1: "13", // Hardcoded
+  vMsgSAttri2: "00", // Hardcoded
+};
 
 class NotesScreen extends React.Component {
   constructor({props, route}) {
     super(props);
     this.state = {
-      notes: "",
-      imgId: "00",
-      vMsgHeader: "A0", // Hardcoded
-      vMsgPAttri: "01", // Hardcoded
-      vMsgSAttri1: "13", // Hardcoded
-      vMsgSAttri2: "00", // Hardcoded
+      // notes: "",
+      // imgId: "00",
+      notes: [],
       characteristic: route.params.characteristic
     };
     this.setSpinner = route.params.setSpinner;
   };
 
+  componentDidMount() {
+    setTimeout(() => this.fetchNotesInfo(), 100);
+  };
+
+  fetchNotesInfo = async () => {
+    console.log("Fetching notes information from AsyncStorage");
+    Storage.fetchObjList('@notes')
+      .then((val) => this.setState({'notes': val}));
+  }
+
   onPressWrite(){    
     this.setSpinner(true);
 
-    const imgIdHex = BLEUtils.numStrToHex(this.state.imgId);
-    const notesHex = BLEUtils.utf8ToUtf16Hex(this.state.notes);
+    const imgId = this.state.notes.length > 0 ? this.state.notes[0].imgId : "00";
+    const content = this.state.notes.length > 0 ? this.state.notes[0].content : "";
+
+    console.log("imgId = " + imgId + ", content = " + content);
+
+    const imgIdHex = BLEUtils.numStrToHex(imgId);
+    const notesHex = BLEUtils.utf8ToUtf16Hex(content);
     const entireContentHex = imgIdHex + notesHex;
 
-    const hexMsgWithoutCRC = this.state.vMsgHeader 
-    + this.state.vMsgPAttri 
-    + this.state.vMsgSAttri1
-    + this.state.vMsgSAttri2
+    const hexMsgWithoutCRC = msgInfo.vMsgHeader 
+    + msgInfo.vMsgPAttri 
+    + msgInfo.vMsgSAttri1
+    + msgInfo.vMsgSAttri2
     + entireContentHex;
     const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
     const hexMsg = hexMsgWithoutCRC + CRCHex;
@@ -61,30 +82,83 @@ class NotesScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
-  render() {
-    return (
-      <View style={{margin: 10}}>
-        <View> 
-          <Text>图片ID（Image ID）:</Text>
-          <TextInput
-            placeholder="图片ID（Image ID）"
-            value={this.state.imgId}
-            onChangeText={v => this.setState({"imgId": v})}
-          />
-        </View>
+  notesList = () => {
+    listItem = (itemData) => {
+      return (
         <View>
-          <Text>笔记（Notes）:</Text>
-          <TextInput
-            placeholder="笔记（Notes）"
-            value={this.state.notes}
-            onChangeText={v => this.setState({"notes": v})}
-          />
+          <View style={Styles.lineStyle}/>
+          <View style={Styles.settingsItem}>
+            <Button title="-" onPress={() => delElement(itemData.index)}/>
+            <Text>Title</Text>
+            <TextInput
+              placeholder="Enter title here..."
+              value={itemData.item.title}
+              onChangeText={v => onChangeTitle(v, itemData.index)}
+            />
+            <Text>Notes</Text>
+            <TextInput
+              placeholder="Enter notes here..."
+              value={itemData.item.content}
+              onChangeText={v => onChangeContent(v, itemData.index)}
+            />
+          </View>
         </View>
-        <Button title="写特征/发送（Send Notes）" onPress = {() => {
-          this.onPressWrite();
-        }}/>
+      )
+    };
+
+    changeNotesParentFnBefore = () => {
+      this.setSpinner(true);
+    }
+
+    changeNotesParentFnAfter = (newLst) => {
+      this.setState({notes: newLst});
+      Storage.saveObjList("@notes", this.state.notes);
+      this.setSpinner(false);
+      this.onPressWrite();
+    }
+
+    onChangeTitle = (v, idx) => {
+      changeNotesParentFnBefore();
+      let newLst = this.state.notes;
+      newLst[idx].title = v;
+      changeNotesParentFnAfter(newLst);
+    };
+
+    onChangeContent = (v, idx) => {
+      changeNotesParentFnBefore();
+      let newLst = this.state.notes;
+      newLst[idx].content = v;
+      changeNotesParentFnAfter(newLst);
+    };
+
+    addElement = () => {
+      changeNotesParentFnBefore();
+      let newLst = this.state.notes;
+      newLst.push({id: this.state.notes.length, imgId: "00", title: "", content: ""});
+      changeNotesParentFnAfter(newLst);
+    };
+
+    delElement = (idx) => {
+      changeNotesParentFnBefore();
+      let newLst = this.state.notes;
+      newLst.splice(idx, 1);  // change splice method
+      changeNotesParentFnAfter(newLst);
+    };
+
+    return (
+      <View>
+        <Button title="+" onPress={() => addElement()}/>
+        <FlatList keyExtractor={(item, index) => item.id} data={this.state.notes} renderItem={listItem}/>
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
       </View>
+    )
+  }
+
+  render() {
+    return (
+      <ScrollView style={{margin: 10}}>
+        {this.notesList()}
+      </ScrollView>
     )
   };
 }

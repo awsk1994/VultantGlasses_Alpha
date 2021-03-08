@@ -48,6 +48,16 @@ class Storage {
     }
   }
 
+  static fetchObjList = async (key) => {
+    console.log("Fetching object list with key(" + key + ")");
+    try {
+      const value = await AsyncStorage.getItem(key);
+      return value == null ? [] : JSON.parse(value).lst;
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
   static saveText = async (key, value) => {
     console.log("Saving Text with key(" + key + ")");
     try {
@@ -84,6 +94,18 @@ class Storage {
     console.log("Saving list with key(" + key + ")");
     try {
       const strVal = value.join(",");
+      await AsyncStorage.setItem(key, strVal);
+      console.log("save Complete.");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  static saveObjList = async (key, lst) => {
+    console.log("Saving object list with key(" + key + ")");
+    try {
+      const obj1 = {lst: lst};
+      const strVal = JSON.stringify(obj1);
       await AsyncStorage.setItem(key, strVal);
       console.log("save Complete.");
     } catch (e) {
