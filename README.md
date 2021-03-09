@@ -40,6 +40,7 @@
   - Prettify Settings --> Should do custom modal to change text and numbers, instead of going to next screen...
 
  - Logging/Debugging
+ - White flash when changing between screens
 
  - whereever you do spinner true, need to catch error!!
 ### Medium (Good to have) Priority:
