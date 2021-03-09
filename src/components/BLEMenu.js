@@ -117,20 +117,36 @@ class BLEMenu extends React.Component {
   onPressDevice = async (device) => {
     console.log("onPressDevice");
     this.setSpinner(true);
-    let services = await device.services();
-    this.setState({services});
-    this.setState({
-      deviceName: device.localName
-    })
-    this.setSpinner(false);
+    try{
+      let services = await device.services();
+      this.setState({services});
+      this.setState({
+        deviceName: device.localName
+      })
+      this.setSpinner(false);
+    } catch(err) {
+      console.log("connectDevice | ERROR");
+      console.log(err);
+      Utils.genericErrAlert(err);
+      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
+    }
   };
 
   onPressService = async(service) => {
     console.log("onPresService");
     this.setSpinner(true);
-    let characteristics = await service.characteristics()
-    this.setState({characteristics});
-    this.setSpinner(false);
+    try{
+      let characteristics = await service.characteristics();
+      this.setState({characteristics});
+      this.setSpinner(false);
+    } catch(err){
+      console.log("connectDevice | ERROR");
+      console.log(err);
+      Utils.genericErrAlert(err);
+      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+      this.setSpinner(false);
+    }
   };
 
   onPressCharacteristic = async(characteristic) => {
