@@ -7,7 +7,6 @@ import SettingsData from "../data/SettingsData";
 import SettingsType from "../data/SettingsType";
 import GlobalSettings from '../data/GlobalSettings';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Moment from 'moment';
 import Styles from "../class/Styles";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
@@ -26,24 +25,16 @@ class SettingsScreen extends React.Component {
   constructor({props, route}) {
     super();
     this.state = {
-      doNotDisturb: null,
-      appEnable: null,
-      audioLoudness: null,
-
+      // doNotDisturb: null,
+      // appEnable: null,
+      // audioLoudness: null,
       displayTimeOut: null,
       language: null,
       msgDispTime: null,
       bluetoothName: null,
-
-      vMsgHeader: "A0", // Hardcoded
-      vMsgPAttri: "05", // Hardcoded
-      vMsgSAttri2: "00", // Hardcoded
+      timedate: new Date(),
 
       characteristic: route.params.characteristic,
-
-      timedate: new Date(),
-      showTimeDate: false,
-      timedateMode: "date", // "date" or "time"
     };
 
     this.setSpinner = route.params.setSpinner;
@@ -84,222 +75,10 @@ class SettingsScreen extends React.Component {
     // audioLoudnessPromise.then((v) => this.setState({'audioLoudness': v == null ? INIT_VALUES.audioLoudness : v}));
   }
 
-  updateState = (item, text) => {
-    this.setState({[item.id]: text});
-  }
-
-  sendLanguageAndSave = (item, content) => {
-    this.updateState(item, content);
-    this.send(item, BLEUtils.numStrToHex(content)); // language is a number. 1 = chinese, 2 = english
-    Storage.saveText("@" + item.id, content);
-  }
-
-  // sendTextAndSave = (item, content) => {
-  //   this.send(item, BLEUtils.utf8ToUtf16Hex(content))
-  //   Storage.saveText("@" + item.id, content);
-  // }
-
-  // sendNumberAndSave = (item, content) => {
-  //   this.send(item, BLEUtils.numStrToHex(content));
-  //   Storage.saveInt("@" + item.id, content);
-  // }
-
-  send = (item, contentHexStr) => {
-    this.setSpinner(true);
-    const hexMsgWithoutCRC = this.state.vMsgHeader 
-    + this.state.vMsgPAttri 
-    + item.sAttri1HexStr
-    + this.state.vMsgSAttri2
-    + contentHexStr;
-    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
-    const hexMsg = hexMsgWithoutCRC + CRCHex;
-
-    if(GlobalSettings.DEBUG){
-      console.log("sendAndSave | sAttri1 = " + item.sAttri1HexStr
-      + ", id = " + item.id + ", contentHexStr = " + contentHexStr);  // TODO
-      console.log("onPressWriteCharacteristic | hexMsg with CRC | " + hexMsg);
-    }
-
-    const SuccessWriteFn = () => {
-      console.log('成功写入特征值, 现在点击读取特征值看看吧...');
-      // ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
-      this.setSpinner(false);
-    };
-
-    const ErrWriteFn = (err) => {
-      console.log('写入特征值出错：', err);
-      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-      this.setSpinner(false);
-    }
-
-    BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
-  };
-
-  sendDateTime = (td) => {
-    const hourHex = td.getHours().toString(16).padStart(2, '0');;
-    const minHex = td.getMinutes().toString(16).padStart(2, '0');
-    const secHex = td.getSeconds().toString(16).padStart(2, '0');
-    const yrHex = td.getFullYear().toString(16).padStart(4, '0');
-    const month = td.getMonth()+1;
-    const monthHex = month.toString(16).padStart(2, '0');
-    const dayHex = td.getDate().toString(16).padStart(2, '0');
-
-    if(GlobalSettings.DEBUG){
-      console.log("Time = ");
-      console.log(td);
-      console.log("sendDateTime | hex | h = " + hourHex + ", m = " + minHex + ", s = " + secHex + ", yr = " + yrHex + ", month = " + monthHex + ", day = " + dayHex);
-    }
-
-    const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
-
-    this.send({
-      id: "timeDate",
-      title: "时间日期设置（Time/Date Settings）",
-      type: SettingsType.timedate,
-      sAttri1HexStr: "51" // HARDCODED
-    }, contentHexStr)
-  };
-
-  changeTimeDate = (mode) => {
-    this.setState({
-      showTimeDate: true,
-      timedateMode: mode
-    });
-  };
-
-  onChangeTimeDate = (event, selectedTimeDate) => {
-    this.setState({showTimeDate: false});
-
-    if(event.type == "set" && selectedTimeDate != null){  // event type can be "dismissed" or "set"
-      console.log("onChangeTimeDate: " + selectedTimeDate);
-      this.setState({timedate: selectedTimeDate});
-    };
-    this.sendDateTime(selectedTimeDate);
-  };
-
   setParentState = (key, val) => {
     console.log("this parent state. key = " + key + ", val = " + val);
     this.setState({[key]: val});
   };
-
-  gridItem2 = (itemData) => {
-    return (
-      <View>
-        <View style={Styles.lineStyle}/>
-        
-        {(itemData.item.type == SettingsType.text || itemData.item.type == SettingsType.numeric) &&
-          this.TextAndNumericComponent(itemData)
-        }
-        {itemData.item.type == SettingsType.language && 
-          this.LanguageComponent(itemData)
-        }
-      </View>
-    )
-  };
-
-  TextAndNumericComponent = (itemData) => {
-    return (<View>
-      <TouchableHighlight style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
-            this.props.navigation.navigate("SettingsItemScreen", {
-              itemData: itemData.item,
-              itemVal: this.state[itemData.item.id],
-              characteristic: this.state.characteristic,
-              setSpinner: this.setSpinner,
-              setParentState: this.setParentState
-            });
-          }}>
-            <View>
-              <Text>{itemData.item.title}</Text>
-              <Text style={Styles.grayText}>{this.state[itemData.item.id]}</Text>
-            </View>
-          </TouchableHighlight>
-    </View>)
-  };
-
-  LanguageComponent = (itemData) => {
-    return (
-      <View style={Styles.settingsItem}>
-        <Text>{itemData.item.title}</Text>
-        <View style={Styles.settingsButtonItem}>
-          <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
-          <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
-        </View>
-      </View>
-    )
-  }
-
-  TimeDateComponent = () => {
-    return (
-      <View>
-        <View style={Styles.lineStyle}/>
-        <View style={Styles.settingsItem}>
-            <Text>时间日期设置（Time/Date Settings)</Text>
-            <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
-            
-            <View style={Styles.settingsButtonItem}>
-              <View style={Styles.button}>
-                <Button title="更改时间(modfiy Time)" onPress={() => this.changeTimeDate("time")}/>
-              </View>
-              <View style={Styles.button}>
-                <Button title="更改日期(modify Date)" onPress={() => this.changeTimeDate("date")}/>
-              </View>
-            </View>
-            
-            {this.state.showTimeDate && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={this.state.timedate}
-                mode={this.state.timedateMode}
-                is24Hour={true}
-                display="default"
-                onChange={this.onChangeTimeDate}
-              />
-            )}
-          </View>
-        </View>
-      );
-  }
-  
-  // AllowAppSelectionComponent = () => {
-  //   return (<View>
-  //     <View style={Styles.lineStyle}/>
-  //     <TouchableHighlight style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress = {() => {
-  //       this.props.navigation.navigate("NotificationAllowAppListScreen", {
-  //         setAllowAppList: this.setAllowAppList
-  //       });
-  //     }}>
-  //       <View>
-  //         <Text>Notification Allow App List</Text>
-  //       </View>
-  //     </TouchableHighlight>
-  //   </View>)
-  // }
-
-  // DisconnectDeviceComponent = () => {
-  //   return (<View>
-  //     <View style={Styles.lineStyle}/>
-  //     <TouchableOpacity style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress={() => {
-  //       this.disconnectDevice();
-  //       this.props.navigation.goBack();
-  //     }}>
-  //       <Text>断开设备（Disconnect from device）</Text>
-  //     </TouchableOpacity>
-  //   </View>)
-  // }
-
-  // CustomNotificationComponent = () => {
-  //   return (<View>
-  //     <View style={Styles.lineStyle}/>
-  //     <TouchableOpacity style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress={() => {
-  //           this.props.navigation.navigate("Notification", {
-  //             characteristic: this.state.characteristic,
-  //             setSpinner:  this.setSpinner
-  //           });
-  //         }}>
-  //       <Text>自定APP推送消息（Custom Notification）</Text>
-  //     </TouchableOpacity>
-  //   </View>)
-  // }
 
   topNav = () => {
     const topBarHeight = 75;
@@ -382,7 +161,15 @@ class SettingsScreen extends React.Component {
             </TouchableOpacity>
           </View>
           <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton}>
+            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
+              this.props.navigation.navigate("SettingsItemScreen", {
+                itemData: SettingsData[4],
+                itemVal: this.state[SettingsData[4].id],
+                characteristic: this.state.characteristic,
+                setSpinner: this.setSpinner,
+                setParentState: this.setParentState
+              });
+            }}>
                 <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_timedate.png")}/>
             </TouchableOpacity>
           </View>
@@ -428,22 +215,11 @@ class SettingsScreen extends React.Component {
   };
 
   render() {
-    const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
-      // <ScrollView>
-      //   <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
-      //   {this.TimeDateComponent()}
-      //   {this.AllowAppSelectionComponent()}
-      //   {this.CustomNotificationComponent()}
-      //   {this.DisconnectDeviceComponent()}
-      //   <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
-      //   <Button title="Debug" onPress={() => console.log(this.state)}/>
-      // </ScrollView>
       <View style={[Styles.basicBg]}>
-      {this.topNav()}
-      <View style={{flex: 1}}>{this.settingsList()}</View>
-      {/* <Button title="debug" onPress={() => console.log(this.state)}/> */}
-    </View>
+        {this.topNav()}
+        <View style={{flex: 1}}>{this.settingsList()}</View>
+      </View>
     );
   }
 }

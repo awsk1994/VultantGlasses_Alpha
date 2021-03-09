@@ -1,9 +1,12 @@
 import React from 'react';
-import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { TextInput, View, Text, Button } from 'react-native';
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
 import SettingsType from "../data/SettingsType";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Styles from "../class/Styles";
+import Moment from 'moment';
 
 class SettingsItemScreen extends React.Component {
   constructor({props, route}) {
@@ -15,7 +18,10 @@ class SettingsItemScreen extends React.Component {
 
       itemData: route.params.itemData,
       itemVal: route.params.itemVal,
-      characteristic: route.params.characteristic
+      characteristic: route.params.characteristic,
+
+      showTimeDate: false,
+      timedateMode: "time"
     };
     this.setParentState = route.params.setParentState;
     this.setSpinner = route.params.setSpinner;
@@ -99,19 +105,92 @@ class SettingsItemScreen extends React.Component {
   }
 
   LangComponent = () => {
-    <View>
-      <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
-      <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
-    </View>
+    return (
+      <View>
+        <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+        <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
+      </View>
+    )
+  }
+
+  TimeDateComponent = () => {
+    // TODO: can move state.showTimeDate and timedateMode to here as a variable?
+
+    const changeTimeDate = (mode) => {
+      this.setState({
+        showTimeDate: true,
+        timedateMode: mode
+      });
+    };
+  
+    const onChangeTimeDate = (event, selectedTimeDate) => {
+      this.setState({showTimeDate: false});
+  
+      if(event.type == "set" && selectedTimeDate != null){  // event type can be "dismissed" or "set"
+        console.log("onChangeTimeDate: " + selectedTimeDate);
+        this.setState({itemVal: selectedTimeDate});
+        this.setParentState(itemData.id, selectedTimeDate)
+      };
+      sendDateTime(selectedTimeDate);
+      // Storage.saveText("@" + itemData.id, content);  // will not save time
+    };
+
+    let sendDateTime = (td) => {
+      const hourHex = td.getHours().toString(16).padStart(2, '0');;
+      const minHex = td.getMinutes().toString(16).padStart(2, '0');
+      const secHex = td.getSeconds().toString(16).padStart(2, '0');
+      const yrHex = td.getFullYear().toString(16).padStart(4, '0');
+      const month = td.getMonth()+1;
+      const monthHex = month.toString(16).padStart(2, '0');
+      const dayHex = td.getDate().toString(16).padStart(2, '0');
+  
+      if(GlobalSettings.DEBUG){
+        console.log("Time = ");
+        console.log(td);
+        console.log("sendDateTime | hex | h = " + hourHex + ", m = " + minHex + ", s = " + secHex + ", yr = " + yrHex + ", month = " + monthHex + ", day = " + dayHex);
+      }
+  
+      const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
+  
+      this.send(this.state.itemData, contentHexStr)
+    };
+  
+    return (
+      <View>
+        <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
+        <View>
+          <View style={Styles.button}>
+            <Button title="更改时间(modfiy Time)" onPress={() => changeTimeDate("time")}/>
+          </View>
+          <View style={Styles.button}>
+            <Button title="更改日期(modify Date)" onPress={() => changeTimeDate("date")}/>
+          </View>
+        </View>
+        <Text style={Styles.grayText}>TimeDate wont' be saved into Persistence; since it keeps changing.</Text>
+        
+        {this.state.showTimeDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={this.state.itemVal}
+            mode={this.state.timedateMode}
+            is24Hour={true}
+            display="default"
+            onChange={onChangeTimeDate}
+          />
+        )}
+      </View>
+    );
   }
 
   render() {
     return (
       <View>
+        <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
         <Text>{this.state.itemData.title}</Text>
         {this.state.itemData.type == SettingsType.numeric && this.NumericComponent()}
         {this.state.itemData.type == SettingsType.text && this.TextComponent()}
         {this.state.itemData.type == SettingsType.language && this.LangComponent()}
+        {this.state.itemData.type == SettingsType.timedate && this.TimeDateComponent()}
       </View>
     )
   };

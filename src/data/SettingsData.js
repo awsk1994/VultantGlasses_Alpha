@@ -37,12 +37,12 @@ const SettingsData = [
     type: SettingsType.numeric,
     sAttri1HexStr: "55" // HARDCODED
   },
-  // {
-  //   id: "timeDate",
-  //   title: "时间日期设置（Time/Date Settings）",
-  //   type: SettingsType.timedate,
-  //   sAttri1HexStr: "51" // HARDCODED
-  // }
+  {
+    id: "timedate",
+    title: "时间日期设置（Time/Date Settings）",
+    type: SettingsType.timedate,
+    sAttri1HexStr: "51" // HARDCODED
+  }
 ];
 
 export default SettingsData;

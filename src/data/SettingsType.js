@@ -3,7 +3,7 @@ const SettingsType = {
   "numeric": 1,
   "text": 2,
   "language": 3,
-  // "timedate": 4
+  "timedate": 4
 };
 
 export default SettingsType;
