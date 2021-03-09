@@ -1,16 +1,10 @@
 import React from "react";
-import { Image, Platform, TouchableHighlight, View, Text, Button, TouchableOpacity } from 'react-native';
+import { ScrollView, Image, Platform, View, Text, Button, TouchableOpacity } from 'react-native';
 import Storage from "../class/Storage";
-import BLEUtils from "../class/BLEUtils";
-import BLERead from "../components/BLERead";
 import SettingsData from "../data/SettingsData";
-import SettingsType from "../data/SettingsType";
-import GlobalSettings from '../data/GlobalSettings';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Styles from "../class/Styles";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
-// TODO: Time/Date Settings
 // Skipping 语音及电话接听设置, 信息文字显示排版方式设置
 
 const INIT_VALUES = {
@@ -80,7 +74,7 @@ class SettingsScreen extends React.Component {
     this.setState({[key]: val});
   };
 
-  topNav = () => {
+  TopNav = () => {
     const topBarHeight = 75;
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -91,124 +85,98 @@ class SettingsScreen extends React.Component {
     )
   }
 
-  settingsList = () => {
+  SettingsItemButton = (itemData, imgPath) => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
+          this.props.navigation.navigate("SettingsItemScreen", {
+            itemData: itemData,
+            itemVal: this.state[itemData.id],
+            characteristic: this.state.characteristic,
+            setSpinner: this.setSpinner,
+            setParentState: this.setParentState
+          });
+        }}>
+          <Image resizeMode='contain' style={Styles.vultantButton} source={imgPath}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  DisplayNotificationComponent = () => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
+          this.props.navigation.navigate("NotificationAllowAppListScreen", {
+            setAllowAppList: this.setAllowAppList
+          });
+        }}>
+          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification.png")}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  CustomNotificationTestComponent = () => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+            this.props.navigation.navigate("Notification", {
+              characteristic: this.state.characteristic,
+              setSpinner:  this.setSpinner
+            });
+          }}>
+            <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification_test.png")}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  DisconnectComponent = () => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+          this.disconnectDevice();
+          this.props.navigation.goBack();
+        }}>
+          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_disconnect.png")}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  ReadCharacteristicComponent = () => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <TouchableOpacity style={Styles.BLEfuncButton}>
+            <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_read_characteristics.png")}/>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  SettingsList = () => {
     return (
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("NotificationAllowAppListScreen", {
-                setAllowAppList: this.setAllowAppList
-              });
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification.png")}/>
-            </TouchableOpacity>
-          </View>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("SettingsItemScreen", {
-                itemData: SettingsData[3],
-                itemVal: this.state[SettingsData[3].id],
-                characteristic: this.state.characteristic,
-                setSpinner: this.setSpinner,
-                setParentState: this.setParentState
-              });
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_display.png")}/>
-            </TouchableOpacity>
-          </View>
+          {this.DisplayNotificationComponent()}
+          {this.SettingsItemButton(SettingsData.msgDispTime, require("../img/demo_settings_display.png"))}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("SettingsItemScreen", {
-                itemData: SettingsData[2],
-                itemVal: this.state[SettingsData[2].id],
-                characteristic: this.state.characteristic,
-                setSpinner: this.setSpinner,
-                setParentState: this.setParentState
-              });
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_bluetooth.png")}/>
-            </TouchableOpacity>
-          </View>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("SettingsItemScreen", {
-                itemData: SettingsData[1],
-                itemVal: this.state[SettingsData[1].id],
-                characteristic: this.state.characteristic,
-                setSpinner: this.setSpinner,
-                setParentState: this.setParentState
-              });
-            }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_lang.png")}/>
-            </TouchableOpacity>
-          </View>
+          {this.SettingsItemButton(SettingsData.bluetoothName, require("../img/demo_settings_bluetooth.png"))}
+          {this.SettingsItemButton(SettingsData.language, require("../img/demo_settings_lang.png"))}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("SettingsItemScreen", {
-                itemData: SettingsData[0],
-                itemVal: this.state[SettingsData[0].id],
-                characteristic: this.state.characteristic,
-                setSpinner: this.setSpinner,
-                setParentState: this.setParentState
-              });
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_sleeptime.png")}/>
-            </TouchableOpacity>
-          </View>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
-              this.props.navigation.navigate("SettingsItemScreen", {
-                itemData: SettingsData[4],
-                itemVal: this.state[SettingsData[4].id],
-                characteristic: this.state.characteristic,
-                setSpinner: this.setSpinner,
-                setParentState: this.setParentState
-              });
-            }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_timedate.png")}/>
-            </TouchableOpacity>
-          </View>
+          {this.SettingsItemButton(SettingsData.displayTimeOut, require("../img/demo_settings_sleeptime.png"))}
+          {this.SettingsItemButton(SettingsData.timedate, require("../img/demo_settings_timedate.png"))}
         </View>
         <View style={Styles.lightLineStyle}/>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
-                this.props.navigation.navigate("Notification", {
-                  characteristic: this.state.characteristic,
-                  setSpinner:  this.setSpinner
-                });
-              }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification_test.png")}/>
-            </TouchableOpacity>
-          </View>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
-              this.disconnectDevice();
-              this.props.navigation.goBack();
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_disconnect.png")}/>
-            </TouchableOpacity>
-          </View>
+          {this.CustomNotificationTestComponent()}
+          {this.DisconnectComponent()}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_read_characteristics.png")}/>
-            </TouchableOpacity>
-          </View>
-          {/* <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
-              this.disconnectDevice();
-              this.props.navigation.goBack();
-            }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_disconnect.png")}/>
-            </TouchableOpacity>
-          </View> */}
+          {this.ReadCharacteristicComponent()}
         </View>
       </View>
     )
@@ -216,10 +184,10 @@ class SettingsScreen extends React.Component {
 
   render() {
     return (
-      <View style={[Styles.basicBg]}>
-        {this.topNav()}
-        <View style={{flex: 1}}>{this.settingsList()}</View>
-      </View>
+      <ScrollView style={[Styles.basicBg]}>
+        {this.TopNav()}
+        <View style={{flex: 1}}>{this.SettingsList()}</View>
+      </ScrollView>
     );
   }
 }
