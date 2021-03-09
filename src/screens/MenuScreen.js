@@ -438,7 +438,6 @@ class MenuScreen extends React.Component {
     batteryComponent = () => {
       return (
         <View style={[Styles.batteryComponent, {flex: 0}]}>
-          <Text style={Styles.p}>Battery</Text>
           <Image style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
         </View>
       )
@@ -448,10 +447,11 @@ class MenuScreen extends React.Component {
       <View style={{flex: 1}}>
         {batteryComponent()}
         <View style={{flex: 1}}>
-          <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
-          <View style={Styles.button}>
-            <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
-          </View>
+          <BLEFunctions 
+          setAllowAppList={this.setAllowAppList} 
+          characteristic={this.state.characteristic} 
+          navigation={this.props.navigation} setSpinner={this.setSpinner}
+          disconnectDevice={this.disconnectDevice}/>
         </View>
       </View>
     )
@@ -472,6 +472,7 @@ class MenuScreen extends React.Component {
           textContent={'Loading...'}
           textStyle={Styles.spinnerTextStyle}
         />
+        
         {/* <View style={Styles.lineStyle}/>
         <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/> */}
         {/* <DemoComponent/> */}

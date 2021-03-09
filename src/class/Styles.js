@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   // text
   h1: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     color: 'white'
   },
   h2: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: "bold",
     color: 'white'
   },

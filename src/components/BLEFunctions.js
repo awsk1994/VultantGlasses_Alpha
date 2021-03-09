@@ -20,15 +20,10 @@ class BLEFunctions extends React.Component {
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
-              this.props.navigation.navigate("Notification", {
-                characteristic: this.props.characteristic,
-                setSpinner:  this.props.setSpinner
-              });
-            }}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
                 <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
-                    <Text style={Styles.p}>自定APP推送消息（Custom Notification）</Text>
+                    <Text style={Styles.p}>Presentation Mode</Text>
                 </View>
             </TouchableOpacity>
           </View>
@@ -41,7 +36,7 @@ class BLEFunctions extends React.Component {
             }}>
                 <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
-                    <Text style={Styles.p}>记事本（Notes）</Text>
+                    <Text style={Styles.p}>Edit Notes</Text>
                 </View>
             </TouchableOpacity>
           </View>
@@ -56,7 +51,7 @@ class BLEFunctions extends React.Component {
                     }}>
                 <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
-                    <Text style={Styles.p}>ppt笔记（Cue Card）</Text>
+                    <Text style={Styles.p}>Edit Cue Cards</Text>
                 </View>
             </TouchableOpacity>
           </View>
@@ -70,10 +65,23 @@ class BLEFunctions extends React.Component {
             }>
                 <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
-                    <Text style={Styles.p}>眼镜设置（Glasses Settings）</Text>
+                    <Text style={Styles.p}>General Settings</Text>
                 </View>
             </TouchableOpacity>
           </View>     
+        </View>
+        <View style={[{position: 'relative', height: 80}]}>
+          <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+            this.props.navigation.navigate("Notification", {
+              characteristic: this.props.characteristic,
+              setSpinner:  this.props.setSpinner
+            });
+          }}>
+            <Text style={Styles.p}>{'>'} 自定APP推送消息（Custom Notification）</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => this.props.disconnectDevice()}>
+            <Text style={Styles.p}>{'>'} 断开设备（Disconnect from device）</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { TouchableOpacity, FlatList, View, Text, TextInput, Button, ScrollView } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
@@ -82,23 +82,48 @@ class NotesScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
+
+  addElement = () => {
+    this.changeNotesParentFnBefore();
+    let newLst = this.state.notes;
+    newLst.push({id: this.state.notes.length, imgId: "00", title: "", content: ""});
+    this.changeNotesParentFnAfter(newLst);
+  };
+
+  changeNotesParentFnBefore = () => {
+    this.setSpinner(true);
+  }
+
+  changeNotesParentFnAfter = (newLst) => {
+    this.setState({notes: newLst});
+    Storage.saveObjList("@notes", this.state.notes);
+    this.setSpinner(false);
+    this.onPressWrite();
+  }
+
   notesList = () => {
-    listItem = (itemData) => {
+    const listItem = (itemData) => {
       return (
         <View>
-          <View style={Styles.lineStyle}/>
-          <View style={Styles.settingsItem}>
-            <Button title="-" onPress={() => delElement(itemData.index)}/>
-            <Text>Title</Text>
+          {/* <View style={Styles.lineStyle}/> */}
+          <View style={[Styles.settingsItem, {backgroundColor: '#427a60', margin: 10}]}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={Styles.h1}>Title</Text>
+              <TouchableOpacity onPress={() => delElement(itemData.index)}>
+                <Text style={Styles.h1}>X</Text>
+              </TouchableOpacity>
+            </View>
             <TextInput
               placeholder="Enter title here..."
               value={itemData.item.title}
+              style={Styles.h2}
               onChangeText={v => onChangeTitle(v, itemData.index)}
             />
-            <Text>Notes</Text>
+            <Text style={Styles.h1}>Content</Text>
             <TextInput
               placeholder="Enter notes here..."
               value={itemData.item.content}
+              style={Styles.h2}
               onChangeText={v => onChangeContent(v, itemData.index)}
             />
           </View>
@@ -106,59 +131,54 @@ class NotesScreen extends React.Component {
       )
     };
 
-    changeNotesParentFnBefore = () => {
-      this.setSpinner(true);
-    }
-
-    changeNotesParentFnAfter = (newLst) => {
-      this.setState({notes: newLst});
-      Storage.saveObjList("@notes", this.state.notes);
-      this.setSpinner(false);
-      this.onPressWrite();
-    }
-
-    onChangeTitle = (v, idx) => {
-      changeNotesParentFnBefore();
+    const onChangeTitle = (v, idx) => {
+      this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
       newLst[idx].title = v;
-      changeNotesParentFnAfter(newLst);
+      this.changeNotesParentFnAfter(newLst);
     };
 
-    onChangeContent = (v, idx) => {
-      changeNotesParentFnBefore();
+    const onChangeContent = (v, idx) => {
+      this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
       newLst[idx].content = v;
-      changeNotesParentFnAfter(newLst);
+      this.changeNotesParentFnAfter(newLst);
     };
 
-    addElement = () => {
-      changeNotesParentFnBefore();
-      let newLst = this.state.notes;
-      newLst.push({id: this.state.notes.length, imgId: "00", title: "", content: ""});
-      changeNotesParentFnAfter(newLst);
-    };
 
-    delElement = (idx) => {
-      changeNotesParentFnBefore();
+    const delElement = (idx) => {
+      this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
       newLst.splice(idx, 1);  // change splice method
-      changeNotesParentFnAfter(newLst);
+      this.changeNotesParentFnAfter(newLst);
     };
 
     return (
       <View>
-        <Button title="+" onPress={() => addElement()}/>
-        <FlatList keyExtractor={(item, index) => item.id} data={this.state.notes} renderItem={listItem}/>
-        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
+        <FlatList keyExtractor={(item, index) => index.toString()} data={this.state.notes} renderItem={listItem}/>
+        {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
       </View>
     )
   }
 
   render() {
+    const topBarHeight = 75;
     return (
-      <ScrollView style={{margin: 10}}>
-        {this.notesList()}
-      </ScrollView>
+      <View style={[Styles.basicBg]}>
+        <View style={{height: topBarHeight, flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+            <Text style={Styles.h1}>{'<'} Edit Notes</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
+            <Text style={Styles.h1}>+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flex: 0}}>
+          <ScrollView style={{margin: 10, flex: 0}}>
+              {this.notesList()}
+          </ScrollView>
+        </View>
+      </View>
     )
   };
 }
