@@ -6,7 +6,7 @@ import GlobalSettings from '../data/GlobalSettings';
 import Storage from '../class/Storage';
 import Styles from "../class/Styles";
 
-class CueCardScreen extends React.Component {
+class PresentCueCardScreen extends React.Component {
   constructor({props, route}) {
     super(props);
     this.state = {
@@ -90,19 +90,17 @@ class CueCardScreen extends React.Component {
   cuecardList = () => {
     const listItem = (itemData) => {
       return (
-        <View>
+        <View style={itemData.index == this.state.focusedIdx ? Styles.greenThickBorder : {}}>
           <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={Styles.notes_h1}>Slide {itemData.index + 1}</Text>
-              <TouchableOpacity onPress={() => delElement(itemData.index)}>
-                <Text style={Styles.notes_h1}>X</Text>
-              </TouchableOpacity>
             </View>
             <TextInput
               placeholder="Enter content here..."
               value={itemData.item.content}
               style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
+              editable={false}
             />
           </View>
         </View>
@@ -191,10 +189,7 @@ class CueCardScreen extends React.Component {
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
-          <Text style={Styles.notes_h1}>{'<'} Edit Cue Cards</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
-          <Text style={Styles.notes_h1}>+</Text>
+          <Text style={Styles.notes_h1}>{'<'} Presentation Mode</Text>
         </TouchableOpacity>
       </View>
     )
@@ -205,10 +200,10 @@ class CueCardScreen extends React.Component {
       <View style={[Styles.basicBg]}>
         {this.topNav()}
         <View style={{flex: 1}}>{this.cuecardList()}</View>
-        {/* {this.focusNav()} */}
+        {this.focusNav()}
       </View>
     )
   };
 }
 
-export default CueCardScreen;
+export default PresentCueCardScreen;
