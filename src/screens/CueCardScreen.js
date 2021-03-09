@@ -109,8 +109,6 @@ class CueCardScreen extends React.Component {
       )
     };
 
-
-
     let onChangeContent = (v, idx) => {
       this.changeCueCardsParentFnBefore();
       let newLst = this.state.cuecards;
@@ -143,7 +141,7 @@ class CueCardScreen extends React.Component {
 
     return (
       <View>
-        <FlatList keyExtractor={(item, index) => item.id} data={this.state.cuecards} renderItem={listItem}/>
+        <FlatList keyExtractor={(item, index) => index} data={this.state.cuecards} renderItem={listItem}/>
       </View>
     )
   }
@@ -188,32 +186,27 @@ class CueCardScreen extends React.Component {
     )
   }
 
-
-
-  render() {
+  topNav = () => {
     const topBarHeight = 75;
     return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+          <Text style={Styles.notes_h1}>{'<'} Edit Cue Cards</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
+          <Text style={Styles.notes_h1}>+</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  render() {
+    return (
       <View style={[Styles.basicBg]}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
-            <Text style={Styles.notes_h1}>{'<'} Edit Cue Cards</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
-            <Text style={Styles.notes_h1}>+</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{flex: 1}}>
-          {this.cuecardList()}
-        </View>
+        {this.topNav()}
+        <View style={{flex: 1}}>{this.cuecardList()}</View>
         {this.focusNav()}
       </View>
-
-      // <ScrollView style={{margin: 10}}>
-      //   {this.focusNav()}
-      //   <View style={Styles.lineStyle}/>
-      //   {this.cuecardList()}
-      //   {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
-      // </ScrollView>
     )
   };
 }

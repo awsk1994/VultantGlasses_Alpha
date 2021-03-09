@@ -144,7 +144,6 @@ class NotesScreen extends React.Component {
       this.changeNotesParentFnAfter(newLst);
     };
 
-
     const delElement = (idx) => {
       this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
@@ -160,21 +159,25 @@ class NotesScreen extends React.Component {
     )
   }
 
-  render() {
+  topNav = () => {
     const topBarHeight = 75;
     return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+          <Text style={Styles.notes_h1}>{'<'} Edit Notes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
+          <Text style={Styles.notes_h1}>+</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  render() {
+    return (
       <View style={[Styles.basicBg]}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
-            <Text style={Styles.notes_h1}>{'<'} Edit Notes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
-            <Text style={Styles.notes_h1}>+</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{flex: 1}}>
-          {this.notesList()}
-        </View>
+        {this.topNav()}
+        <View style={{flex: 1}}>{this.notesList()}</View>
       </View>
     )
   };
