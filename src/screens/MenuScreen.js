@@ -475,7 +475,12 @@ class MenuScreen extends React.Component {
   render() {
     return (
       <View style={[Styles.basicBg]}>
-        <Text style={Styles.greenText}>Status: {this.state.status}, BleState: {this.state.bleState}</Text>
+        <Text>
+          <Text style={Styles.greenBoldText}>Status: </Text> 
+          <Text style={Styles.greenText}>{this.state.status}, </Text>
+          <Text style={Styles.greenBoldText}>BleState: </Text> 
+          <Text style={Styles.greenText}>{this.state.bleState} </Text>
+        </Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}
 
