@@ -60,7 +60,8 @@ class BLEFunctions extends React.Component {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner,
-                setAllowAppList: this.props.setAllowAppList
+                setAllowAppList: this.props.setAllowAppList,
+                disconnectDevice: this.props.disconnectDevice
               })}
             }>
                 <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_general_settings.png")}/>

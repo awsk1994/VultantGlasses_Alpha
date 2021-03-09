@@ -47,6 +47,7 @@ class SettingsScreen extends React.Component {
     };
 
     this.setSpinner = route.params.setSpinner;
+    this.disconnectDevice = route.params.disconnectDevice;
     if(Platform.OS === 'android'){
       this.setAllowAppList = route.params.setAllowAppList;
     };
@@ -274,6 +275,32 @@ class SettingsScreen extends React.Component {
     </View>)
   }
 
+  DisconnectDeviceComponent = () => {
+    return (<View>
+      <View style={Styles.lineStyle}/>
+      <TouchableOpacity style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress={() => {
+        this.disconnectDevice();
+        this.props.navigation.goBack();
+      }}>
+        <Text>断开设备（Disconnect from device）</Text>
+      </TouchableOpacity>
+    </View>)
+  }
+
+  CustomNotificationComponent = () => {
+    return (<View>
+      <View style={Styles.lineStyle}/>
+      <TouchableOpacity style={Styles.settingsItem} underlayColor={"#eaeaea"} onPress={() => {
+            this.props.navigation.navigate("Notification", {
+              characteristic: this.state.characteristic,
+              setSpinner:  this.setSpinner
+            });
+          }}>
+        <Text>自定APP推送消息（Custom Notification）</Text>
+      </TouchableOpacity>
+    </View>)
+  }
+
   render() {
     const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
@@ -281,6 +308,8 @@ class SettingsScreen extends React.Component {
         <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
         {this.TimeDateComponent()}
         {this.AllowAppSelectionComponent()}
+        {this.CustomNotificationComponent()}
+        {this.DisconnectDeviceComponent()}
         <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
         <Button title="Debug" onPress={() => console.log(this.state)}/>
       </ScrollView>
