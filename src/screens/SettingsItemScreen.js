@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextInput, View, Text, Button } from 'react-native';
+import { ScrollView, TouchableOpacity, TextInput, View, Text, Button } from 'react-native';
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
@@ -85,30 +85,35 @@ class SettingsItemScreen extends React.Component {
     return (
       <View>
         <TextInput keyboardType='numeric' 
+          style={Styles.blueText}
           onChangeText={(text) => this.setState({itemVal: text})}
           value={this.state.itemVal != null ? this.state.itemVal.toString() : null}
           maxLength={10}  //setting limit of input
         />
-        <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
+        <Button style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
       </View>
     )
   }
 
   TextComponent = () => {
-    <View>
-      <TextInput
+    return (
+      <View>
+        <TextInput
+          style={Styles.blueText}
           onChangeText={(text) => this.setState({itemVal: text})}
           value={this.state.itemVal}
+          plaeholder="..."
         />
-      <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
-    </View>
+        <Button style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
+      </View>
+    )
   }
 
   LangComponent = () => {
     return (
       <View>
-        <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
-        <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
+        <Button style={Styles.BLEfuncButton} title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+        <Button style={Styles.BLEfuncButton} title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
       </View>
     )
   }
@@ -182,16 +187,36 @@ class SettingsItemScreen extends React.Component {
     );
   }
 
-  render() {
+  TopNav = (title) => {
+    const topBarHeight = 75;
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+          <Text style={Styles.notes_h1}>{'<'} Edit {title}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  SettingsItemComponent = () => {
     return (
       <View>
-        <Button title="Go Back" onPress={() => this.props.navigation.goBack()}/>
-        <Text>{this.state.itemData.title}</Text>
         {this.state.itemData.type == SettingsType.numeric && this.NumericComponent()}
         {this.state.itemData.type == SettingsType.text && this.TextComponent()}
         {this.state.itemData.type == SettingsType.language && this.LangComponent()}
         {this.state.itemData.type == SettingsType.timedate && this.TimeDateComponent()}
       </View>
+    )
+  }
+
+  render() {
+    return (
+      <ScrollView style={[Styles.basicBg]}>
+      {this.TopNav(this.state.itemData.id)}
+      <View style={{flex: 1}}>
+        {this.SettingsItemComponent()}
+      </View>
+    </ScrollView>
     )
   };
 }
