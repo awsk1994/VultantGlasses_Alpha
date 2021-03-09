@@ -64,7 +64,10 @@ export default StyleSheet.create({
   lineStyle:{
     borderWidth: 0.5,
     borderColor:'#77CCD4',
-    margin: 10
+  },
+  lightLineStyle:{
+    borderWidth: 0.5,
+    borderColor:'#242e3d',
   },
   flexRow: {
     flexDirection: 'row'

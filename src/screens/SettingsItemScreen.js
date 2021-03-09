@@ -29,11 +29,11 @@ class SettingsItemScreen extends React.Component {
     this.setState({itemVal: text});
   }
 
-  // sendLanguageAndSave = (itemData, content) => {
-  //   this.updateState(itemData, content);
-  //   this.send(itemData, BLEUtils.numStrToHex(content)); // language is a number. 1 = chinese, 2 = english
-  //   Storage.saveText("@" + itemData.id, content);
-  // }
+  sendLanguageAndSave = (itemData, content) => {
+    this.setParentState(itemData.id, content);
+    this.send(itemData, BLEUtils.numStrToHex(content)); // language is a number. 1 = chinese, 2 = english
+    Storage.saveText("@" + itemData.id, content);
+  }
 
   sendTextAndSave = (itemData, content) => {
     this.setParentState(itemData.id, content);
@@ -102,11 +102,8 @@ class SettingsItemScreen extends React.Component {
           </View>
         }
         {this.state.itemData.type == SettingsType.language && <View>
-          <Text>{itemData.item.title}</Text>
-          <View>
-            <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(itemData.item, "1")}/>
-            <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(itemData.item, "2")}/>
-          </View>
+          <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+          <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
         </View>}
       </View>
     )
