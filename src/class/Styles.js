@@ -19,7 +19,7 @@ export default StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF'
   },
-  greenText: {color: 'green'},  // TODO: pick a better green
+  greenText: {color: '#28AC6C'},  // TODO: pick a better green
 
   // item
   gridItem: {
@@ -66,7 +66,7 @@ export default StyleSheet.create({
   },
   basicBg: {
     padding: 10,
-    backgroundColor: 'black',
+    backgroundColor: '#0C131E',
     flex: 1
   },
   batteryComponent: {

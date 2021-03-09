@@ -21,7 +21,7 @@ class BLEFunctions extends React.Component {
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
             <TouchableOpacity style={Styles.BLEfuncButton}>
-                <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Presentation Mode</Text>
                 </View>
@@ -34,7 +34,7 @@ class BLEFunctions extends React.Component {
                 setSpinner:  this.props.setSpinner
               })
             }}>
-                <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Edit Notes</Text>
                 </View>
@@ -49,7 +49,7 @@ class BLEFunctions extends React.Component {
                         setSpinner:  this.props.setSpinner
                       })
                     }}>
-                <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Edit Cue Cards</Text>
                 </View>
@@ -63,7 +63,7 @@ class BLEFunctions extends React.Component {
                 setAllowAppList: this.props.setAllowAppList
               })}
             }>
-                <Image style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
                 <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>General Settings</Text>
                 </View>

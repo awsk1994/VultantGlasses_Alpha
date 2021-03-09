@@ -401,7 +401,7 @@ class MenuScreen extends React.Component {
       return (
         <View style={[Styles.batteryComponent, {flex: 0, padding: 20}]}>
           <Text style={Styles.p}>No BLE Device connected...</Text>
-          <Image style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
         </View>
       )
     }
@@ -410,13 +410,13 @@ class MenuScreen extends React.Component {
       return (
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.chooseDevice}>
-              <Image style={{height: '100%', width: '100%'}} source={require("../img/demo_button.png")}/>
+              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
               <View style={Styles.absoluteView}>
                   <Text style={Styles.p}>选择BLE装置（Choose Device)</Text>
               </View>
           </TouchableOpacity>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.connectBLE}>
-              <Image style={{height: '100%', width: '100%'}} source={require("../img/demo_button.png")}/>
+              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
               <View style={Styles.absoluteView}>
                   <Text style={Styles.p}>链接BLE装置（Connect to saved BLE）</Text>
               </View>
@@ -438,7 +438,7 @@ class MenuScreen extends React.Component {
     batteryComponent = () => {
       return (
         <View style={[Styles.batteryComponent, {flex: 0}]}>
-          <Image style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
         </View>
       )
     }
