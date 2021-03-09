@@ -18,15 +18,15 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Menu">
-        <Stack.Screen name="Menu" component={MenuScreen} />
-        <Stack.Screen name="BLEMenu" component={BLEMenu} />
-        <Stack.Screen name="Notification" component={NotificationScreen} />
-        <Stack.Screen name="CueCard" component={CueCardScreen} />
-        <Stack.Screen name="Notes" component={NotesScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="AppSettings" component={AppSettings} />
-        <Stack.Screen name="NotificationAllowAppListScreen" component={NotificationAllowAppListScreen}/>
-        <Stack.Screen name="SettingsItemScreen" component={SettingsItemScreen}/>
+        <Stack.Screen name="Menu" component={MenuScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="BLEMenu" component={BLEMenu} options={{headerShown: false}}/>
+        <Stack.Screen name="Notification" component={NotificationScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="CueCard" component={CueCardScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="Notes" component={NotesScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="Settings" component={SettingsScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="AppSettings" component={AppSettings} options={{headerShown: false}}/>
+        <Stack.Screen name="NotificationAllowAppListScreen" component={NotificationAllowAppListScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="SettingsItemScreen" component={SettingsItemScreen} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

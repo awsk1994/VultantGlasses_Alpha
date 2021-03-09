@@ -95,7 +95,8 @@ class MenuScreen extends React.Component {
           if(GlobalSettings.AutoConnectBLEUponStart){
             setTimeout(() => {
               console.log("DEBUG | Read BLE info");
-              this.connectBLE();
+              // if(this.state.bleState == 'PoweredOn')
+              //   this.connectBLE(); // TODO: check bluetooth is turned on first.
             }, 300);
           };
         } else {
@@ -399,13 +400,13 @@ class MenuScreen extends React.Component {
     return (
       <View>
           <Text style={Styles.h1}>No BLE Device connected...</Text>
-          <View style={Styles.button}>
+          <View>
             <Button title="选择BLE装置（Choose Device）" onPress={this.chooseDevice}/>
           </View>
 
-          <View style={Styles.button}>
+          <View>
             <Button title="链接BLE装置（Connect to saved BLE）" onPress={this.connectBLE}/>
-            <Text>(Saved BLE device: {this.state.deviceName})</Text>
+            <Text style={Styles.p}>(Saved BLE device: {this.state.deviceName})</Text>
           </View>
       </View>
     )
@@ -413,11 +414,20 @@ class MenuScreen extends React.Component {
 
   hasCharacteristicView = () => {
     return (
-      <View>
-        <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
-        <View style={Styles.button}>
+      <View style={{flex: 1}}>
+        {this.batteryComponent()}
+        <View style={{flex: 1}}>
+          <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
           <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
         </View>
+      </View>
+    )
+  }
+
+  batteryComponent = () => {
+    return (
+      <View style={[Styles.whiteBorderBox, Styles.batteryComponent, {flex: 0}]}>
+        <Text style={Styles.p}>Battery</Text>
       </View>
     )
   }
@@ -425,23 +435,33 @@ class MenuScreen extends React.Component {
   // TODO: Button should have title: connect to {deviceName} <-- don't know how to make this dyanmic text possible.
   render() {
     return (
-      <ScrollView>
-        <Text>Status: {this.state.status}</Text>
+      <View style={[Styles.basicBg]}>
+        <Text style={Styles.p}>Status: {this.state.status}, BleState: {this.state.bleState}</Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}
-
-        <View style={Styles.lineStyle}/>
-        <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/>
 
         <Spinner
           visible={this.state.spinner}
           textContent={'Loading...'}
           textStyle={Styles.spinnerTextStyle}
         />
+        {/* <View style={Styles.lineStyle}/>
+        <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/> */}
         {/* <DemoComponent/> */}
-      </ScrollView>
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create(
+  {
+      MainContainer:
+      {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: ( Platform.OS === 'ios' ) ? 20 : 0
+      }
+  });
 
 export default MenuScreen;

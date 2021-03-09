@@ -4,11 +4,16 @@ export default StyleSheet.create({
   // text
   h1: {
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: 'white'
   },
   h2: {
     fontSize: 15,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: 'white'
+  },
+  p: {
+    color: 'white'
   },
   grayText: {color: '#9e9e9e'},
   spinnerTextStyle: {
@@ -48,17 +53,35 @@ export default StyleSheet.create({
     margin: 10
   },
   flexRow: {
-    flex: 1,
     flexDirection: 'row'
   },
   redThickBorder: {
     borderColor: "red",
     borderWidth: 5
   },
-  
+  whiteBorderBox: {
+    borderColor: "white",
+    borderWidth: 2,
+  },
+  basicBg: {
+    padding: 20,
+    backgroundColor: 'black',
+    flex: 1
+  },
+  batteryComponent: {
+    height: '30%',
+  },
+
   // Components
   button: {
     margin: 10
+  },
+  BLEfuncButton: {
+    margin: 10,
+    height: '30%',
+    backgroundColor: 'gray',
+    flex: 1, 
+    height: 150
   },
   container: {
     margin: 20
