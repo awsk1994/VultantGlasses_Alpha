@@ -165,7 +165,7 @@ class NotesScreen extends React.Component {
     const topBarHeight = 75;
     return (
       <View style={[Styles.basicBg]}>
-        <View style={{height: topBarHeight, flexDirection: 'row', justifyContent: 'space-between'}}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
             <Text style={Styles.h1}>{'<'} Edit Notes</Text>
           </TouchableOpacity>
@@ -173,10 +173,8 @@ class NotesScreen extends React.Component {
             <Text style={Styles.h1}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={{flex: 0}}>
-          <ScrollView style={{margin: 10, flex: 0}}>
-              {this.notesList()}
-          </ScrollView>
+        <View style={{flex: 1}}>
+          {this.notesList()}
         </View>
       </View>
     )
