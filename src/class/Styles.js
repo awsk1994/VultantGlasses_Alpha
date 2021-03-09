@@ -63,7 +63,7 @@ export default StyleSheet.create({
   // View
   lineStyle:{
     borderWidth: 0.5,
-    borderColor:'#e0e0e0',
+    borderColor:'#77CCD4',
     margin: 10
   },
   flexRow: {

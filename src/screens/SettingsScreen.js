@@ -1,5 +1,5 @@
 import React from "react";
-import { TextInput, Platform, TouchableHighlight, Switch, Alert, StyleSheet, View, Text, Button, FlatList, ToastAndroid, ScrollView, TouchableOpacity } from 'react-native';
+import { Image, Platform, TouchableHighlight, View, Text, Button, TouchableOpacity } from 'react-native';
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import BLERead from "../components/BLERead";
@@ -301,18 +301,89 @@ class SettingsScreen extends React.Component {
     </View>)
   }
 
+  topNav = () => {
+    const topBarHeight = 75;
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+          <Text style={Styles.notes_h1}>{'<'} General Settings</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  settingsList = () => {
+    return (
+      <View>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification.png")}/>
+            </TouchableOpacity>
+          </View>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_display.png")}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_bluetooth.png")}/>
+            </TouchableOpacity>
+          </View>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_lang.png")}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_sleeptime.png")}/>
+            </TouchableOpacity>
+          </View>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_timedate.png")}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={Styles.lineStyle}/>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification_test.png")}/>
+            </TouchableOpacity>
+          </View>
+          <View style={[Styles.BLEfuncButton]}>
+            <TouchableOpacity style={Styles.BLEfuncButton}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_disconnect.png")}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    )
+  };
+
   render() {
     const AllowAppSelectionList = this.state.allowAppSelectionList;
     return (
-      <ScrollView>
-        <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
-        {this.TimeDateComponent()}
-        {this.AllowAppSelectionComponent()}
-        {this.CustomNotificationComponent()}
-        {this.DisconnectDeviceComponent()}
-        <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
-        <Button title="Debug" onPress={() => console.log(this.state)}/>
-      </ScrollView>
+      // <ScrollView>
+      //   <FlatList keyExtractor={(item, index) => item.id} data={SettingsData} renderItem={this.gridItem2}/>
+      //   {this.TimeDateComponent()}
+      //   {this.AllowAppSelectionComponent()}
+      //   {this.CustomNotificationComponent()}
+      //   {this.DisconnectDeviceComponent()}
+      //   <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/>
+      //   <Button title="Debug" onPress={() => console.log(this.state)}/>
+      // </ScrollView>
+      <View style={[Styles.basicBg]}>
+      {this.topNav()}
+      <View style={{flex: 1}}>{this.settingsList()}</View>
+    </View>
     );
   }
 }
