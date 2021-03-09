@@ -76,6 +76,7 @@ class MenuScreen extends React.Component {
       const isPermissionsGranted = (statuses) => statuses[PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION] == 'granted' && statuses[PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION] == 'granted';
 
       const requestPermissionIfNotGranted = (statuses) => {
+        debug ? debugPermissionStatus(statuses, "check#0") : null;
         if(isPermissionsGranted(statuses)) {
           return true;
         } else {
@@ -129,6 +130,8 @@ class MenuScreen extends React.Component {
         if (state === 'PoweredOff') {
           this._enableBluetoothAlert();
         }
+      }).catch(err => {
+        console.log(err);
       });
   };
 
@@ -257,6 +260,7 @@ class MenuScreen extends React.Component {
     if (error) {
       console.log("onScannedDevice | ERROR(" + error.errorCode + "):");
       console.log(error);
+      console.log(error.reason);
       this.setState({status: BLEStatus.error});
       Utils.genericErrAlert(error);
       return
@@ -310,13 +314,21 @@ class MenuScreen extends React.Component {
       requestMTU: 512
     })
       .then(async (device) => {
+        try{
         await device.discoverAllServicesAndCharacteristics();
+        } catch (error){
+          console.log("ERROR | " + error);
+        }
+        try {
         await device.services()
           .then(connectService)
           .then(connectCharacteristic)
           // .then(requestMTU)
           .then(() => this.setState({status: BLEStatus.connected}));
         // this.setSpinner(false);
+        } catch (error) {
+          console.log("ERROR | " + error);
+        }
       })
       .catch((error) => {
         console.log(error);
