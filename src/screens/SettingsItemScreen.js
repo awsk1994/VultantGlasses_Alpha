@@ -90,7 +90,7 @@ class SettingsItemScreen extends React.Component {
           value={this.state.itemVal != null ? this.state.itemVal.toString() : null}
           maxLength={10}  //setting limit of input
         />
-        <Button style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
+        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
       </View>
     )
   }
@@ -104,7 +104,7 @@ class SettingsItemScreen extends React.Component {
           value={this.state.itemVal}
           plaeholder="..."
         />
-        <Button style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
+        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
       </View>
     )
   }
@@ -112,8 +112,8 @@ class SettingsItemScreen extends React.Component {
   LangComponent = () => {
     return (
       <View>
-        <Button style={Styles.BLEfuncButton} title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
-        <Button style={Styles.BLEfuncButton} title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
+        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
       </View>
     )
   }
@@ -165,10 +165,10 @@ class SettingsItemScreen extends React.Component {
         <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
         <View>
           <View style={Styles.button}>
-            <Button title="更改时间(modfiy Time)" onPress={() => changeTimeDate("time")}/>
+            <Button color="#28AC6C" title="更改时间(modfiy Time)" onPress={() => changeTimeDate("time")}/>
           </View>
           <View style={Styles.button}>
-            <Button title="更改日期(modify Date)" onPress={() => changeTimeDate("date")}/>
+            <Button color="#28AC6C" title="更改日期(modify Date)" onPress={() => changeTimeDate("date")}/>
           </View>
         </View>
         <Text style={Styles.grayText}>TimeDate wont' be saved into Persistence; since it keeps changing.</Text>
