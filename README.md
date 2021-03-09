@@ -25,6 +25,7 @@
 
 # TODO:
 ### High (Essential) Priority:
+
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
    - request for actual button
    - the image button are not perfect yet
@@ -40,6 +41,7 @@
 
  - Logging/Debugging
 
+ - whereever you do spinner true, need to catch error!!
 ### Medium (Good to have) Priority:
  - move appSettings to top right
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
@@ -68,8 +70,9 @@
  - [No solution/fix atm] Notification warning: [Sat Feb 20 2021 16:11:54.296]  WARN   ..  registerHeadlessTask or registerCancellableHeadlessTask called multiple times for same key 'RNAndroidNotificationListenerHeadlessJs' --> close app, then open app again
 
 # Bug
+ - [fixed] BleError -> cannot start scanning operation -> restart app & restart bluetooth seems to solve the problem, but problem comes back again --> restart entire device seems to fix the problem (for a long time, havn't seen error again)
  - connect to peripheral, then turn off peripheral device and then press disconnect from device -> Loads forever.
- - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble.
+ - [To confirm, not reproducible] BUG: BleError: Device ? is already connected --> connect to device -> close app -> open again -> try to connect to saved ble -> prob should remove characteristic if this happens?
  - [Bug?] How to handle connecting to 2 different glasses?
  - [Temporary Fix by increasing MTU] !!BUG!!: When message is too long (settings content of 8 letters - "NO NAME)"), there'll be write operation timeout. NEED TO FIX. Afterwards, any bluetooth operation fails. NEED TO FIX THIS TOO!
 
@@ -95,6 +98,10 @@
  - Restart app
  - Bluetooth permission, Notification Permission, bluetooth is on.
 
+
+
+ - https://github.com/react-native-maps/react-native-maps/issues/2924:
+   - solution: clear cache
 # Log
  - 20210226: Deployed Test App on physical iPhone device.
 
