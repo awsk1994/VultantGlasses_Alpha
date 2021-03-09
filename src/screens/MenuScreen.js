@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppRegistry, Platform, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
+import { Image, AppRegistry, Platform, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
 import { BleManager } from 'react-native-ble-plx';
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
@@ -95,8 +95,8 @@ class MenuScreen extends React.Component {
           if(GlobalSettings.AutoConnectBLEUponStart){
             setTimeout(() => {
               console.log("DEBUG | Read BLE info");
-              // if(this.state.bleState == 'PoweredOn')
-              //   this.connectBLE(); // TODO: check bluetooth is turned on first.
+              if(this.state.bleState == 'PoweredOn')
+                this.connectBLE(); // TODO: check bluetooth is turned on first.
             }, 300);
           };
         } else {
@@ -397,46 +397,73 @@ class MenuScreen extends React.Component {
   }
 
   noCharacteristicView = () => {
-    return (
-      <View>
-          <Text style={Styles.h1}>No BLE Device connected...</Text>
-          <View>
-            <Button title="选择BLE装置（Choose Device）" onPress={this.chooseDevice}/>
-          </View>
+    statusComponent = () => {
+      return (
+        <View style={[Styles.batteryComponent, {flex: 0, padding: 20}]}>
+          <Text style={Styles.p}>No BLE Device connected...</Text>
+          <Image style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+        </View>
+      )
+    }
 
-          <View>
-            <Button title="链接BLE装置（Connect to saved BLE）" onPress={this.connectBLE}/>
-            <Text style={Styles.p}>(Saved BLE device: {this.state.deviceName})</Text>
-          </View>
+    const selectConnectComponent = () => {
+      return (
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.chooseDevice}>
+              <Image style={{height: '100%', width: '100%'}} source={require("../img/demo_button.png")}/>
+              <View style={Styles.absoluteView}>
+                  <Text style={Styles.p}>选择BLE装置（Choose Device)</Text>
+              </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.connectBLE}>
+              <Image style={{height: '100%', width: '100%'}} source={require("../img/demo_button.png")}/>
+              <View style={Styles.absoluteView}>
+                  <Text style={Styles.p}>链接BLE装置（Connect to saved BLE）</Text>
+              </View>
+              <Text style={Styles.p}>(Saved BLE device: {this.state.deviceName})</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
+    return (
+      <View style={{flex: 1}}>
+        {statusComponent()}
+        {selectConnectComponent()}
       </View>
     )
   }
 
   hasCharacteristicView = () => {
+    batteryComponent = () => {
+      return (
+        <View style={[Styles.batteryComponent, {flex: 0}]}>
+          <Text style={Styles.p}>Battery</Text>
+          <Image style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+        </View>
+      )
+    }
+
     return (
       <View style={{flex: 1}}>
-        {this.batteryComponent()}
+        {batteryComponent()}
         <View style={{flex: 1}}>
           <BLEFunctions setAllowAppList={this.setAllowAppList} characteristic={this.state.characteristic} navigation={this.props.navigation} setSpinner={this.setSpinner}/>
-          <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
+          <View style={Styles.button}>
+            <Button color="#FF0000" title="断开设备（Disconnect from device）" onPress={this.disconnectDevice}/>
+          </View>
         </View>
       </View>
     )
   }
 
-  batteryComponent = () => {
-    return (
-      <View style={[Styles.whiteBorderBox, Styles.batteryComponent, {flex: 0}]}>
-        <Text style={Styles.p}>Battery</Text>
-      </View>
-    )
-  }
+  
   
   // TODO: Button should have title: connect to {deviceName} <-- don't know how to make this dyanmic text possible.
   render() {
     return (
       <View style={[Styles.basicBg]}>
-        <Text style={Styles.p}>Status: {this.state.status}, BleState: {this.state.bleState}</Text>
+        <Text style={Styles.greenText}>Status: {this.state.status}, BleState: {this.state.bleState}</Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}
 

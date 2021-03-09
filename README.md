@@ -26,6 +26,8 @@
 # TODO:
 ### High (Essential) Priority:
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
+   - request for actual button
+   - the image button are not perfect yet
 
  - [Need to test] react-native permissions implementation on iOS.
 

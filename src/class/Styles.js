@@ -19,6 +19,7 @@ export default StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF'
   },
+  greenText: {color: 'green'},  // TODO: pick a better green
 
   // item
   gridItem: {
@@ -64,7 +65,7 @@ export default StyleSheet.create({
     borderWidth: 2,
   },
   basicBg: {
-    padding: 20,
+    padding: 10,
     backgroundColor: 'black',
     flex: 1
   },
@@ -77,13 +78,24 @@ export default StyleSheet.create({
     margin: 10
   },
   BLEfuncButton: {
-    margin: 10,
+    padding: 10,
     height: '30%',
-    backgroundColor: 'gray',
+    // backgroundColor: 'gray',
     flex: 1, 
     height: 150
   },
+  vultantButton: {
+    height: '100%', 
+    width: '100%'
+  },
   container: {
     margin: 20
-  }
+  },
+
+
+  // Others
+  absoluteView: {
+    position: 'absolute',
+    backgroundColor: 'transparent'
+  },
 });
