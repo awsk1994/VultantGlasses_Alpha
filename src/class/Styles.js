@@ -26,6 +26,9 @@ export default StyleSheet.create({
   p: {
     color: 'white'
   },
+  notes_p: {
+    color: '#77CCD4'
+  },
   grayText: {color: '#9e9e9e'},
   spinnerTextStyle: {
     color: '#FFF'

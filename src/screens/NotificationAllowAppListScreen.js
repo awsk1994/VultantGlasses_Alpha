@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import Storage from "../class/Storage";
 import InitAllowAppList from "../data/InitAllowAppList";
 import Styles from "../class/Styles";
@@ -60,22 +60,48 @@ class NotificationAllowAppListScreen extends React.Component {
     Storage.saveList("@allowAppList", newAllowAppList);
   };
 
-  render() {
+  TopNav = () => {
+    const topBarHeight = 75;
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+          <Text style={Styles.notes_h1}>{'<'} Allow App List</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  AppAllowList = () => {
+    const AppAllowItem = (item, idx) => {
+      return (
+        <View>
+          <View style={Styles.appAllowItem}>
+            <Text style={Styles.notes_p}>{item.title}</Text>
+            <Switch
+              onValueChange={(val) => this.toggleSwitch(val, idx)}
+              value={item.toggle}
+            />
+          </View>
+          <View style={Styles.lightLineStyle}/>
+        </View>
+      )
+    };
+
     return (
       <View>
-        {this.state.allowAppSelectionList.map((item, idx) => (
-          <View>
-            <View style={Styles.appAllowItem}>
-              <Text>{item.title}</Text>
-              <Switch
-                onValueChange={(val) => this.toggleSwitch(val, idx)}
-                value={item.toggle}
-              />
-            </View>
-            <View style={Styles.lineStyle}/>
-          </View>
-        ))}
+        {this.state.allowAppSelectionList.map((item, idx) => AppAllowItem(item, idx))}
       </View>
+    )
+  }
+
+  render() {
+    return (
+      <ScrollView style={[Styles.basicBg]}>
+        {this.TopNav()}
+        <View style={{flex: 1}}>
+          {this.AppAllowList()}
+        </View>
+      </ScrollView>
     )
   };
 }
