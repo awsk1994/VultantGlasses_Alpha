@@ -19,15 +19,11 @@ class SettingsItemScreen extends React.Component {
     };
     this.setParentState = route.params.setParentState;
     this.setSpinner = route.params.setSpinner;
-    console.log("item:");
-    console.log(this.state.itemData);
-    console.log("itemVal:");
-    console.log(this.state.itemVal);
+    // console.log("item:");
+    // console.log(this.state.itemData);
+    // console.log("itemVal:");
+    // console.log(this.state.itemVal);
   };
-
-  updateState = (itemData, text) => {
-    this.setState({itemVal: text});
-  }
 
   sendLanguageAndSave = (itemData, content) => {
     this.setParentState(itemData.id, content);
@@ -78,33 +74,44 @@ class SettingsItemScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   };
 
+  // Type Components
+  NumericComponent = () => {
+    return (
+      <View>
+        <TextInput keyboardType='numeric' 
+          onChangeText={(text) => this.setState({itemVal: text})}
+          value={this.state.itemVal != null ? this.state.itemVal.toString() : null}
+          maxLength={10}  //setting limit of input
+        />
+        <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
+      </View>
+    )
+  }
+
+  TextComponent = () => {
+    <View>
+      <TextInput
+          onChangeText={(text) => this.setState({itemVal: text})}
+          value={this.state.itemVal}
+        />
+      <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
+    </View>
+  }
+
+  LangComponent = () => {
+    <View>
+      <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+      <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
+    </View>
+  }
+
   render() {
     return (
       <View>
         <Text>{this.state.itemData.title}</Text>
-        {this.state.itemData.type == SettingsType.numeric && 
-          <View>
-            <TextInput keyboardType='numeric' 
-              onChangeText={(text) => this.updateState(this.state.itemData, text)}
-              value={this.state.itemVal != null ? this.state.itemVal.toString() : null}
-              maxLength={10}  //setting limit of input
-            />
-            <Button title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
-          </View>
-        }
-        {this.state.itemData.type == SettingsType.text && 
-          <View>
-            <TextInput
-                onChangeText={(text) => this.updateState(this.state.itemData, text)}
-                value={this.state.itemVal}
-              />
-            <Button title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
-          </View>
-        }
-        {this.state.itemData.type == SettingsType.language && <View>
-          <Button title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
-          <Button title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
-        </View>}
+        {this.state.itemData.type == SettingsType.numeric && this.NumericComponent()}
+        {this.state.itemData.type == SettingsType.text && this.TextComponent()}
+        {this.state.itemData.type == SettingsType.language && this.LangComponent()}
       </View>
     )
   };
