@@ -20,6 +20,7 @@ export default StyleSheet.create({
     color: '#FFF'
   },
   greenText: {color: '#28AC6C'},  // TODO: pick a better green
+  greenBoldText: {color: '#28AC6C', fontWeight: 'bold'},  // TODO: pick a better green
 
   // item
   gridItem: {
