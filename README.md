@@ -25,15 +25,16 @@
 
 # TODO:
 ### High (Essential) Priority:
+ - Language selection
+ - notes page -> notes are saved/sent at each change. Try to save/send after not clicking on textinput instead to reduce number of save/send.
 
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
-   - request for actual button
-   - the image button are not perfect yet
+   - request for actual button image
+   - Use glyhicons?
+   - Try on different screen resolutions
 
  - [Need to test] react-native permissions implementation on iOS.
 
- - Language selection
- - notes page -> notes are saved/sent at each change. Try to save/send after not clicking on textinput instead to reduce number of save/send.
 
  - [Notification message] -> appName conversion (eg. com.whatsapp -> whatsapp), get app list name from android/ios
 
