@@ -7,10 +7,21 @@ export default StyleSheet.create({
     fontWeight: "bold",
     color: 'white'
   },
+  
   h2: {
     fontSize: 20,
     fontWeight: "bold",
     color: 'white'
+  },
+  notes_h1: {
+    fontSize: 30,
+    // fontWeight: 'bold',
+    color: '#77CCD4'
+  },
+  notes_h2: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: '#77CCD4'
   },
   p: {
     color: 'white'
@@ -21,6 +32,7 @@ export default StyleSheet.create({
   },
   greenText: {color: '#28AC6C'},  // TODO: pick a better green
   greenBoldText: {color: '#28AC6C', fontWeight: 'bold'},  // TODO: pick a better green
+  blueText: {color: '#77CCD4'},
 
   // item
   gridItem: {

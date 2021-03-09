@@ -106,24 +106,24 @@ class NotesScreen extends React.Component {
       return (
         <View>
           {/* <View style={Styles.lineStyle}/> */}
-          <View style={[Styles.settingsItem, {backgroundColor: '#427a60', margin: 10}]}>
+          <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={Styles.h1}>Title</Text>
+              <Text style={Styles.notes_h1}>Title</Text>
               <TouchableOpacity onPress={() => delElement(itemData.index)}>
-                <Text style={Styles.h1}>X</Text>
+                <Text style={Styles.notes_h1}>X</Text>
               </TouchableOpacity>
             </View>
             <TextInput
               placeholder="Enter title here..."
               value={itemData.item.title}
-              style={Styles.h2}
+              style={Styles.blueText}
               onChangeText={v => onChangeTitle(v, itemData.index)}
             />
-            <Text style={Styles.h1}>Content</Text>
+            <Text style={Styles.notes_h1}>Content</Text>
             <TextInput
               placeholder="Enter notes here..."
               value={itemData.item.content}
-              style={Styles.h2}
+              style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
             />
           </View>
@@ -167,10 +167,10 @@ class NotesScreen extends React.Component {
       <View style={[Styles.basicBg]}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
-            <Text style={Styles.h1}>{'<'} Edit Notes</Text>
+            <Text style={Styles.notes_h1}>{'<'} Edit Notes</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
-            <Text style={Styles.h1}>+</Text>
+            <Text style={Styles.notes_h1}>+</Text>
           </TouchableOpacity>
         </View>
         <View style={{flex: 1}}>
