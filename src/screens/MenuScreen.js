@@ -412,8 +412,8 @@ class MenuScreen extends React.Component {
     statusComponent = () => {
       return (
         <View style={[Styles.batteryComponent, {flex: 0, padding: 20}]}>
-          <Text style={Styles.p}>No BLE Device connected...</Text>
-          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+          {/* <Text style={Styles.p}>No BLE Device connected...</Text> */}
+          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_no_device_connected.png")}/>
         </View>
       )
     }
@@ -422,17 +422,17 @@ class MenuScreen extends React.Component {
       return (
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.chooseDevice}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-              <View style={Styles.absoluteView}>
+              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_choose_device.png")}/>
+              {/* <View style={Styles.absoluteView}>
                   <Text style={Styles.p}>选择BLE装置（Choose Device)</Text>
-              </View>
+              </View> */}
           </TouchableOpacity>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.connectBLE}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-              <View style={Styles.absoluteView}>
+              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_connect_saved_device.png")}/>
+              {/* <View style={Styles.absoluteView}>
                   <Text style={Styles.p}>链接BLE装置（Connect to saved BLE）</Text>
-              </View>
-              <Text style={Styles.p}>(Saved BLE device: {this.state.deviceName})</Text>
+              </View> */}
+              <Text style={Styles.greenText}>(Saved BLE device: {this.state.deviceName})</Text>
           </TouchableOpacity>
         </View>
       )

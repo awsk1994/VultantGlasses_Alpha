@@ -21,10 +21,10 @@ class BLEFunctions extends React.Component {
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
             <TouchableOpacity style={Styles.BLEfuncButton}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-                <View style={Styles.absoluteView}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_presentation_mode.png")}/>
+                {/* <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Presentation Mode</Text>
-                </View>
+                </View> */}
             </TouchableOpacity>
           </View>
           <View style={[Styles.BLEfuncButton]}>
@@ -34,10 +34,10 @@ class BLEFunctions extends React.Component {
                 setSpinner:  this.props.setSpinner
               })
             }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-                <View style={Styles.absoluteView}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_edit_notes.png")}/>
+                {/* <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Edit Notes</Text>
-                </View>
+                </View> */}
             </TouchableOpacity>
           </View>
         </View>
@@ -49,10 +49,10 @@ class BLEFunctions extends React.Component {
                         setSpinner:  this.props.setSpinner
                       })
                     }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-                <View style={Styles.absoluteView}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_edit_cuecards.png")}/>
+                {/* <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>Edit Cue Cards</Text>
-                </View>
+                </View> */}
             </TouchableOpacity>
           </View>
           <View style={[Styles.BLEfuncButton]}>
@@ -63,26 +63,26 @@ class BLEFunctions extends React.Component {
                 setAllowAppList: this.props.setAllowAppList
               })}
             }>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_button.png")}/>
-                <View style={Styles.absoluteView}>
+                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_general_settings.png")}/>
+                {/* <View style={Styles.absoluteView}>
                     <Text style={Styles.p}>General Settings</Text>
-                </View>
+                </View> */}
             </TouchableOpacity>
           </View>     
         </View>
-        <View style={[{position: 'relative', height: 80}]}>
+        {/* <View style={[{position: 'relative', height: 80}]}>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
             this.props.navigation.navigate("Notification", {
               characteristic: this.props.characteristic,
               setSpinner:  this.props.setSpinner
             });
           }}>
-            <Text style={Styles.p}>{'>'} 自定APP推送消息（Custom Notification）</Text>
+            <Text style={Styles.greenText}>{'>'} 自定APP推送消息（Custom Notification）</Text>
           </TouchableOpacity>
           <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => this.props.disconnectDevice()}>
-            <Text style={Styles.p}>{'>'} 断开设备（Disconnect from device）</Text>
+            <Text style={Styles.greenText}>{'>'} 断开设备（Disconnect from device）</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     );
   }
