@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ScrollView, View, Text, TextInput, Button, StyleSheet, ToastAndroid, Alert } from 'react-native';
+import { FlatList, ScrollView, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
@@ -69,19 +69,39 @@ class CueCardScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
+  addElement = () => {
+    this.changeCueCardsParentFnBefore();
+    let newLst = this.state.cuecards;
+    newLst.push({id: this.state.cuecards.length, content: ""});
+    this.changeNotesParentFnAfter(newLst);
+  };
+
+  changeCueCardsParentFnBefore = () => {
+    this.setSpinner(true);
+  }
+
+  changeNotesParentFnAfter = (newLst) => {
+    this.setState({cuecards: newLst});
+    Storage.saveObjList("@cuecards", this.state.cuecards);
+    this.setSpinner(false);
+    this.onPressWrite();
+  }
+
   cuecardList = () => {
-    listItem = (itemData) => {
+    const listItem = (itemData) => {
       return (
-        <View style={itemData.index == this.state.focusedIdx ? Styles.redThickBorder : {}}>
-          <View style={Styles.lineStyle}/>
-          <View style={Styles.settingsItem}>
-            <View style={{width: 50}}>
-              <Button title="-" onPress={() => delElement(itemData.index)}/>
+        <View style={itemData.index == this.state.focusedIdx ? Styles.greenThickBorder : {}}>
+          <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={Styles.notes_h1}>Slide {itemData.index + 1}</Text>
+              <TouchableOpacity onPress={() => delElement(itemData.index)}>
+                <Text style={Styles.notes_h1}>X</Text>
+              </TouchableOpacity>
             </View>
-            <Text>Slide {itemData.index + 1}</Text>
             <TextInput
-              placeholder="Enter cue card content here..."
+              placeholder="Enter content here..."
               value={itemData.item.content}
+              style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
             />
           </View>
@@ -89,33 +109,17 @@ class CueCardScreen extends React.Component {
       )
     };
 
-    changeCueCardsParentFnBefore = () => {
-      this.setSpinner(true);
-    }
 
-    changeCueCardsParentFnBefore = (newLst) => {
-      this.setState({cuecards: newLst});
-      Storage.saveObjList("@cuecards", this.state.cuecards);
-      this.setSpinner(false);
-      this.onPressWrite();
-    }
 
-    onChangeContent = (v, idx) => {
-      changeCueCardsParentFnBefore();
+    let onChangeContent = (v, idx) => {
+      this.changeCueCardsParentFnBefore();
       let newLst = this.state.cuecards;
       newLst[idx].content = v;
-      changeCueCardsParentFnBefore(newLst);
+      this.changeNotesParentFnAfter(newLst);
     };
 
-    addElement = () => {
-      changeCueCardsParentFnBefore();
-      let newLst = this.state.cuecards;
-      newLst.push({id: this.state.cuecards.length, content: ""});
-      changeCueCardsParentFnBefore(newLst);
-    };
-
-    delElement = (idx) => {
-      changeCueCardsParentFnBefore();
+    let delElement = (idx) => {
+      this.changeCueCardsParentFnBefore();
       let newLst = this.state.cuecards;
       newLst.splice(idx, 1);  // change splice method
 
@@ -134,14 +138,11 @@ class CueCardScreen extends React.Component {
         this.setState({focusedIdx: this.state.cuecards.length-1})
       }
 
-      setTimeout(() => changeCueCardsParentFnBefore(newLst), 10);
+      setTimeout(() => this.changeNotesParentFnAfter(newLst), 10);
     };
 
     return (
       <View>
-        <View style={{width: 50}}>
-          <Button title="+" onPress={() => addElement()}/>
-        </View>
         <FlatList keyExtractor={(item, index) => item.id} data={this.state.cuecards} renderItem={listItem}/>
       </View>
     )
@@ -170,29 +171,49 @@ class CueCardScreen extends React.Component {
       setTimeout(() => this.onPressWrite(), 10);
     };
 
+    const topBarHeight = 75;
+
     return (
       <View>
-        <Text>Focused Idx: {this.state.focusedIdx}</Text>
-        <View style={Styles.settingsButtonItem}>
-          <View style={{width: 120}}> 
-            <Button title="<" onPress={() => changeFocus(-1)}/>
-          </View>
-          <View style={{width: 120}}>
-            <Button title=">" onPress={() => changeFocus(1)}/>
-          </View>
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, backgroundColor: '#43717B', margin: 5}]} onPress={() => changeFocus(-1)}>
+            <Text style={[Styles.notes_h1, {textAlign: 'center'}]}>{'<'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, backgroundColor: '#43717B', margin: 5}]} onPress={() => changeFocus(1)}>
+          <Text style={[Styles.notes_h1, {textAlign: 'center'}]}>{'>'}</Text>
+          </TouchableOpacity>
         </View>
+        {/* <Text style={Styles.greenText}>Focused Idx: {this.state.focusedIdx}</Text> */}
       </View>
     )
   }
 
+
+
   render() {
+    const topBarHeight = 75;
     return (
-      <ScrollView style={{margin: 10}}>
+      <View style={[Styles.basicBg]}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+            <Text style={Styles.notes_h1}>{'<'} Edit Cue Cards</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
+            <Text style={Styles.notes_h1}>+</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{flex: 1}}>
+          {this.cuecardList()}
+        </View>
         {this.focusNav()}
-        <View style={Styles.lineStyle}/>
-        {this.cuecardList()}
-        {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
-      </ScrollView>
+      </View>
+
+      // <ScrollView style={{margin: 10}}>
+      //   {this.focusNav()}
+      //   <View style={Styles.lineStyle}/>
+      //   {this.cuecardList()}
+      //   {/* <BLERead characteristic={this.state.characteristic} setSpinner={this.setSpinner}/> */}
+      // </ScrollView>
     )
   };
 }

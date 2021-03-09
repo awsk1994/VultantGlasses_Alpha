@@ -69,9 +69,9 @@ export default StyleSheet.create({
   flexRow: {
     flexDirection: 'row'
   },
-  redThickBorder: {
-    borderColor: "red",
-    borderWidth: 5
+  greenThickBorder: {
+    borderColor: "#28AC6C",
+    borderWidth: 3
   },
   whiteBorderBox: {
     borderColor: "white",

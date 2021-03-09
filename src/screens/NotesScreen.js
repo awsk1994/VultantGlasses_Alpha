@@ -105,7 +105,6 @@ class NotesScreen extends React.Component {
     const listItem = (itemData) => {
       return (
         <View>
-          {/* <View style={Styles.lineStyle}/> */}
           <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={Styles.notes_h1}>Title</Text>
