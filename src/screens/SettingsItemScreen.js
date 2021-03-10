@@ -69,6 +69,7 @@ class SettingsItemScreen extends React.Component {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
       // ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
       this.setSpinner(false);
+      this.props.navigation.goBack();
     };
 
     const ErrWriteFn = (err) => {
@@ -157,7 +158,7 @@ class SettingsItemScreen extends React.Component {
   
       const contentHexStr = hourHex + minHex + secHex + yrHex + monthHex + dayHex;
   
-      this.send(this.state.itemData, contentHexStr)
+      this.send(this.state.itemData, contentHexStr);
     };
   
     return (
