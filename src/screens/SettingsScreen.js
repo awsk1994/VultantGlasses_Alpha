@@ -171,6 +171,7 @@ class SettingsScreen extends React.Component {
           {this.SettingsItemButton(SettingsData.timedate, require("../img/demo_settings_timedate.png"))}
         </View>
         <View style={Styles.lightLineStyle}/>
+        <Text style={Styles.greenText}>Advanced Settings</Text>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {this.CustomNotificationTestComponent()}
           {this.DisconnectComponent()}
