@@ -103,6 +103,8 @@ class CueCardScreen extends React.Component {
               value={itemData.item.content}
               style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
+              onSubmitEditing = {() => onSubmitNote()}
+              onEndEditing = {() => onSubmitNote()}
             />
           </View>
         </View>
@@ -110,11 +112,17 @@ class CueCardScreen extends React.Component {
     };
 
     let onChangeContent = (v, idx) => {
-      this.changeCueCardsParentFnBefore();
       let newLst = this.state.cuecards;
       newLst[idx].content = v;
-      this.changeNotesParentFnAfter(newLst);
+      this.setState({cuecards: newLst});
     };
+
+    const onSubmitNote = (v) => {
+      this.setSpinner(true);
+      Storage.saveObjList("@cuecards", this.state.cuecards);
+      this.setSpinner(false);
+      this.onPressWrite();
+    }
 
     let delElement = (idx) => {
       this.changeCueCardsParentFnBefore();

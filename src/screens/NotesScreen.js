@@ -82,7 +82,6 @@ class NotesScreen extends React.Component {
     BLEUtils.writeHexOp(hexMsg, this.state.characteristic, SuccessWriteFn, ErrWriteFn);
   }
 
-
   addElement = () => {
     this.changeNotesParentFnBefore();
     let newLst = this.state.notes;
@@ -117,6 +116,8 @@ class NotesScreen extends React.Component {
               value={itemData.item.title}
               style={Styles.blueText}
               onChangeText={v => onChangeTitle(v, itemData.index)}
+              onSubmitEditing = {() => onSubmitNote()}
+              onEndEditing = {() => onSubmitNote()}
             />
             <Text style={Styles.notes_h1}>Content</Text>
             <TextInput
@@ -124,6 +125,8 @@ class NotesScreen extends React.Component {
               value={itemData.item.content}
               style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
+              onSubmitEditing = {() => onSubmitNote()}
+              onEndEditing = {() => onSubmitNote()}
             />
           </View>
         </View>
@@ -131,18 +134,23 @@ class NotesScreen extends React.Component {
     };
 
     const onChangeTitle = (v, idx) => {
-      this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
       newLst[idx].title = v;
-      this.changeNotesParentFnAfter(newLst);
+      this.setState({notes: newLst});
     };
 
     const onChangeContent = (v, idx) => {
-      this.changeNotesParentFnBefore();
       let newLst = this.state.notes;
       newLst[idx].content = v;
-      this.changeNotesParentFnAfter(newLst);
+      this.setState({notes: newLst});
     };
+
+    const onSubmitNote = (v) => {
+      this.setSpinner(true);
+      Storage.saveObjList("@notes", this.state.notes);
+      this.setSpinner(false);
+      this.onPressWrite();
+    }
 
     const delElement = (idx) => {
       this.changeNotesParentFnBefore();
