@@ -26,7 +26,6 @@
 # TODO:
 ### High (Essential) Priority:
  - Language selection
- - notes page -> notes are saved/sent at each change. Try to save/send after not clicking on textinput instead to reduce number of save/send.
 
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
    - request for actual button image
@@ -35,16 +34,16 @@
 
  - [Need to test] react-native permissions implementation on iOS.
 
-
  - [Notification message] -> appName conversion (eg. com.whatsapp -> whatsapp), get app list name from android/ios
 
-  - Prettify Settings --> Should do custom modal to change text and numbers, instead of going to next screen...
 
  - Logging/Debugging
  - White flash when changing between screens
 
+ - Bug -> connected -> peripheral device turns off...
  - whereever you do spinner true, need to catch error!!
 ### Medium (Good to have) Priority:
+ - Settings -> Developer options
  - move appSettings to top right
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
  - Add global settings to log ToastAndroid (Developer mode settings)
