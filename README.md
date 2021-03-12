@@ -25,7 +25,7 @@
 
 # TODO:
 ### High (Essential) Priority:
- - Language selection
+ - Tidy up CueCard send logic. Send upon land on page and send upon leaving the edit page.
 
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
    - request for actual button image
@@ -36,13 +36,17 @@
 
  - [Notification message] -> appName conversion (eg. com.whatsapp -> whatsapp), get app list name from android/ios
 
-
  - Logging/Debugging
- - White flash when changing between screens
 
  - Bug -> connected -> peripheral device turns off...
  - whereever you do spinner true, need to catch error!!
+ - notification -> fetch list of apps from phone?
+
 ### Medium (Good to have) Priority:
+ - White flash when changing between screens
+
+ - Language selection
+
  - Settings -> Developer options
  - move appSettings to top right
  - Try to connect to saved BLE. If fail, alert and suggest to go choose device page.
