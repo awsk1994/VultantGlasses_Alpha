@@ -7,6 +7,7 @@ import SettingsType from "../data/SettingsType";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Styles from "../class/Styles";
 import Moment from 'moment';
+import VButton from '../components/VButton';
 
 class SettingsItemScreen extends React.Component {
   constructor({props, route}) {
@@ -82,39 +83,69 @@ class SettingsItemScreen extends React.Component {
   };
 
   // Type Components
-  NumericComponent = () => {
+  SecondsComponent = () => {
+    const onSecChange = (val) => {
+      this.setState({itemVal: val});
+      this.sendNumberAndSave(this.state.itemData, val);
+    };
+
+    const VFillableButton = (val) => {
+      if(this.state.itemVal == val){
+        return (<VButton text={val + " seconds"} fill={true} color="green" onPress={() => onSecChange(val)}/>)
+      } else {
+        return (<VButton text={val + " seconds"} color="green" onPress={() => onSecChange(val)}/>)
+      }
+    }
+
     return (
       <View>
-        <TextInput keyboardType='numeric' 
-          style={Styles.blueText}
-          onChangeText={(text) => this.setState({itemVal: text})}
-          value={this.state.itemVal != null ? this.state.itemVal.toString() : null}
-          maxLength={10}  //setting limit of input
-        />
-        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendNumberAndSave(this.state.itemData, this.state.itemVal)}}/>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          {VFillableButton('10')}
+          {VFillableButton('30')}
+        </View>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          {VFillableButton('60')}
+          <VButton text="Custom" color="white" onPress={() => onSecChange(0)}/>
+        </View>
       </View>
     )
   }
 
   TextComponent = () => {
+    const title = this.state.itemData.title;
     return (
       <View>
+      <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
+        <Text style={Styles.notes_h1}>{title}</Text>
         <TextInput
+          placeholder="Enter notes here..."
+          value={this.state.itemVal}
           style={Styles.blueText}
           onChangeText={(text) => this.setState({itemVal: text})}
-          value={this.state.itemVal}
-          plaeholder="..."
         />
-        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="写特征/发送（Send）" onPress={() => {this.sendTextAndSave(this.state.itemData, this.state.itemVal)}}/>
       </View>
+    </View>
     )
   }
 
   LangComponent = () => {
+    const VFillableButton = (val, text) => {
+      if(this.state.itemVal == val){
+        return (<VButton text={text} fill={true} color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
+      } else {
+        return (<VButton text={text} color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
+      }
+    }
+
     return (
       <View>
-        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="选择中文（Chinese)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
-        <Button color="#28AC6C" style={Styles.BLEfuncButton} title="选择英文（English)" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          {VFillableButton("1", "中文（Chinese)")}
+          {VFillableButton("2", "英文（English)")}
+
+          {/* <VButton text="中文（Chinese)" color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, "1")}/>
+          <VButton text="英文（English)" color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, "2")}/> */}
+        </View>
       </View>
     )
   }
@@ -163,15 +194,13 @@ class SettingsItemScreen extends React.Component {
   
     return (
       <View>
-        <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
         <View>
-          <View style={Styles.button}>
-            <Button color="#28AC6C" title="更改时间(modfiy Time)" onPress={() => changeTimeDate("time")}/>
-          </View>
-          <View style={Styles.button}>
-            <Button color="#28AC6C" title="更改日期(modify Date)" onPress={() => changeTimeDate("date")}/>
+          <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+            <VButton text="更改时间(modfiy Time)" color="green" onPress={() => changeTimeDate("time")}/>
+            <VButton text="更改日期(modify Date)" color="green" onPress={() => changeTimeDate("date")}/>
           </View>
         </View>
+        <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
         <Text style={Styles.grayText}>TimeDate wont' be saved into Persistence; since it keeps changing.</Text>
         
         {this.state.showTimeDate && (
@@ -188,11 +217,31 @@ class SettingsItemScreen extends React.Component {
     );
   }
 
-  TopNav = (title) => {
+  TopNav = (title, type) => {
     const topBarHeight = 75;
+
+    const genericSendAndSave = () => {
+      switch(this.state.itemData.type){
+        case SettingsType.seconds:
+          this.sendNumberAndSave(this.state.itemData, this.state.itemVal);
+          break;
+        case SettingsType.text:
+          this.sendTextAndSave(this.state.itemData, this.state.itemVal);
+          break;
+        case SettingsType.language:
+        case SettingsType.timedate:
+          this.props.navigation.goBack();
+          break;
+        default:
+          break;
+      };
+    };
+
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+        <TouchableOpacity 
+          style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} 
+          onPress={() => genericSendAndSave()}>
           <Text style={Styles.notes_h1}>{'<'} Edit {title}</Text>
         </TouchableOpacity>
       </View>
@@ -202,7 +251,7 @@ class SettingsItemScreen extends React.Component {
   SettingsItemComponent = () => {
     return (
       <View>
-        {this.state.itemData.type == SettingsType.numeric && this.NumericComponent()}
+        {this.state.itemData.type == SettingsType.seconds && this.SecondsComponent()}
         {this.state.itemData.type == SettingsType.text && this.TextComponent()}
         {this.state.itemData.type == SettingsType.language && this.LangComponent()}
         {this.state.itemData.type == SettingsType.timedate && this.TimeDateComponent()}
@@ -212,7 +261,7 @@ class SettingsItemScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView style={[Styles.basicBg]}>
+    <ScrollView style={[Styles.basicBg]}>
       {this.TopNav(this.state.itemData.id)}
       <View style={{flex: 1}}>
         {this.SettingsItemComponent()}

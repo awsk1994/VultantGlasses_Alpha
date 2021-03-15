@@ -4,7 +4,7 @@ const SettingsData = {
   displayTimeOut: {   // sleep time
     id: "displayTimeOut",
     title: "熄屏时间（Display TimeOut）",
-    type: SettingsType.numeric,
+    type: SettingsType.seconds,
     sAttri1HexStr: "56" // HARDCODED
   },
   // doNotDisturb: {
@@ -34,7 +34,7 @@ const SettingsData = {
   msgDispTime: {    // display time
     id: "msgDispTime",
     title: "信息显示停留时间（Message Display Time, seconds）",
-    type: SettingsType.numeric,
+    type: SettingsType.seconds,
     sAttri1HexStr: "55" // HARDCODED
   },
   timedate: {
