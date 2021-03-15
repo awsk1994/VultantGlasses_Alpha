@@ -12,6 +12,8 @@ import BlockAppTitleList from "../data/BlockAppTitleList";
 import {checkMultiple, requestMultiple, PERMISSIONS, openSettings} from 'react-native-permissions';
 import Utils from "../class/Utils";
 import Styles from "../class/Styles";
+import VButton from '../components/VButton';
+import VStatus from '../components/VStatus';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -412,8 +414,7 @@ class MenuScreen extends React.Component {
     statusComponent = () => {
       return (
         <View style={[Styles.batteryComponent, {flex: 0, padding: 20}]}>
-          {/* <Text style={Styles.p}>No BLE Device connected...</Text> */}
-          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_no_device_connected.png")}/>
+          <VStatus text="No BLE Device Connected"/>
         </View>
       )
     }
@@ -421,19 +422,8 @@ class MenuScreen extends React.Component {
     const selectConnectComponent = () => {
       return (
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.chooseDevice}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_choose_device.png")}/>
-              {/* <View style={Styles.absoluteView}>
-                  <Text style={Styles.p}>选择BLE装置（Choose Device)</Text>
-              </View> */}
-          </TouchableOpacity>
-          <TouchableOpacity style={Styles.BLEfuncButton} onPress={this.connectBLE}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_connect_saved_device.png")}/>
-              {/* <View style={Styles.absoluteView}>
-                  <Text style={Styles.p}>链接BLE装置（Connect to saved BLE）</Text>
-              </View> */}
-              <Text style={Styles.greenText}>(Saved BLE device: {this.state.deviceName})</Text>
-          </TouchableOpacity>
+          <VButton text="选择BLE装置（Choose Device)" color="green" onPress={this.chooseDevice}/>
+          <VButton text="链接BLE装置（Connect to saved BLE）" color="green" onPress={this.connectBLE}/>
         </View>
       )
     }
@@ -449,8 +439,8 @@ class MenuScreen extends React.Component {
   hasCharacteristicView = () => {
     batteryComponent = () => {
       return (
-        <View style={[Styles.batteryComponent, {flex: 0}]}>
-          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_battery.png")}/>
+        <View style={[Styles.batteryComponent, {flex: 0, padding: 20}]}>
+          <VStatus text="Battery: 100%"/>
         </View>
       )
     }

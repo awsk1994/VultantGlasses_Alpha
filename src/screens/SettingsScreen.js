@@ -3,6 +3,7 @@ import { ScrollView, Image, Platform, View, Text, Button, TouchableOpacity } fro
 import Storage from "../class/Storage";
 import SettingsData from "../data/SettingsData";
 import Styles from "../class/Styles";
+import VButton from "../components/VButton";
 
 // TODO: Stuck - 1. How to get Settings info? 2. Can I get all settings info in 1 go?
 // Skipping 语音及电话接听设置, 信息文字显示排版方式设置
@@ -88,7 +89,7 @@ class SettingsScreen extends React.Component {
   SettingsItemButton = (itemData, imgPath) => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
+        <VButton text={itemData.title} color={imgPath} onPress={() => {
           this.props.navigation.navigate("SettingsItemScreen", {
             itemData: itemData,
             itemVal: this.state[itemData.id],
@@ -96,9 +97,7 @@ class SettingsScreen extends React.Component {
             setSpinner: this.setSpinner,
             setParentState: this.setParentState
           });
-        }}>
-          <Image resizeMode='contain' style={Styles.vultantButton} source={imgPath}/>
-        </TouchableOpacity>
+        }}/>
       </View>
     )
   }
@@ -106,13 +105,11 @@ class SettingsScreen extends React.Component {
   DisplayNotificationComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <TouchableOpacity style={Styles.BLEfuncButton} onPress = {() => {
+        <VButton text="Notification Allow App List" color="green" onPress = {() => {
           this.props.navigation.navigate("NotificationAllowAppListScreen", {
             setAllowAppList: this.setAllowAppList
           });
-        }}>
-          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification.png")}/>
-        </TouchableOpacity>
+        }}/>
       </View>
     )
   }
@@ -120,14 +117,12 @@ class SettingsScreen extends React.Component {
   CustomNotificationTestComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+        <VButton text="Custom Notification Test" color="green" onPress={() => {
             this.props.navigation.navigate("Notification", {
               characteristic: this.state.characteristic,
               setSpinner:  this.setSpinner
             });
-          }}>
-            <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_notification_test.png")}/>
-        </TouchableOpacity>
+          }}/>
       </View>
     )
   }
@@ -135,12 +130,10 @@ class SettingsScreen extends React.Component {
   DisconnectComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+        <VButton text="Disconnect Device" color="green" onPress={() => {
           this.disconnectDevice();
           this.props.navigation.goBack();
-        }}>
-          <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_disconnect.png")}/>
-        </TouchableOpacity>
+        }}/>
       </View>
     )
   }
@@ -149,7 +142,7 @@ class SettingsScreen extends React.Component {
     return (
       <View style={[Styles.BLEfuncButton]}>
         <TouchableOpacity style={Styles.BLEfuncButton}>
-            <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_settings_read_characteristics.png")}/>
+            <Image resizeMode='contain' style={Styles.vultantButton}/>
         </TouchableOpacity>
       </View>
     )
@@ -160,15 +153,15 @@ class SettingsScreen extends React.Component {
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {this.DisplayNotificationComponent()}
-          {this.SettingsItemButton(SettingsData.msgDispTime, require("../img/demo_settings_display.png"))}
+          {this.SettingsItemButton(SettingsData.msgDispTime, "green")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.SettingsItemButton(SettingsData.bluetoothName, require("../img/demo_settings_bluetooth.png"))}
-          {this.SettingsItemButton(SettingsData.language, require("../img/demo_settings_lang.png"))}
+          {this.SettingsItemButton(SettingsData.bluetoothName, "green")}
+          {this.SettingsItemButton(SettingsData.language, "green")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.SettingsItemButton(SettingsData.displayTimeOut, require("../img/demo_settings_sleeptime.png"))}
-          {this.SettingsItemButton(SettingsData.timedate, require("../img/demo_settings_timedate.png"))}
+          {this.SettingsItemButton(SettingsData.displayTimeOut, "green")}
+          {this.SettingsItemButton(SettingsData.timedate, "green")}
         </View>
         <View style={Styles.lightLineStyle}/>
         <Text style={Styles.greenText}>Advanced Settings</Text>

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import GlobalSettings from '../data/GlobalSettings';
 import Styles from "../class/Styles";
+import VButton from "./VButton";
 
 class BLEFunctions extends React.Component { 
   constructor(props) {
@@ -20,48 +21,39 @@ class BLEFunctions extends React.Component {
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
-          <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+            <VButton text="PRESENTATION MODE" color="green" onPress={() => {
               this.props.navigation.navigate("PresentCueCard", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner
               })
-            }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_presentation_mode.png")}/>
-            </TouchableOpacity>
+            }}/>
           </View>
           <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+            <VButton text="EDIT NOTES" color="yellow" onPress={() => {
               this.props.navigation.navigate("Notes", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner
               })
-            }}>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_edit_notes.png")}/>
-            </TouchableOpacity>
+            }}/>
           </View>
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
-                this.props.navigation.navigate("CueCard", {
-                  characteristic: this.props.characteristic,
-                  setSpinner:  this.props.setSpinner
-                })
-              }}>
-              <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_edit_cuecards.png")}/>
-            </TouchableOpacity>
+            <VButton text="Edit Cue Card" color="red" onPress={() => {
+              this.props.navigation.navigate("CueCard", {
+                characteristic: this.props.characteristic,
+                setSpinner:  this.props.setSpinner
+              })
+            }}/>
           </View>
           <View style={[Styles.BLEfuncButton]}>
-            <TouchableOpacity style={Styles.BLEfuncButton} onPress={() => {
+            <VButton text="General Settings" color="green" onPress={() => {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner,
                 setAllowAppList: this.props.setAllowAppList,
                 disconnectDevice: this.props.disconnectDevice
-              })}
-            }>
-                <Image resizeMode='contain' style={Styles.vultantButton} source={require("../img/demo_general_settings.png")}/>
-            </TouchableOpacity>
+              })}}/>
           </View>     
         </View>
       </View>
