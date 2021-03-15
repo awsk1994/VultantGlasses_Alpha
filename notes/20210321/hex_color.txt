@@ -1,0 +1,4 @@
+Light blue: 77cdd5
+Green: 2bb673
+Yellow: f8ec33
+Orange: f15b2a
