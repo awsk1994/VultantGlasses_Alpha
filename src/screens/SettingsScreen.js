@@ -102,7 +102,7 @@ class SettingsScreen extends React.Component {
     )
   }
 
-  DisplayNotificationComponent = () => {
+  AllowAppNotificationComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
         <VButton text="Notification Allow App List" color="green" onPress = {() => {
@@ -152,7 +152,7 @@ class SettingsScreen extends React.Component {
     return (
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.DisplayNotificationComponent()}
+          {this.AllowAppNotificationComponent()}
           {this.SettingsItemButton(SettingsData.msgDispTime, "green")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
