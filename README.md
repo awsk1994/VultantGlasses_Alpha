@@ -25,6 +25,13 @@
 
 # TODO:
 ### High (Essential) Priority:
+ - SettingItem's seconds-type-component's Custom Button; need to implement (now, it's just an empty button)
+ - Fix VButton and Vstatus' line alignment and also new line when necssary.
+ - Fix VButton and Vstatus' font
+ - Implment src/X.png to notes and cue card screen
+ 
+ - apply hexColor (read notes/hex_color.txt)
+
  - Tidy up CueCard send logic. Send upon land on page and send upon leaving the edit page.
 
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
