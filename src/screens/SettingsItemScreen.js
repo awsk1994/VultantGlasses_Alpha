@@ -8,6 +8,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Styles from "../class/Styles";
 import Moment from 'moment';
 import VButton from '../components/VButton';
+import { Dialog } from 'react-native-simple-dialogs';
+import { Alert } from 'react-native';
 
 class SettingsItemScreen extends React.Component {
   constructor({props, route}) {
@@ -19,6 +21,7 @@ class SettingsItemScreen extends React.Component {
 
       itemData: route.params.itemData,
       itemVal: route.params.itemVal,
+      tempItemVal: route.params.itemVal,
       characteristic: route.params.characteristic,
 
       showTimeDate: false,
@@ -48,6 +51,12 @@ class SettingsItemScreen extends React.Component {
     this.setParentState(itemData.id, content);
     this.send(itemData, BLEUtils.numStrToHex(content));
     Storage.saveInt("@" + itemData.id, content);
+  }
+
+  sendNumberStrAndSave = (itemData, content) => {
+    this.setParentState(itemData.id, content);
+    this.send(itemData, BLEUtils.numStrToHex(content));
+    Storage.saveText("@" + itemData.id, content);
   }
 
   send = (item, contentHexStr) => {
@@ -86,16 +95,54 @@ class SettingsItemScreen extends React.Component {
   SecondsComponent = () => {
     const onSecChange = (val) => {
       this.setState({itemVal: val});
-      this.sendNumberAndSave(this.state.itemData, val);
+      this.sendNumberStrAndSave(this.state.itemData, val);
     };
 
     const VFillableButton = (val) => {
       if(this.state.itemVal == val){
-        return (<VButton text={val + " seconds"} fill={true} color="green" onPress={() => onSecChange(val)}/>)
+        return (<VButton text={val + " seconds"} fill={true} color="white" onPress={() => onSecChange(val)}/>)
       } else {
-        return (<VButton text={val + " seconds"} color="green" onPress={() => onSecChange(val)}/>)
+        return (<VButton text={val + " seconds"} color="white" onPress={() => onSecChange(val)}/>)
       }
     }
+    const custom = (this.state.itemVal != '10') && (this.state.itemVal != '30') && (this.state.itemVal != '60');
+
+    const CustomComponent = () => {
+      return (
+        <Dialog 
+            visible={this.state.showDialog}
+            title="Custom Input"
+            onTouchOutside={() => this.setState({showDialog: false})}>
+            <TextInput
+              placeholder="Enter seconds here..."
+              keyboardType='number-pad'
+              value={this.state.tempItemVal}
+              onChangeText={v => this.setState({tempItemVal: v})}
+            />
+            <View style={[Styles.flexRow]}>
+              <View style={[{flex: 1}, Styles.button]}>
+                <Button title="save" onPress={() => {
+                  if(this.state.tempItemVal.length > 2){
+                    Alert.alert("Inserted value cannot exceed 99.");
+                    this.setState({tempItemVal: this.state.itemVal});
+                  } else if(this.state.tempItemVal.length <= 0){
+                    Alert.alert("Inserted value cannot be less than or equals to 0.");
+                    this.setState({tempItemVal: this.state.itemVal});
+                  } else {
+                    this.setState({showDialog: false});
+                    onSecChange(this.state.tempItemVal);
+                  }
+                }}/>
+              </View>
+              <View style={[{flex: 1}, Styles.button]}>
+                <Button style={{flex: 0}} title="cancel" onPress={() => {
+                  this.setState({showDialog: false});
+                }}/>
+              </View>
+            </View>
+        </Dialog>
+      )
+    };
 
     return (
       <View>
@@ -105,8 +152,10 @@ class SettingsItemScreen extends React.Component {
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {VFillableButton('60')}
-          <VButton text="Custom" color="white" onPress={() => onSecChange(0)}/>
+          {custom && <VButton fill={true} text={"Custom"} color="white" onPress={() => this.setState({showDialog: true})}/>}
+          {!custom && <VButton text={"Custom"} color="white" onPress={() => this.setState({showDialog: true})}/>}
         </View>
+        {CustomComponent()}
       </View>
     )
   }

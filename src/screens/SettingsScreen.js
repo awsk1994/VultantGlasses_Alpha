@@ -45,10 +45,10 @@ class SettingsScreen extends React.Component {
   fetchSettingsInfo = async () => {
     console.log("Fetching Settings information from AsyncStorage");
 
-    Storage.fetchInt('@displayTimeOut')
+    Storage.fetchText('@displayTimeOut')
       .then((v) => this.setState({'displayTimeOut': v == null ? INIT_VALUES.displayTimeOut : v}));
 
-    Storage.fetchInt('@msgDispTime')
+    Storage.fetchText('@msgDispTime')
       .then((v) => this.setState({'msgDispTime': v == null ? INIT_VALUES.msgDispTime : v}));
 
     Storage.fetchText('@language')
