@@ -117,7 +117,7 @@ class SettingsScreen extends React.Component {
   CustomNotificationTestComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <VButton text="Custom Notification Test" color="green" onPress={() => {
+        <VButton text="Custom Notification Test" color="lightBlue" onPress={() => {
             this.props.navigation.navigate("Notification", {
               characteristic: this.state.characteristic,
               setSpinner:  this.setSpinner
@@ -130,7 +130,7 @@ class SettingsScreen extends React.Component {
   DisconnectComponent = () => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <VButton text="Disconnect Device" color="green" onPress={() => {
+        <VButton text="Disconnect Device" color="lightBlue" onPress={() => {
           this.disconnectDevice();
           this.props.navigation.goBack();
         }}/>
@@ -153,18 +153,18 @@ class SettingsScreen extends React.Component {
       <View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {this.AllowAppNotificationComponent()}
-          {this.SettingsItemButton(SettingsData.msgDispTime, "green")}
+          {this.SettingsItemButton(SettingsData.msgDispTime, "lightBlue")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.SettingsItemButton(SettingsData.bluetoothName, "green")}
-          {this.SettingsItemButton(SettingsData.language, "green")}
+          {this.SettingsItemButton(SettingsData.bluetoothName, "lightBlue")}
+          {this.SettingsItemButton(SettingsData.language, "lightBlue")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.SettingsItemButton(SettingsData.displayTimeOut, "green")}
-          {this.SettingsItemButton(SettingsData.timedate, "green")}
+          {this.SettingsItemButton(SettingsData.displayTimeOut, "lightBlue")}
+          {this.SettingsItemButton(SettingsData.timedate, "lightBlue")}
         </View>
         <View style={Styles.lightLineStyle}/>
-        <Text style={Styles.greenText}>Advanced Settings</Text>
+        <Text style={Styles.p}>Advanced Settings</Text>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {this.CustomNotificationTestComponent()}
           {this.DisconnectComponent()}

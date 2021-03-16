@@ -100,9 +100,9 @@ class SettingsItemScreen extends React.Component {
 
     const VFillableButton = (val) => {
       if(this.state.itemVal == val){
-        return (<VButton text={val + " seconds"} fill={true} color="white" onPress={() => onSecChange(val)}/>)
+        return (<VButton text={val + " seconds"} fill={true} color="lightBlue" onPress={() => onSecChange(val)}/>)
       } else {
-        return (<VButton text={val + " seconds"} color="white" onPress={() => onSecChange(val)}/>)
+        return (<VButton text={val + " seconds"} color="lightBlue" onPress={() => onSecChange(val)}/>)
       }
     }
     const custom = (this.state.itemVal != '10') && (this.state.itemVal != '30') && (this.state.itemVal != '60');
@@ -152,8 +152,8 @@ class SettingsItemScreen extends React.Component {
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {VFillableButton('60')}
-          {custom && <VButton fill={true} text={"Custom"} color="white" onPress={() => this.setState({showDialog: true})}/>}
-          {!custom && <VButton text={"Custom"} color="white" onPress={() => this.setState({showDialog: true})}/>}
+          {custom && <VButton fill={true} text={"Custom"} color="lightBlue" onPress={() => this.setState({showDialog: true})}/>}
+          {!custom && <VButton text={"Custom"} color="lightBlue" onPress={() => this.setState({showDialog: true})}/>}
         </View>
         {CustomComponent()}
       </View>
@@ -180,9 +180,9 @@ class SettingsItemScreen extends React.Component {
   LangComponent = () => {
     const VFillableButton = (val, text) => {
       if(this.state.itemVal == val){
-        return (<VButton text={text} fill={true} color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
+        return (<VButton text={text} fill={true} color="lightBlue" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
       } else {
-        return (<VButton text={text} color="green" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
+        return (<VButton text={text} color="lightBlue" onPress={() => this.sendLanguageAndSave(this.state.itemData, val)}/>)
       }
     }
 
@@ -245,8 +245,8 @@ class SettingsItemScreen extends React.Component {
       <View>
         <View>
           <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-            <VButton text="更改时间(modfiy Time)" color="green" onPress={() => changeTimeDate("time")}/>
-            <VButton text="更改日期(modify Date)" color="green" onPress={() => changeTimeDate("date")}/>
+            <VButton text="更改时间(modfiy Time)" color="lightBlue" onPress={() => changeTimeDate("time")}/>
+            <VButton text="更改日期(modify Date)" color="lightBlue" onPress={() => changeTimeDate("date")}/>
           </View>
         </View>
         <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
