@@ -25,18 +25,17 @@
 
 # TODO:
 ### High (Essential) Priority:
- - SettingItem's seconds-type-component's Custom Button; need to implement (now, it's just an empty button)
+ - manual override to cancel auto connect?
  - Fix VButton and Vstatus' line alignment and also new line when necssary.
- - Fix VButton and Vstatus' font
- - Implment src/X.png to notes and cue card screen
- 
- - apply hexColor (read notes/hex_color.txt)
+ - Fix VButton and Vstatus' font 
+ - ensure menuScreen's .then stuff are working correctly.
 
- - Tidy up CueCard send logic. Send upon land on page and send upon leaving the edit page.
+ - todo: force to use back() when backing from BleMenuByName screen.
+
+ - MenuScreen's no characteristic view's status. Should update accordingly.
+ - MenuScreen's characteristic view's battery part.
 
  - UI changes based on Patrick's stuff (https://www.dropbox.com/sh/th72a0tomasqccw/AACkBD09jVnhYz0QY4I0YBDia?dl=0)
-   - request for actual button image
-   - Use glyhicons?
    - Try on different screen resolutions
 
  - [Need to test] react-native permissions implementation on iOS.
