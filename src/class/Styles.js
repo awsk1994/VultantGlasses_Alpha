@@ -6,13 +6,13 @@ export default StyleSheet.create({
   h1: {
     fontSize: 30,
     fontWeight: "bold",
-    color: Constants["lightBlue"]
+    color: Constants["green"]
   },
   
   h2: {
     fontSize: 20,
     fontWeight: "bold",
-    color: Constants["lightBlue"]
+    color: Constants["green"]
   },
   notes_h1: {
     fontSize: 30,

@@ -17,7 +17,7 @@ class VStatus extends React.Component {
         <Image resizeMode='contain' style={[Styles.vultantButton, Styles.absoluteView]} source={this.imgPath}/>
         <View style={{alignItems: 'center', justifyContent: 'center', height: '100%', flexDirection: 'row'}}>
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={Styles.greenText}>
+            <Text style={Styles.h1}>
               {this.text}
             </Text>
           </View>

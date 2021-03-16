@@ -39,7 +39,7 @@ class BLEFunctions extends React.Component {
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           <View style={[Styles.BLEfuncButton]}>
-            <VButton text="Edit Cue Card" color="red" onPress={() => {
+            <VButton text="EDIT CUE CARD" color="red" onPress={() => {
               this.props.navigation.navigate("CueCard", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner
@@ -47,7 +47,7 @@ class BLEFunctions extends React.Component {
             }}/>
           </View>
           <View style={[Styles.BLEfuncButton]}>
-            <VButton text="General Settings" color="green" onPress={() => {
+            <VButton text="GENERAL SETTINGS" color="green" onPress={() => {
               this.props.navigation.navigate("Settings", {
                 characteristic: this.props.characteristic,
                 setSpinner:  this.props.setSpinner,
