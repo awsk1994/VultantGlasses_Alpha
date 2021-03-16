@@ -12,8 +12,8 @@ class VButton extends React.Component {
     "red_fill": require("../img/Red_Box_Filled.png"),
     "yellow": require("../img/Yellow_Box.png"),
     "yellow_fill": require("../img/Yellow_Box_Filled.png"),
-    "white": require("../img/Green_Box.png"), // TODO: Green_Box for now.
-    // "white_fill": require("../img/White_Box_Filled.png"),
+    "white": require("../img/Lightblue_Box.png"),
+    "white_fill": require("../img/Lightblue_Box_Filled.png"),
   };
 
   imgPath = "../img/Yellow Box.png";
