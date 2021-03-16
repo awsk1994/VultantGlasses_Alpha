@@ -17,12 +17,12 @@ export default StyleSheet.create({
   notes_h1: {
     fontSize: 30,
     // fontWeight: 'bold',
-    color: '#77CCD4'
+    color: Constants["lightBlue"]
   },
   notes_h2: {
     fontSize: 20,
     fontWeight: "bold",
-    color: '#77CCD4'
+    color: Constants["lightBlue"]
   },
   p: {
     color: Constants["lightBlue"]

@@ -1,10 +1,11 @@
 import React from 'react';
-import { FlatList, ScrollView, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, ToastAndroid, Alert } from 'react-native';
+import { FlatList, ScrollView, Image, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, ToastAndroid, Alert } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
 import Storage from '../class/Storage';
 import Styles from "../class/Styles";
+import Constants from '../data/Constants';
 
 class CueCardScreen extends React.Component {
   constructor({props, route}) {
@@ -91,7 +92,7 @@ class CueCardScreen extends React.Component {
     const listItem = (itemData) => {
       return (
         <View>
-          <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
+          <View style={[Styles.settingsItem, {backgroundColor: Constants["lightBlue_bg"], margin: 10}]}>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={Styles.notes_h1}>Slide {itemData.index + 1}</Text>
               <TouchableOpacity onPress={() => delElement(itemData.index)}>
