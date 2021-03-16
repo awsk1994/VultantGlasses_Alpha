@@ -15,6 +15,7 @@ class VButton extends React.Component {
     "yellow_fill": require("../img/Yellow_Box_Filled.png"),
     "lightBlue": require("../img/Lightblue_Box.png"),
     "lightBlue_fill": require("../img/Lightblue_Box_Filled.png"),
+    "empty": require("../img/empty.png")
   };
 
   imgPath = "../img/Yellow Box.png";
@@ -24,7 +25,7 @@ class VButton extends React.Component {
     this.fill = (props.fill != null);
     this.color = props.color;
     this.textColor = Constants[props.color];
-    this.imgPath = (this.fill ? this.VColor[props.color + "_fill"] : this.VColor[props.color]);
+    this.imgPath = this.fill ? this.VColor[props.color + "_fill"] : this.VColor[props.color];
     this.onPress = props.onPress;
     this.text = props.text;
   };

@@ -86,10 +86,10 @@ class SettingsScreen extends React.Component {
     )
   }
 
-  SettingsItemButton = (itemData, imgPath) => {
+  SettingsItemButton = (itemData, color) => {
     return (
       <View style={[Styles.BLEfuncButton]}>
-        <VButton text={itemData.title} color={imgPath} onPress={() => {
+        <VButton text={itemData.title} color={color} onPress={() => {
           this.props.navigation.navigate("SettingsItemScreen", {
             itemData: itemData,
             itemVal: this.state[itemData.id],
@@ -98,6 +98,14 @@ class SettingsScreen extends React.Component {
             setParentState: this.setParentState
           });
         }}/>
+      </View>
+    )
+  }
+
+  EmptyItemButton = (color) => {
+    return (
+      <View style={[Styles.BLEfuncButton]}>
+        <VButton text="" color={color}/>
       </View>
     )
   }
@@ -156,12 +164,13 @@ class SettingsScreen extends React.Component {
           {this.SettingsItemButton(SettingsData.msgDispTime, "lightBlue")}
         </View>
         <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          {this.SettingsItemButton(SettingsData.bluetoothName, "lightBlue")}
-          {this.SettingsItemButton(SettingsData.language, "lightBlue")}
-        </View>
-        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
           {this.SettingsItemButton(SettingsData.displayTimeOut, "lightBlue")}
           {this.SettingsItemButton(SettingsData.timedate, "lightBlue")}
+        </View>
+        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          {/* {this.SettingsItemButton(SettingsData.bluetoothName, "lightBlue")} */}
+          {this.SettingsItemButton(SettingsData.language, "lightBlue")}
+          {this.EmptyItemButton("empty")}
         </View>
         <View style={Styles.lightLineStyle}/>
         <Text style={Styles.p}>Advanced Settings</Text>
