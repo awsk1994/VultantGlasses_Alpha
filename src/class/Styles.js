@@ -1,17 +1,18 @@
 import { StyleSheet } from 'react-native';
+import Constants from "../data/Constants";
 
 export default StyleSheet.create({
   // text
   h1: {
     fontSize: 30,
     fontWeight: "bold",
-    color: 'white'
+    color: Constants["lightBlue"]
   },
   
   h2: {
     fontSize: 20,
     fontWeight: "bold",
-    color: 'white'
+    color: Constants["lightBlue"]
   },
   notes_h1: {
     fontSize: 30,
@@ -24,7 +25,7 @@ export default StyleSheet.create({
     color: '#77CCD4'
   },
   p: {
-    color: 'white'
+    color: Constants["lightBlue"]
   },
   notes_p: {
     color: '#77CCD4'
@@ -33,9 +34,9 @@ export default StyleSheet.create({
   spinnerTextStyle: {
     color: '#FFF'
   },
-  greenText: {color: '#28AC6C'},  // TODO: pick a better green
-  greenBoldText: {color: '#28AC6C', fontWeight: 'bold'},  // TODO: pick a better green
-  blueText: {color: '#77CCD4'},
+  greenText: {color: Constants["green"]},  // TODO: pick a better green
+  greenBoldText: {color: Constants["green"], fontWeight: 'bold'},  // TODO: pick a better green
+  blueText: {color: Constants["lightBlue"]},
 
   // item
   gridItem: {
@@ -66,7 +67,7 @@ export default StyleSheet.create({
   // View
   lineStyle:{
     borderWidth: 0.5,
-    borderColor:'#77CCD4',
+    borderColor: Constants["lightBlue"]
   },
   lightLineStyle:{
     borderWidth: 0.5,
@@ -76,11 +77,11 @@ export default StyleSheet.create({
     flexDirection: 'row'
   },
   greenThickBorder: {
-    borderColor: "#28AC6C",
+    borderColor: Constants["green"],
     borderWidth: 3
   },
   whiteBorderBox: {
-    borderColor: "white",
+    borderColor: Constants["lightBlue"],
     borderWidth: 2,
   },
   basicBg: {
