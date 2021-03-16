@@ -23,7 +23,7 @@ class BLEMenuByName extends React.Component {
     this.bleManager = props.route.params.bleManager;
     this.updateMenuCharacteristic = props.route.params.updateMenuCharacteristic;
     this.setSpinner = props.route.params.setSpinner;
-    this.setSpinner(true);
+    // this.setSpinner(true);
   };
 
   componentWillUnmount(){

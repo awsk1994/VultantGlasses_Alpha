@@ -28,6 +28,7 @@ class MenuScreen extends React.Component {
       deviceId: null,
       serviceId: null,
       characteristicId: null,
+      appPermissionGranted: false,
       vMsgHeader: "A0", // Hardcoded
       vMsgPAttri: "02", // Hardcoded
       vMsgSAttri1: "23", // Hardcoded
@@ -43,28 +44,63 @@ class MenuScreen extends React.Component {
     } else {
       console.log("DEBUG | BleManager already exist.")
     };
+    this.props = props;
+
   };
   
   componentDidMount() {
     // TODO: use .then to reduce time waiting.
     console.log("componentDidMount start.");
     this._checkBleState();
-    this._requestBluetoothPermissionAndStartSearch(true);
-    setTimeout(() => {this.fetchCharacteristicFromStorage()}, 100);
+    setTimeout(() => {
+      this.fetchCharacteristicFromStorage()
+        .then(this.setNotificationPermission)
+        .then(this._requestBluetoothPermissionAndStartSearch(true))
+        .catch(err => {
+          console.log("ERROR!");
+          console.log(err);
+        });
+    }, 100);
 
-    if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android')
-    {
-      setTimeout(this.setNotificationPermission, 200);
-    }
+    // Auto connect to saved BLE
+    setInterval(() => {
+      if(GlobalSettings.AutoConnectBLEUponStart){
+        console.log("Scan for ble device (appPermissionGranted=" + this.state.appPermissionGranted + ")");
+        console.log("bleState = "  + this.state.bleState + ", focusedScreen = " + this.props.navigation.isFocused());
+        /*
+          this.state.appPermissionGranted  // meaning request bluetooth permission is passed.
+          this.state.characteristic == null  // meaning it is not already connected (must be either before choose device or after disconnect) 
+          this.state.deviceName // ensure auto search only after deviceName is selected
+          this.props.navigation.isFocused() == "Menu" // ensure we are not connecting from MenuScreen when we are on other screens (eg. BleMenuByName)
+        */
+        if(this.state.bleState == 'PoweredOn'
+            && this.state.appPermissionGranted
+            && this.state.characteristic == null
+            && this.state.deviceName != null
+            && this.props.navigation.isFocused()) {
+          this.connectBLE();
+        } else {
+          console.log("auto connect ignored.");
+        };
+      }
+    }, 5000);
+
+
+    // if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android')
+    // {
+    //   setTimeout(this.setNotificationPermission, 200);
+    // }
+    // this._requestBluetoothPermissionAndStartSearch(true);
   };
 
   componentWillUnmount() {
     console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
     this.bleManager.destroy();
   }
-
+  
   // Permissions
-  _requestBluetoothPermissionAndStartSearch = (debug = false) => {    
+  _requestBluetoothPermissionAndStartSearch = (debug = false) => {
+    console.log("request bluetooth permission");
     if (Platform.OS === 'ios') {
       // TODO: need to request permission? I don't think so.
     } else {  // Android
@@ -93,15 +129,8 @@ class MenuScreen extends React.Component {
       const autoConnectBLEUponStart = (granted) => {
         console.log("autoConnectBLEUponStart | granted = " + granted);
         if(granted){
-          console.log("autoConnect");
-          // Auto connect to saved BLE upon start
-          if(GlobalSettings.AutoConnectBLEUponStart){
-            setTimeout(() => {
-              console.log("DEBUG | Read BLE info");
-              if(this.state.bleState == 'PoweredOn')
-                this.connectBLE(); // TODO: check bluetooth is turned on first.
-            }, 300);
-          };
+          console.log("appPermissionGranted");
+          this.setState({appPermissionGranted: true});
         } else {
           Alert.alert('Permission not granted','Bluetooth-related functionalities will not work!',[{ text: '取消' }]);
         }
@@ -129,10 +158,11 @@ class MenuScreen extends React.Component {
       .then(bleState => {
         console.log('_checkBleState | 检查蓝牙状态：', bleState)
         this.setState({bleState})
-        if (state === 'PoweredOff') {
+        if (bleState === 'PoweredOff') {
           this._enableBluetoothAlert();
         }
       }).catch(err => {
+        console.log("_checkBleState | ");
         console.log(err);
       });
   };
@@ -186,19 +216,21 @@ class MenuScreen extends React.Component {
       }
     };
 
-    // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
-    const status = await RNAndroidNotificationListener.getPermissionStatus();
-    console.log("Notification Permission status: " + status); 
+    if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android'){
+      // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
+      const status = await RNAndroidNotificationListener.getPermissionStatus();
+      console.log("Notification Permission status: " + status); 
 
-    // To open the Android settings so the user can enable it
-    // TODO: text needs to update.
-    if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
-      Alert.alert('Requesting notification permission. Please enable.', null, [
-        { text: '取消' },
-        { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
-      ]);
-    };
-    AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      
+      // To open the Android settings so the user can enable it
+      // TODO: text needs to update.
+      if(status != "authorized" && GlobalSettings.OpenNotificationPermissionTogglePage){
+        Alert.alert('Requesting notification permission. Please enable.', null, [
+          { text: '取消' },
+          { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
+        ]);
+      };
+      AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      
+    }
   }
 
   writeNotificationMsg(appName, contact, content){
@@ -283,10 +315,13 @@ class MenuScreen extends React.Component {
 
     this.setState({status: BLEStatus.found_device});
     this.bleManager.stopDeviceScan();
+    this.setSpinner(true);
+
     console.log("Found device! Stopping device scan.");
 
     const connectService = (services) => {
-      let service = services.find(service => service.uuid == this.state.serviceId);
+      // let service = services.find(service => service.uuid == this.state.serviceId);
+      let service = services[services.length - 1];
       if(service == null){
         console.log("ERROR | cannot find service.");
         Utils.connectErrAlert("Cannot find service.");
@@ -300,7 +335,8 @@ class MenuScreen extends React.Component {
     }
 
     const connectCharacteristic = (characteristics) => {
-      let characteristic = characteristics.find(c => c.uuid == this.state.characteristicId);
+      let characteristic = characteristics[characteristics.length - 1];
+      // let characteristic = characteristics.find(c => c.uuid == this.state.characteristicId);
       if(characteristic == null){
         console.log("ERROR | cannot find characteristic.");
         Utils.connectErrAlert("Cannot find characteristic.");
@@ -317,17 +353,20 @@ class MenuScreen extends React.Component {
     })
       .then(async (device) => {
         try{
-        await device.discoverAllServicesAndCharacteristics();
+          await device.discoverAllServicesAndCharacteristics();
         } catch (error){
           console.log("ERROR | " + error);
         }
         try {
-        await device.services()
-          .then(connectService)
-          .then(connectCharacteristic)
-          // .then(requestMTU)
-          .then(() => this.setState({status: BLEStatus.connected}));
-        // this.setSpinner(false);
+          await device.services()
+            .then(connectService)
+            .then(connectCharacteristic)
+            .then(() => {
+              this.setState({
+                  status: BLEStatus.connected
+              });
+              this.setSpinner(false);
+            });
         } catch (error) {
           console.log("ERROR | " + error);
         }
@@ -344,15 +383,6 @@ class MenuScreen extends React.Component {
     console.log("Fetching BLE information.");
     const deviceNamePromise = Storage.fetchText('@deviceName');
     deviceNamePromise.then((v) => this.setState({'deviceName': v}));
-
-    const deviceIdPromise = Storage.fetchText('@deviceId');
-    deviceIdPromise.then((v) => this.setState({'deviceId': v}));
-
-    const servicePromise = Storage.fetchText('@serviceId');
-    servicePromise.then((v) => this.setState({'serviceId': v}));
-
-    const characteristicPromise = Storage.fetchText('@characteristicId');
-    characteristicPromise.then((v) => this.setState({'characteristicId': v}));
   }
 
   chooseDevice = () => {
@@ -363,6 +393,21 @@ class MenuScreen extends React.Component {
 
     this.bleManager.stopDeviceScan();
     this.props.navigation.navigate("BLEMenu", {
+      bleManager: this.bleManager,
+      updateMenuCharacteristic: updateMenuCharacteristic,
+      setSpinner: this.setSpinner
+    });
+  };
+
+  chooseDeviceByName = () => {
+    const updateMenuCharacteristic = (characteristic, deviceName, deviceId) => {
+      this.setState({characteristic, deviceName, deviceId});
+      this.setState({status: BLEStatus.connected});
+    };
+
+    this.bleManager.stopDeviceScan();
+    // this.setState({autoScan: false});
+    this.props.navigation.navigate("BLEMenuByName", {
       bleManager: this.bleManager,
       updateMenuCharacteristic: updateMenuCharacteristic,
       setSpinner: this.setSpinner
@@ -421,9 +466,15 @@ class MenuScreen extends React.Component {
 
     const selectConnectComponent = () => {
       return (
-        <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
-          <VButton text="选择BLE装置（Choose Device)" color="green" onPress={this.chooseDevice}/>
-          <VButton text="链接BLE装置（Connect to saved BLE）" color="green" onPress={this.connectBLE}/>
+        <View>
+          <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+            <VButton text="Choose device by name" color="green" onPress={this.chooseDeviceByName}/>
+            <VButton text="" color="empty"/>
+          </View>
+          {/* <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+            <VButton text="选择BLE装置（Choose Device)" color="green" onPress={this.chooseDevice}/>
+            <VButton text="链接BLE装置（Connect to saved BLE）" color="green" onPress={this.connectBLE}/>
+          </View> */}
         </View>
       )
     }
@@ -469,7 +520,15 @@ class MenuScreen extends React.Component {
           <Text style={Styles.greenBoldText}>Status: </Text> 
           <Text style={Styles.greenText}>{this.state.status}, </Text>
           <Text style={Styles.greenBoldText}>BleState: </Text> 
-          <Text style={Styles.greenText}>{this.state.bleState} </Text>
+          <Text style={Styles.greenText}>{this.state.bleState}, </Text>
+          <Text style={Styles.greenBoldText}>appPermissionGranted: </Text> 
+          <Text style={Styles.greenText}>{this.state.appPermissionGranted ? "true" : "false"}, </Text>
+          <Text style={Styles.greenBoldText}>noCharacteristic: </Text> 
+          <Text style={Styles.greenText}>{this.state.characteristic == null ? "true" : "false"}, </Text>
+          <Text style={Styles.greenBoldText}>hasDeviceName: </Text> 
+          <Text style={Styles.greenText}>{this.state.deviceName != null ? "true" : "false"}, </Text>
+          <Text style={Styles.greenBoldText}>onMenuScreen: </Text> 
+          <Text style={Styles.greenText}>{this.props.navigation.isFocused() ? "true" : "false"}, </Text>
         </Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}
@@ -479,7 +538,6 @@ class MenuScreen extends React.Component {
           textContent={'Loading...'}
           textStyle={Styles.spinnerTextStyle}
         />
-        
         {/* <View style={Styles.lineStyle}/>
         <Button title="APP设置（App Settings）" onPress={this.gotoAppSettings}/> */}
         {/* <DemoComponent/> */}
