@@ -1,10 +1,11 @@
 import React from 'react';
-import { TouchableOpacity, FlatList, View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { TouchableOpacity, FlatList, View, Image, Text, TextInput, Button, ScrollView } from 'react-native';
 import BLERead from "../components/BLERead";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
 import Styles from "../class/Styles";
 import Storage from '../class/Storage';
+import Constants from '../data/Constants';
 
 const msgInfo = {
   vMsgHeader: "A0", // Hardcoded
@@ -104,12 +105,12 @@ class NotesScreen extends React.Component {
     const listItem = (itemData) => {
       return (
         <View>
-          <View style={[Styles.settingsItem, {backgroundColor: '#43717B', margin: 10}]}>
+          <View style={[Styles.settingsItem, {backgroundColor: Constants["lightBlue_bg"], margin: 10}]}>
+            <TouchableOpacity style={[Styles.absoluteView, {backgroundColor: 'transparent', right: -5, top: 15}]} onPress={() => delElement(itemData.index)}>
+              <Image resizeMode="contain" style={{height: 20}} source={require("../img/X.png")}/>
+            </TouchableOpacity>
             <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={Styles.notes_h1}>Title</Text>
-              <TouchableOpacity onPress={() => delElement(itemData.index)}>
-                <Text style={Styles.notes_h1}>X</Text>
-              </TouchableOpacity>
             </View>
             <TextInput
               placeholder="Enter title here..."

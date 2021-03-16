@@ -93,12 +93,10 @@ class CueCardScreen extends React.Component {
       return (
         <View>
           <View style={[Styles.settingsItem, {backgroundColor: Constants["lightBlue_bg"], margin: 10}]}>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={Styles.notes_h1}>Slide {itemData.index + 1}</Text>
-              <TouchableOpacity onPress={() => delElement(itemData.index)}>
-                <Text style={Styles.notes_h1}>X</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={[Styles.absoluteView, {backgroundColor: 'transparent', right: -5, top: 15}]} onPress={() => delElement(itemData.index)}>
+              <Image resizeMode="contain" style={{height: 20}} source={require("../img/X.png")}/>
+            </TouchableOpacity>
+            <Text style={Styles.notes_h1}>Slide {itemData.index + 1}</Text>
             <TextInput
               placeholder="Enter content here..."
               value={itemData.item.content}
