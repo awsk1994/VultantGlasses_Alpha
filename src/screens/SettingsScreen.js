@@ -11,7 +11,7 @@ import VButton from "../components/VButton";
 const INIT_VALUES = {
   displayTimeOut: 0,
   language: "1",
-  bluetoothName: "(NO NAME)",
+  // bluetoothName: "(NO NAME)",
   msgDispTime: 0,
   timedate: new Date()
 };
@@ -54,8 +54,8 @@ class SettingsScreen extends React.Component {
     Storage.fetchText('@language')
       .then((v) => this.setState({'language': v == null ? INIT_VALUES.language : v}));
 
-    Storage.fetchText('@bluetoothName')
-      .then((v) => this.setState({'bluetoothName': v == null ? INIT_VALUES.bluetoothName : v}));
+    // Storage.fetchText('@bluetoothName')
+    //   .then((v) => this.setState({'bluetoothName': v == null ? INIT_VALUES.bluetoothName : v}));
 
     Storage.fetchText('@timedate')
       .then((v) => this.setState({'timedate': v == null ? INIT_VALUES.timedate : v}));
