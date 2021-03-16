@@ -39,6 +39,7 @@ class NotesScreen extends React.Component {
   onPressWrite(){    
     this.setSpinner(true);
 
+    // content is always first note.
     const imgId = this.state.notes.length > 0 ? this.state.notes[0].imgId : "00";
     const content = this.state.notes.length > 0 ? this.state.notes[0].content : "";
 
@@ -98,6 +99,13 @@ class NotesScreen extends React.Component {
     this.setState({notes: newLst});
     Storage.saveObjList("@notes", this.state.notes);
     this.setSpinner(false);
+    // this.onPressWrite();
+  }
+
+  onSubmitNote = (v) => {
+    this.setSpinner(true);
+    Storage.saveObjList("@notes", this.state.notes);
+    this.setSpinner(false);
     this.onPressWrite();
   }
 
@@ -117,8 +125,8 @@ class NotesScreen extends React.Component {
               value={itemData.item.title}
               style={Styles.blueText}
               onChangeText={v => onChangeTitle(v, itemData.index)}
-              onSubmitEditing = {() => onSubmitNote()}
-              onEndEditing = {() => onSubmitNote()}
+              // onSubmitEditing = {() => onSubmitNote()}
+              // onEndEditing = {() => onSubmitNote()}
             />
             <Text style={Styles.notes_h1}>Content</Text>
             <TextInput
@@ -126,8 +134,8 @@ class NotesScreen extends React.Component {
               value={itemData.item.content}
               style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
-              onSubmitEditing = {() => onSubmitNote()}
-              onEndEditing = {() => onSubmitNote()}
+              // onSubmitEditing = {() => onSubmitNote()}
+              // onEndEditing = {() => onSubmitNote()}
             />
           </View>
         </View>
@@ -145,13 +153,6 @@ class NotesScreen extends React.Component {
       newLst[idx].content = v;
       this.setState({notes: newLst});
     };
-
-    const onSubmitNote = (v) => {
-      this.setSpinner(true);
-      Storage.saveObjList("@notes", this.state.notes);
-      this.setSpinner(false);
-      this.onPressWrite();
-    }
 
     const delElement = (idx) => {
       this.changeNotesParentFnBefore();
@@ -172,7 +173,10 @@ class NotesScreen extends React.Component {
     const topBarHeight = 75;
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => {
+          this.onSubmitNote();
+          this.props.navigation.goBack();
+        }}>
           <Text style={Styles.notes_h1}>{'<'} Edit Notes</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>

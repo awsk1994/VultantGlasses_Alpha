@@ -36,6 +36,7 @@ class CueCardScreen extends React.Component {
   onPressWrite(){
     this.setSpinner(true);
 
+    // currently: content is always focusedIdx = 0
     const content = this.state.cuecards.length > 0 ? this.state.cuecards[this.state.focusedIdx].content : "";
     
     console.log("Content = " + content);
@@ -85,8 +86,15 @@ class CueCardScreen extends React.Component {
     this.setState({cuecards: newLst});
     Storage.saveObjList("@cuecards", this.state.cuecards);
     this.setSpinner(false);
-    this.onPressWrite();
+    // this.onPressWrite();
   }
+
+  onSubmitNote = (v) => {
+    this.setSpinner(true);
+    Storage.saveObjList("@cuecards", this.state.cuecards);
+    this.setSpinner(false);
+    this.onPressWrite();
+  };
 
   cuecardList = () => {
     const listItem = (itemData) => {
@@ -102,8 +110,8 @@ class CueCardScreen extends React.Component {
               value={itemData.item.content}
               style={Styles.blueText}
               onChangeText={v => onChangeContent(v, itemData.index)}
-              onSubmitEditing = {() => onSubmitNote()}
-              onEndEditing = {() => onSubmitNote()}
+              // onSubmitEditing = {() => onSubmitNote()}
+              // onEndEditing = {() => onSubmitNote()}
             />
           </View>
         </View>
@@ -115,13 +123,6 @@ class CueCardScreen extends React.Component {
       newLst[idx].content = v;
       this.setState({cuecards: newLst});
     };
-
-    const onSubmitNote = (v) => {
-      this.setSpinner(true);
-      Storage.saveObjList("@cuecards", this.state.cuecards);
-      this.setSpinner(false);
-      this.onPressWrite();
-    }
 
     let delElement = (idx) => {
       this.changeCueCardsParentFnBefore();
@@ -197,7 +198,10 @@ class CueCardScreen extends React.Component {
     const topBarHeight = 75;
     return (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => this.props.navigation.goBack()}>
+        <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 1, flexDirection: 'row'}]} onPress={() => {
+          this.onSubmitNote();
+          this.props.navigation.goBack()
+        }}>
           <Text style={Styles.notes_h1}>{'<'} Edit Cue Cards</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[Styles.BLEfuncButton, {height: topBarHeight, flex: 0}]} onPress={() => this.addElement()}>
