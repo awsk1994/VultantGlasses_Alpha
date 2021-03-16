@@ -13,6 +13,7 @@ import NotificationAllowAppListScreen from './src/screens/NotificationAllowAppLi
 import SettingsItemScreen from './src/screens/SettingsItemScreen';
 import PresentCueCardScreen from './src/screens/PresentCueCardScreen';
 import Styles from './src/class/Styles';
+import BLEMenuByName from './src/components/BLEMenuByName';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ function App() {
       <Stack.Navigator initialRouteName="Menu">
         <Stack.Screen name="Menu" component={MenuScreen} options={{headerShown: false}}/>
         <Stack.Screen name="BLEMenu" component={BLEMenu} options={{headerShown: false}}/>
+        <Stack.Screen name="BLEMenuByName" component={BLEMenuByName} options={{headerShown: false}}/>
         <Stack.Screen name="Notification" component={NotificationScreen} options={{headerShown: false}}/>
         <Stack.Screen name="CueCard" component={CueCardScreen} options={{headerShown: false}}/>
         <Stack.Screen name="PresentCueCard" component={PresentCueCardScreen} options={{headerShown: false}}/>
