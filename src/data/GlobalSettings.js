@@ -3,7 +3,7 @@ let GlobalSettings = {
   AutoConnectBLEUponStart: true,
   SetNotificationPermissionUponStart: true,
   OpenNotificationPermissionTogglePage: true,
-  SearchDeviceById: true,
+  SearchDeviceById: false,
   NotificationCutOffLength: 4
 };
 
