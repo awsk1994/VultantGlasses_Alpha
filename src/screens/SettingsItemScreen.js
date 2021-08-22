@@ -215,7 +215,7 @@ class SettingsItemScreen extends React.Component {
       if(event.type == "set" && selectedTimeDate != null){  // event type can be "dismissed" or "set"
         console.log("onChangeTimeDate: " + selectedTimeDate);
         this.setState({itemVal: selectedTimeDate});
-        this.setParentState(itemData.id, selectedTimeDate)
+        this.setParentState(this.state.itemData.id, selectedTimeDate)
       };
       sendDateTime(selectedTimeDate);
       // Storage.saveText("@" + itemData.id, content);  // will not save time
@@ -249,8 +249,10 @@ class SettingsItemScreen extends React.Component {
             <VButton text="更改日期(modify Date)" color="lightBlue" onPress={() => changeTimeDate("date")}/>
           </View>
         </View>
-        <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
-        <Text style={Styles.grayText}>TimeDate wont' be saved into Persistence; since it keeps changing.</Text>
+        <Text style={Styles.grayText}>{Moment(this.state.itemVal).format('LLL')}</Text>
+
+        {/* <Text style={Styles.grayText}>{Moment(this.state.timedate).format('LLL')}</Text>
+        <Text style={Styles.grayText}>TimeDate wont' be saved into Persistence; since it keeps changing.</Text> */}
         
         {this.state.showTimeDate && (
           <DateTimePicker
