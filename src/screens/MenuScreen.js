@@ -529,6 +529,10 @@ class MenuScreen extends React.Component {
           <Text style={Styles.greenText}>{this.state.deviceName != null ? "true" : "false"}, </Text>
           <Text style={Styles.greenBoldText}>onMenuScreen: </Text> 
           <Text style={Styles.greenText}>{this.props.navigation.isFocused() ? "true" : "false"}, </Text>
+          <Text style={Styles.greenBoldText}>service uuid: </Text> 
+          <Text style={Styles.greenText}>{this.state.characteristic ? this.state.characteristic.serviceUUID : "NONE"}, </Text>
+          <Text style={Styles.greenBoldText}>attribute uuid: </Text> 
+          <Text style={Styles.greenText}>{this.state.characteristic ? this.state.characteristic.uuid : "NONE"}, </Text>
         </Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}

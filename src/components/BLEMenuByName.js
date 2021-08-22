@@ -10,6 +10,9 @@ import BLEStatus from "../data/BLEStatus";
 
 // TODO: Move this to screens folder.
 
+const V_SERVICE_UUID = "ecb9309a-f586-405b-aace-69830dc6c84e"
+const V_ATTRIBUTE_UUID = "57b494-def4-44ba-9c0f-0f13f3771b41"
+
 class BLEMenuByName extends React.Component {
   constructor(props) {
     super();
@@ -98,10 +101,24 @@ class BLEMenuByName extends React.Component {
       console.log(serviceAndChar);
 
       let services = await device.services();
-      let selService = services[services.length - 1];
+      let selService = services.find((service) => {
+        return service.uuid == V_SERVICE_UUID
+      })
+      if(selService == null) {
+        ToastAndroid.show("ERROR: Cannot find service uuid", ToastAndroid.SHORT);
+        console.error("ERROR: Cannot find service uuid")
+        selService = services[services.length - 1];
+      }
       
       let characteristics = await selService.characteristics();
-      let selCharacteristic = characteristics[characteristics.length - 1];
+      let selCharacteristic = characteristics.find((service) => {
+        return service.uuid == V_ATTRIBUTE_UUID
+      })
+      if(selService == null) {
+        ToastAndroid.show("ERROR: Cannot find characteristics uuid", ToastAndroid.SHORT);
+        console.error("ERROR: Cannot find characteristics uuid")
+        selCharacteristic = characteristics[characteristics.length - 1];
+      }
       
       this.updateCharacteristic(selCharacteristic);
       this.props.navigation.goBack();
