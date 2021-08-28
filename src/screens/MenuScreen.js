@@ -17,6 +17,8 @@ import VStatus from '../components/VStatus';
 
 // TODO: Reset Characteristic/Device functionality
 
+const ENABLE_AUTO_CONNECT_FN = false
+
 class MenuScreen extends React.Component {
   constructor(props) {
     console.log("MenuScreen");
@@ -62,29 +64,30 @@ class MenuScreen extends React.Component {
         });
     }, 100);
 
-    // Auto connect to saved BLE
-    setInterval(() => {
-      if(GlobalSettings.AutoConnectBLEUponStart){
-        console.log("Scan for ble device (appPermissionGranted=" + this.state.appPermissionGranted + ")");
-        console.log("bleState = "  + this.state.bleState + ", focusedScreen = " + this.props.navigation.isFocused());
-        /*
-          this.state.appPermissionGranted  // meaning request bluetooth permission is passed.
-          this.state.characteristic == null  // meaning it is not already connected (must be either before choose device or after disconnect) 
-          this.state.deviceName // ensure auto search only after deviceName is selected
-          this.props.navigation.isFocused() == "Menu" // ensure we are not connecting from MenuScreen when we are on other screens (eg. BleMenuByName)
-        */
-        if(this.state.bleState == 'PoweredOn'
-            && this.state.appPermissionGranted
-            && this.state.characteristic == null
-            && this.state.deviceName != null
-            && this.props.navigation.isFocused()) {
-          this.connectBLE();
-        } else {
-          console.log("auto connect ignored.");
-        };
-      }
-    }, 5000);
-
+    if(ENABLE_AUTO_CONNECT_FN) {
+      // Auto connect to saved BLE
+      setInterval(() => {
+        if(GlobalSettings.AutoConnectBLEUponStart){
+          console.log("Scan for ble device (appPermissionGranted=" + this.state.appPermissionGranted + ")");
+          console.log("bleState = "  + this.state.bleState + ", focusedScreen = " + this.props.navigation.isFocused());
+          /*
+            this.state.appPermissionGranted  // meaning request bluetooth permission is passed.
+            this.state.characteristic == null  // meaning it is not already connected (must be either before choose device or after disconnect) 
+            this.state.deviceName // ensure auto search only after deviceName is selected
+            this.props.navigation.isFocused() == "Menu" // ensure we are not connecting from MenuScreen when we are on other screens (eg. BleMenuByName)
+          */
+          if(this.state.bleState == 'PoweredOn'
+              && this.state.appPermissionGranted
+              && this.state.characteristic == null
+              && this.state.deviceName != null
+              && this.props.navigation.isFocused()) {
+            this.connectBLE();
+          } else {
+            console.log("auto connect ignored.");
+          };
+        }
+      }, 5000);
+    }
 
     // if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android')
     // {
@@ -467,14 +470,14 @@ class MenuScreen extends React.Component {
     const selectConnectComponent = () => {
       return (
         <View>
-          <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          {/* <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
             <VButton text="Choose device by name" color="green" onPress={this.chooseDeviceByName}/>
             <VButton text="" color="empty"/>
-          </View>
-          {/* <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
+          </View> */}
+          <View style={[Styles.flexRow, {flexWrap: 'wrap'}]}>
             <VButton text="选择BLE装置（Choose Device)" color="green" onPress={this.chooseDevice}/>
             <VButton text="链接BLE装置（Connect to saved BLE）" color="green" onPress={this.connectBLE}/>
-          </View> */}
+          </View>
         </View>
       )
     }

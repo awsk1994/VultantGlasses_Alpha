@@ -10,9 +10,6 @@ import BLEStatus from "../data/BLEStatus";
 
 // TODO: Move this to screens folder.
 
-const V_SERVICE_UUID = "ecb9309a-f586-405b-aace-69830dc6c84e"
-const V_ATTRIBUTE_UUID = "57b494-def4-44ba-9c0f-0f13f3771b41"
-
 class BLEMenuByName extends React.Component {
   constructor(props) {
     super();

@@ -23,31 +23,34 @@ class BLEMenu extends React.Component {
       readValue: null,
       writeValue: null,
       rawOp: false,
-      CRC: "",
-      vMsgHeader: "00",
-      vMsgPAttri: "00",
-      vMsgSAttri1: "00",
-      vMsgSAttri2: "00",
-      vMsgContent: "00",
-      vMsgCRC: "00",
+      // CRC: "",
+      // vMsgHeader: "00",
+      // vMsgPAttri: "00",
+      // vMsgSAttri1: "00",
+      // vMsgSAttri2: "00",
+      // vMsgContent: "00",
+      // vMsgCRC: "00",
       deviceName: null
     };
     console.log(props);
+    this.props = props;
     this.bleManager = props.route.params.bleManager;
     this.updateMenuCharacteristic = props.route.params.updateMenuCharacteristic;
     this.setSpinner = props.route.params.setSpinner;
   };
 
   componentWillUnmount() {
-    // console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
+    console.log("ComponentUnMount");  // TODO: Getting error. Unable to detect when bleManager is undefined...
     // if(this.bleManager != null || typeof this.bleManager != "undefined"){
     //   this.bleManager.destroy();
     // }
+    this.bleManager.stopDeviceScan();
   }
 
   scanDevices = async () => {
+    console.log("Scanning device.");
     this.bleManager.stopDeviceScan();
-    console.log("Scanning Devices");
+    this.reset();
     this.setState({scanning: true});
     this.bleManager.startDeviceScan(null, {allowDuplicates: false}, this.onScannedDevice);
   };
@@ -58,6 +61,8 @@ class BLEMenu extends React.Component {
       console.log("onScannedDevice | ERROR:");
       console.log(error);
       Utils.genericErrAlert(error);
+      this.stopScan();
+      // this.props.navigation.goBack()
       // ToastAndroid.show("ERROR: " + error, ToastAndroid.SHORT);
       return
     }
@@ -93,7 +98,7 @@ class BLEMenu extends React.Component {
     try{
       this.setSpinner(true);
       this.stopScan() // Stop Scanning
-      console.group("Connecting to Device.");
+      console.log("Connecting to Device.");
       await this.bleManager.connectToDevice(device.id, {
         requestMTU: 512
       });
@@ -125,7 +130,7 @@ class BLEMenu extends React.Component {
       })
       this.setSpinner(false);
     } catch(err) {
-      console.log("connectDevice | ERROR");
+      console.log("connectDevice ERROR");
       console.log(err);
       Utils.genericErrAlert(err);
       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
@@ -158,78 +163,78 @@ class BLEMenu extends React.Component {
     this.setSpinner(false);
   }
 
-  onPressReadOp = async() => {
-    console.log("onPressReadOp");
-    this.setSpinner(true);
-    try{
-      let char = await this.state.characteristic.read();
-      console.log("Characteristics Read Value: " + char.value);
-      // ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
-      this.setState({readValue: char.value});
-      this.setSpinner(false);
-    } catch(err){
-      console.log("ERROR:");
-      console.log(err);
-      Utils.genericErrAlert(err);
-      // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-      this.setSpinner(false);
-    }
-  };
+  // onPressReadOp = async() => {
+  //   console.log("onPressReadOp");
+  //   this.setSpinner(true);
+  //   try{
+  //     let char = await this.state.characteristic.read();
+  //     console.log("Characteristics Read Value: " + char.value);
+  //     // ToastAndroid.show("Characteristics Read Value: " + char.value, ToastAndroid.SHORT);
+  //     this.setState({readValue: char.value});
+  //     this.setSpinner(false);
+  //   } catch(err){
+  //     console.log("ERROR:");
+  //     console.log(err);
+  //     Utils.genericErrAlert(err);
+  //     // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+  //     this.setSpinner(false);
+  //   }
+  // };
 
-  onPressWriteHexOp = (writeVal) => {
-    if (!writeVal) {
-      Alert.alert('请输入要写入的特征值')
-    }
-    const str = Buffer.from(writeVal, 'hex').toString('base64')
-    this.onPressWriteOp(str);
-  }
+  // onPressWriteHexOp = (writeVal) => {
+  //   if (!writeVal) {
+  //     Alert.alert('请输入要写入的特征值')
+  //   }
+  //   const str = Buffer.from(writeVal, 'hex').toString('base64')
+  //   this.onPressWriteOp(str);
+  // }
   
-  onPressWriteStrOp = (writeVal) => {
-    if (!writeVal) {
-      Alert.alert('请输入要写入的特征值')
-    }
-    const str = Buffer.from(writeVal, 'utf8').toString('base64');
-    this.onPressWriteOp(str);
-  };
+  // onPressWriteStrOp = (writeVal) => {
+  //   if (!writeVal) {
+  //     Alert.alert('请输入要写入的特征值')
+  //   }
+  //   const str = Buffer.from(writeVal, 'utf8').toString('base64');
+  //   this.onPressWriteOp(str);
+  // };
 
-  onPressWriteOp = (msg) => {
-    // ToastAndroid.show('开始写入特征值：' + msg, ToastAndroid.SHORT);
+  // onPressWriteOp = (msg) => {
+  //   // ToastAndroid.show('开始写入特征值：' + msg, ToastAndroid.SHORT);
 
-    this.state.characteristic.writeWithResponse(msg)
-      .then(() => {
-        Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...')
-      })
-      .catch(err => {
-        console.log('写入特征值出错：', err);
-        Utils.genericErrAlert(err);
-        // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
-      })
-  };
+  //   this.state.characteristic.writeWithResponse(msg)
+  //     .then(() => {
+  //       Alert.alert('成功写入特征值', '现在点击读取特征值看看吧...')
+  //     })
+  //     .catch(err => {
+  //       console.log('写入特征值出错：', err);
+  //       Utils.genericErrAlert(err);
+  //       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
+  //     })
+  // };
 
-  onPressSampleWriteA = () => {
-    this.onPressWriteHexOp("A00112000068656c6c6fc7");
-  };
+  // onPressSampleWriteA = () => {
+  //   this.onPressWriteHexOp("A00112000068656c6c6fc7");
+  // };
 
-  onPressWriteVMsg = () => {
-    const hexStr = this.state.vMsgHeader 
-    + this.state.vMsgPAttri 
-    + this.state.vMsgSAttri1
-    + this.state.vMsgSAttri2
-    + this.state.vMsgContent;
+  // onPressWriteVMsg = () => {
+  //   const hexStr = this.state.vMsgHeader 
+  //   + this.state.vMsgPAttri 
+  //   + this.state.vMsgSAttri1
+  //   + this.state.vMsgSAttri2
+  //   + this.state.vMsgContent;
 
-    const CRCHex = BLEUtils.sumHex(hexStr);
-    console.log("write VMsg | " + (hexStr + CRCHex));
-    this.onPressWriteHexOp(hexStr + CRCHex);
-  }
+  //   const CRCHex = BLEUtils.sumHex(hexStr);
+  //   console.log("write VMsg | " + (hexStr + CRCHex));
+  //   this.onPressWriteHexOp(hexStr + CRCHex);
+  // }
   
-  onPressCalcCRC = (writeVal) => {
-    let CRC = BLEUtils.sumHex(writeVal);
-    if(CRC == null){
-      return "00";
-    } 
-    console.log("onPressCalcCRC | CRC = " + CRC);
-    this.setState({"CRC": CRC});
-  };
+  // onPressCalcCRC = (writeVal) => {
+  //   let CRC = BLEUtils.sumHex(writeVal);
+  //   if(CRC == null){
+  //     return "00";
+  //   } 
+  //   console.log("onPressCalcCRC | CRC = " + CRC);
+  //   this.setState({"CRC": CRC});
+  // };
 
   updateCharacteristic = (characteristic) => {
     console.log("updateCharacteristic")
@@ -255,9 +260,9 @@ class BLEMenu extends React.Component {
           <View style={Styles.button}>
             <Button title="停止扫描(stop scanning)" onPress={this.stopScan}/>
           </View>
-          <View style={Styles.button}>
+          {/* <View style={Styles.button}>
             <Button title="Debug" onPress={this.debugState}/>
-          </View>
+          </View> */}
           <View style={Styles.button}>
             <Button title="重置(reset)" onPress={this.reset}/>
           </View>
