@@ -211,3 +211,7 @@ Re-enter new password:
 all password is "password"
 ```
 
+## Reference Project
+
+https://github.com/hezhii/react-native-ble-demo
+
