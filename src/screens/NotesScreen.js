@@ -41,13 +41,17 @@ class NotesScreen extends React.Component {
 
     // content is always first note.
     const imgId = this.state.notes.length > 0 ? this.state.notes[0].imgId : "00";
+    const title = this.state.notes.length > 0 ? this.state.notes[0].title : "";
     const content = this.state.notes.length > 0 ? this.state.notes[0].content : "";
 
-    console.log("imgId = " + imgId + ", content = " + content);
+    console.log("imgId = " + imgId + ", title = " + title + ", content = " + content);
 
     const imgIdHex = BLEUtils.numStrToHex(imgId);
-    const notesHex = BLEUtils.utf8ToUtf16Hex(content);
-    const entireContentHex = imgIdHex + notesHex;
+
+    const cutOffOrPadZero = (x, len) => x.substr(0, len).padEnd(len, '0');
+    const titleHex = cutOffOrPadZero(BLEUtils.utf8ToUtf16Hex(title), 24) // 6个字 = 6 * 4 = 24
+    const notesHex = BLEUtils.utf8ToUtf16Hex(content)
+    const entireContentHex = imgIdHex + titleHex + notesHex;
 
     const hexMsgWithoutCRC = msgInfo.vMsgHeader 
     + msgInfo.vMsgPAttri 
