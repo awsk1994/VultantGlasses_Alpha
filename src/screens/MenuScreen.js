@@ -192,7 +192,8 @@ class MenuScreen extends React.Component {
   // Set up Notification
   setNotificationPermission = async () => {
     const updateAllowAppListFromStorage = async () => {
-      Storage.fetchList('@allowAppList').then((allowAppList) => this.setState({allowAppList}));
+      const allowAppList = await Storage.fetchList('@allowAppList');
+      await this.setState({allowAppList})
     };
 
     const headlessNotificationListener = async (notification) => {
@@ -206,7 +207,6 @@ class MenuScreen extends React.Component {
     const handleNotification = async (notification) => {
       const { app, title, text } = notification;
       console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
-      
       await updateAllowAppListFromStorage();
       if(this.state.allowAppList.indexOf(app) != -1){ 
         if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
