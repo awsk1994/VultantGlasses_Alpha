@@ -4,7 +4,8 @@ let GlobalSettings = {
   SetNotificationPermissionUponStart: true,
   OpenNotificationPermissionTogglePage: true,
   SearchDeviceById: false,
-  NotificationCutOffLength: 4
+  NotificationCutOffLength: 4,
+  ShowAlert: true
 };
 
 export default GlobalSettings;

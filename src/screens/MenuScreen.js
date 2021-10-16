@@ -275,11 +275,17 @@ class MenuScreen extends React.Component {
 
     const SuccessWriteFn = () => {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
+      if(GlobalSettings.ShowAlert) {
+        Alert.alert('成功写入特征值', hexMsg)
+      }
       // // ToastAndroid.show('成功写入特征值, 现在点击读取特征值看看吧...', ToastAndroid.SHORT);
     };
 
     const ErrWriteFn = (err) => {
       console.log('写入特征值出错：', err)
+      if(GlobalSettings.ShowAlert){
+        Alert.alert('写入特征值出错：', err)
+      }
       Utils.genericErrAlert(err);
       // ToastAndroid.show("ERROR: " + err, ToastAndroid.SHORT);
     }
