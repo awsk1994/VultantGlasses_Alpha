@@ -280,9 +280,11 @@ class SettingsItemScreen extends React.Component {
       switch(this.state.itemData.type){
         case SettingsType.seconds:
           this.sendNumberAndSave(this.state.itemData, this.state.itemVal);
+          this.props.navigation.goBack();
           break;
         case SettingsType.text:
           this.sendTextAndSave(this.state.itemData, this.state.itemVal);
+          this.props.navigation.goBack();
           break;
         case SettingsType.language:
         case SettingsType.timedate:
