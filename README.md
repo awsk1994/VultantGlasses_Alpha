@@ -25,10 +25,13 @@
 
 # TODO:
 ### High (Essential) Priority:
+ - (when hardware more stable) should send all info (presentation + settings + notes) at once to the glasses (confirm with haori, can send all at once or need to send in interval)
  - manual override to cancel auto connect?
  - Fix VButton and Vstatus' line alignment and also new line when necssary.
  - Fix VButton and Vstatus' font 
  - ensure menuScreen's .then stuff are working correctly.
+ - Settings, not refreshing immediately after I click it. Need to go back and click into the settingsItem to see change 
+  - should be able to forceUI update via     // RNRestart.Restart(), but need VPN access
 
  - todo: force to use back() when backing from BleMenuByName screen.
 
@@ -167,7 +170,6 @@ cd android && ./gradlew assembleRelease
 ```
 
  - Find your signed apk under android/app/build/outputs/apk/app-release.apk
-
 
 ## Make it work on ios
 
