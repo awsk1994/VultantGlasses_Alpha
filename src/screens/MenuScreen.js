@@ -36,7 +36,8 @@ class MenuScreen extends React.Component {
       vMsgSAttri1: "23", // Hardcoded
       vMsgSAttri2: "00", // Hardcoded
       spinner: false,
-      allowAppList: []
+      allowAppList: [],
+      notificationPermissionStatus: false
     };
     // TODO: confirm whether this work?
     if(this.bleManager == null){
@@ -53,17 +54,15 @@ class MenuScreen extends React.Component {
   componentDidMount() {
     // TODO: use .then to reduce time waiting.
     console.log("componentDidMount start.");
-    this._checkBleState();
-    setTimeout(() => {
-      this.fetchCharacteristicFromStorage()
+    setInterval(() => this.fetchCharacteristicFromStorage()
         .then(this.setNotificationPermission)
         .then(this._requestBluetoothPermissionAndStartSearch(true))
         .catch(err => {
           console.log("ERROR!");
           console.log(err);
-        });
-    }, 100);
-
+          Alert.alert(err);
+        }), 1000)
+    this._checkBleState()
     if(ENABLE_AUTO_CONNECT_FN) {
       // Auto connect to saved BLE
       setInterval(() => {
@@ -158,16 +157,17 @@ class MenuScreen extends React.Component {
 
   _checkBleState = () => {
     this.bleManager.state()
-      .then(bleState => {
-        console.log('_checkBleState | 检查蓝牙状态：', bleState)
-        this.setState({bleState})
-        if (bleState === 'PoweredOff') {
-          this._enableBluetoothAlert();
-        }
-      }).catch(err => {
-        console.log("_checkBleState | ");
-        console.log(err);
-      });
+    .then(bleState => {
+      console.log('_checkBleState | 检查蓝牙状态：', bleState)
+      this.setState({bleState})
+      if (bleState === 'PoweredOff') {
+        this._enableBluetoothAlert();
+      }
+    }).catch(err => {
+      console.log("_checkBleState | ");
+      console.log(err);
+      Alert.alert(err);
+    });
   };
 
   _enableBluetoothAlert() {
@@ -219,10 +219,12 @@ class MenuScreen extends React.Component {
       }
     };
 
+    console.log("GlobalSettings.SetNotificationPermissionUponStart = " + GlobalSettings.SetNotificationPermissionUponStart + ", os = " + Platform.OS)
     if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android'){
       // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
       const status = await RNAndroidNotificationListener.getPermissionStatus();
       console.log("Notification Permission status: " + status); 
+      this.setState({notificationPermissionStatus: status})
 
       // To open the Android settings so the user can enable it
       // TODO: text needs to update.
@@ -272,6 +274,9 @@ class MenuScreen extends React.Component {
     };
 
     console.log("writeNotificationMsg | hexMsg with CRC | " + hexMsg);
+    if(GlobalSettings.ShowAlert) {
+      Alert.alert("writeNotificationMsg | hexMsg with CRC | " + hexMsg)
+    }
 
     const SuccessWriteFn = () => {
       console.log('成功写入特征值, 现在点击读取特征值看看吧...');
@@ -542,6 +547,8 @@ class MenuScreen extends React.Component {
           <Text style={Styles.greenText}>{this.state.characteristic ? this.state.characteristic.serviceUUID : "NONE"}, </Text>
           <Text style={Styles.greenBoldText}>attribute uuid: </Text> 
           <Text style={Styles.greenText}>{this.state.characteristic ? this.state.characteristic.uuid : "NONE"}, </Text>
+          <Text style={Styles.greenBoldText}>notification status: </Text> 
+          <Text style={Styles.greenText}>{this.state.notificationPermissionStatus ? this.state.notificationPermissionStatus : "NONE"}, </Text>
         </Text>
         {!this.state.characteristic && this.noCharacteristicView()}
         {this.state.characteristic && this.hasCharacteristicView()}
