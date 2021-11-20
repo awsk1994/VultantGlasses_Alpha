@@ -14,6 +14,8 @@ import Utils from "../class/Utils";
 import Styles from "../class/Styles";
 import VButton from '../components/VButton';
 import VStatus from '../components/VStatus';
+import SendOsInfo from '../class/SendOsInfo';
+import Writer from '../class/Writer'
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -380,6 +382,13 @@ class MenuScreen extends React.Component {
                   status: BLEStatus.connected
               });
               this.setSpinner(false);
+            })
+            .then(() => {
+              AlertFn = (inpt) => Alert.alert(inpt)
+              CloseSpinnerFn = () => this.setSpinner(false)
+              SuccessWriteFn = Writer.WriteFn.NewSuccessWriteFn(CloseSpinnerFn, AlertFn)
+              ErrWriteFn = Writer.WriteFn.NewErrWriteFn(CloseSpinnerFn, AlertFn)        
+              SendOsInfo.send(Platform.OS, this.state.characteristic, SuccessWriteFn, ErrWriteFn)
             });
         } catch (error) {
           console.log("ERROR | " + error);
@@ -403,6 +412,11 @@ class MenuScreen extends React.Component {
     const updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
       this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
       this.setState({status: BLEStatus.connected});
+      AlertFn = (inpt) => Alert.alert(inpt)
+      CloseSpinnerFn = () => this.setSpinner(false)
+      SuccessWriteFn = Writer.WriteFn.NewSuccessWriteFn(CloseSpinnerFn, AlertFn)
+      ErrWriteFn = Writer.WriteFn.NewErrWriteFn(CloseSpinnerFn, AlertFn)
+      SendOsInfo.send(Platform.OS, characteristic, SuccessWriteFn, ErrWriteFn)
     };
 
     this.bleManager.stopDeviceScan();

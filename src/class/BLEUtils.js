@@ -74,8 +74,9 @@ class BLEUtils {
       console.log('ERROR. hexStr is empty. 请输入要写入的特征值')
     }
     const hexMsg = Buffer.from(hexStr, 'hex').toString('base64')
+
     if(GlobalSettings.DEBUG){
-      console.log('开始写入特征值：' + hexMsg.toString());
+      console.log('开始写入特征值：' + hexMsg);
     }
     // // ToastAndroid.show('开始写入特征值：' + hexMsg.toString(), ToastAndroid.SHORT);
 
