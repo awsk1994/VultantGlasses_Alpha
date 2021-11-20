@@ -32,7 +32,8 @@
  - ensure menuScreen's .then stuff are working correctly.
  - Settings, not refreshing immediately after I click it. Need to go back and click into the settingsItem to see change 
   - should be able to forceUI update via     // RNRestart.Restart(), but need VPN access
-
+ - text message notification?
+ 
  - todo: force to use back() when backing from BleMenuByName screen.
 
  - MenuScreen's no characteristic view's status. Should update accordingly.
