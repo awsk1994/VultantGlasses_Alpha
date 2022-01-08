@@ -1,6 +1,6 @@
 import React from 'react';
 import { Image, AppRegistry, Platform, Alert, TextInput, Button, View, Text, ScrollView, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native';
-import { BleManager } from 'react-native-ble-plx';
+import { BleManager, Characteristic } from 'react-native-ble-plx';
 import Storage from "../class/Storage";
 import BLEUtils from "../class/BLEUtils";
 import GlobalSettings from '../data/GlobalSettings';
@@ -409,6 +409,22 @@ class MenuScreen extends React.Component {
   }
 
   chooseDevice = () => {
+    const subMsg = (characteristic) => {
+      console.log("Attempt to subscribe event")
+      // Alert.alert("Attempt to subscribe event")
+      const subEventHandler = async (err, characteristic) => {
+        console.log("Got subscription event")
+        // Alert.alert("Got subscription event")
+ 
+        val = characteristic.value
+        if (val != null) {
+          valLog = "Received Subscription Event | raw = " + val + ", str = " + BLEUtils.baseToStr(val)
+          console.log(valLog);
+          Alert.alert(valLog);  
+        }
+      }
+      subEvent = characteristic.monitor(subEventHandler)
+    }
     const updateMenuCharacteristic = (characteristic, deviceName, deviceId, serviceId, characteristicId) => {
       this.setState({characteristic, deviceName, deviceId, serviceId, characteristicId});
       this.setState({status: BLEStatus.connected});
@@ -417,6 +433,7 @@ class MenuScreen extends React.Component {
       SuccessWriteFn = Writer.WriteFn.NewSuccessWriteFn(CloseSpinnerFn, AlertFn)
       ErrWriteFn = Writer.WriteFn.NewErrWriteFn(CloseSpinnerFn, AlertFn)
       SendOsInfo.send(Platform.OS, characteristic, SuccessWriteFn, ErrWriteFn)
+      subMsg(characteristic)
     };
 
     this.bleManager.stopDeviceScan();

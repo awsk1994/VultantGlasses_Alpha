@@ -115,6 +115,11 @@ class BLEUtils {
     };
   }
 
+  static baseToStr(baseStr) {
+    let buff = new Buffer(baseStr, 'base64');
+    return buff.toString('ascii');
+  }
+
   // static utf8ToHex(inptStr){
   //   const hexMsg = Buffer.from(inptStr, 'utf8').toString('hex')
   //   return hexMsg;
