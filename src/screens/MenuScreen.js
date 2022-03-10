@@ -56,6 +56,8 @@ class MenuScreen extends React.Component {
   componentDidMount() {
     // TODO: use .then to reduce time waiting.
     console.log("componentDidMount start.");
+    AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
+
     setInterval(() => this.fetchCharacteristicFromStorage()
         .then(this.setNotificationPermission)
         .then(this._requestBluetoothPermissionAndStartSearch(true))
@@ -192,35 +194,38 @@ class MenuScreen extends React.Component {
   };
 
   // Set up Notification
+  updateAllowAppListFromStorage = async () => {
+    const allowAppList = await Storage.fetchList('@allowAppList');
+    await this.setState({allowAppList})
+  };
+
+  headlessNotificationListener = async ({notification}) => {
+    console.log("Notication received");
+    if(this.state.characteristic != null){
+      this.handleNotification(notification);
+    } else {
+      console.log("No characteristic connected. Cannot send notification.");
+    }
+  };
+
+  handleNotification = async (notificationJsonStr) => {
+    let notification = JSON.parse(notificationJsonStr);
+    let app = notification.app
+    let title = notification.title
+    let text = notification.text
+    console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
+    await this.updateAllowAppListFromStorage();
+    if(this.state.allowAppList.indexOf(app) != -1){ 
+      if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
+        console.log("Notification App and Title is in block list. Will not display notification.");
+        return;
+      }
+      this.writeNotificationMsg(app, title, text);
+    } else {
+      console.log("Notification Title is in not in allow list. Will not display notification.");
+    }
+  };
   setNotificationPermission = async () => {
-    const updateAllowAppListFromStorage = async () => {
-      const allowAppList = await Storage.fetchList('@allowAppList');
-      await this.setState({allowAppList})
-    };
-
-    const headlessNotificationListener = async (notification) => {
-      if(this.state.characteristic != null){
-        handleNotification(notification);
-      } else {
-        console.log("No characteristic connected. Cannot send notification.");
-      }
-    };
-
-    const handleNotification = async (notification) => {
-      const { app, title, text } = notification;
-      console.log("Got notification: app = " + app + ", title = " + title + ", text = " + text);
-      await updateAllowAppListFromStorage();
-      if(this.state.allowAppList.indexOf(app) != -1){ 
-        if(BlockAppTitleList.hasOwnProperty(app) && BlockAppTitleList[app].indexOf(title) != -1){ // app is in blockList and title is in blockList
-          console.log("Notification App and Title is in block list. Will not display notification.");
-          return;
-        }
-        this.writeNotificationMsg(app, title, text);
-      } else {
-        console.log("Notification Title is in not in allow list. Will not display notification.");
-      }
-    };
-
     console.log("GlobalSettings.SetNotificationPermissionUponStart = " + GlobalSettings.SetNotificationPermissionUponStart + ", os = " + Platform.OS)
     if(GlobalSettings.SetNotificationPermissionUponStart && Platform.OS === 'android'){
       // To check if the user has permission, status can be 'authorized', 'denied' or 'unknown'
@@ -236,7 +241,6 @@ class MenuScreen extends React.Component {
           { text: "Go to Permission Page", onPress: () => RNAndroidNotificationListener.requestPermission()}
         ]);
       };
-      AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => headlessNotificationListener);      
     }
   }
 
