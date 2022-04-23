@@ -5,7 +5,8 @@ let GlobalSettings = {
   OpenNotificationPermissionTogglePage: true,
   SearchDeviceById: false,
   NotificationCutOffLength: 4,
-  ShowAlert: true
+  ShowAlert: true,
+  SendOSInfoUponConnectBle: false,
 };
 
 export default GlobalSettings;

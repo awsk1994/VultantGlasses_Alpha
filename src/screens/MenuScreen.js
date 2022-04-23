@@ -57,7 +57,7 @@ class MenuScreen extends React.Component {
     // TODO: use .then to reduce time waiting.
     console.log("componentDidMount start.");
     AppRegistry.registerHeadlessTask(RNAndroidNotificationListenerHeadlessJsName,	() => this.headlessNotificationListener);      
-
+    
     setInterval(() => this.fetchCharacteristicFromStorage()
         .then(this.setNotificationPermission)
         .then(this._requestBluetoothPermissionAndStartSearch(true))
@@ -248,24 +248,24 @@ class MenuScreen extends React.Component {
     console.log("writeNotificationMsg | Input utf8 | appName = " + appName 
       + ", contact = " + contact
       + ", content = " + content);
-    
-    const divider = "00";
-    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, GlobalSettings.NotificationCutOffLength);
-    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, GlobalSettings.NotificationCutOffLength);
-    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, GlobalSettings.NotificationCutOffLength);
-
-    const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
-    + BLEUtils.numStrToHex(contact.length) + contactHex + divider 
-    + BLEUtils.numStrToHex(content.length) + contentHex;
-
-    const hexMsgWithoutCRC = this.state.vMsgHeader 
-    + this.state.vMsgPAttri 
-    + this.state.vMsgSAttri1
-    + this.state.vMsgSAttri2
-    + entireContentHex;
-    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
-    const hexMsg = hexMsgWithoutCRC + CRCHex;
-
+   
+      const divider = "00";
+      const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, GlobalSettings.NotificationCutOffLength);
+      const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, GlobalSettings.NotificationCutOffLength);
+      const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, GlobalSettings.NotificationCutOffLength);
+  
+      const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
+      + BLEUtils.numStrToHex(contact.length) + contactHex + divider 
+      + BLEUtils.numStrToHex(content.length) + contentHex;
+  
+      const hexMsgWithoutCRC = this.state.vMsgHeader 
+      + this.state.vMsgPAttri 
+      + this.state.vMsgSAttri1
+      + this.state.vMsgSAttri2
+      + entireContentHex;
+      const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+      const hexMsg = hexMsgWithoutCRC + CRCHex;
+  
     if(GlobalSettings.DEBUG){
       console.log("writeNotificationMsg | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex
@@ -392,7 +392,9 @@ class MenuScreen extends React.Component {
               CloseSpinnerFn = () => this.setSpinner(false)
               SuccessWriteFn = Writer.WriteFn.NewSuccessWriteFn(CloseSpinnerFn, AlertFn)
               ErrWriteFn = Writer.WriteFn.NewErrWriteFn(CloseSpinnerFn, AlertFn)        
-              SendOsInfo.send(Platform.OS, this.state.characteristic, SuccessWriteFn, ErrWriteFn)
+              if(GlobalSettings.SendOSInfoUponConnectBle) {
+                SendOsInfo.send(Platform.OS, this.state.characteristic, SuccessWriteFn, ErrWriteFn)
+              }
             });
         } catch (error) {
           console.log("ERROR | " + error);
@@ -436,7 +438,9 @@ class MenuScreen extends React.Component {
       CloseSpinnerFn = () => this.setSpinner(false)
       SuccessWriteFn = Writer.WriteFn.NewSuccessWriteFn(CloseSpinnerFn, AlertFn)
       ErrWriteFn = Writer.WriteFn.NewErrWriteFn(CloseSpinnerFn, AlertFn)
-      SendOsInfo.send(Platform.OS, characteristic, SuccessWriteFn, ErrWriteFn)
+      if(GlobalSettings.SendOSInfoUponConnectBle) {
+        SendOsInfo.send(Platform.OS, characteristic, SuccessWriteFn, ErrWriteFn)
+      }
       subMsg(characteristic)
     };
 
