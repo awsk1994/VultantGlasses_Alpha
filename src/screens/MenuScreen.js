@@ -249,23 +249,34 @@ class MenuScreen extends React.Component {
       + ", contact = " + contact
       + ", content = " + content);
    
-      const divider = "00";
-      const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, GlobalSettings.NotificationCutOffLength);
-      const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, GlobalSettings.NotificationCutOffLength);
-      const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, GlobalSettings.NotificationCutOffLength);
-  
-      const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
-      + BLEUtils.numStrToHex(contact.length) + contactHex + divider 
-      + BLEUtils.numStrToHex(content.length) + contentHex;
-  
-      const hexMsgWithoutCRC = this.state.vMsgHeader 
-      + this.state.vMsgPAttri 
-      + this.state.vMsgSAttri1
-      + this.state.vMsgSAttri2
-      + entireContentHex;
-      const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
-      const hexMsg = hexMsgWithoutCRC + CRCHex;
-  
+    const totalAppLenLimitInBytes = 200;
+
+    const divider = "00";
+    const appNameLenLimit = 10 * 2; // 10 characters * 2 bytes(chinese character) = 20 bytes
+    const contactLenLimit = 10 * 2; // 20 bytes
+    const dividerAndCountLen = 2  // 2 bytes
+    const totalDividerAndCountLen = dividerAndCountLen * (2+3+1)  // 2 divider + 3 count + CRC
+    const headerLen = 8 // 2 * 4 bytes
+    // 200 - 20 - 20 - 12 - 8 = 140
+    // 140 bytes = 140/2 = 70 characters (chinese， english = 140)
+    const contentLenLimit = totalAppLenLimitInBytes - appNameLenLimit - contactLenLimit - totalDividerAndCountLen - headerLen;
+
+    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, appNameLenLimit);
+    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, contactLenLimit);
+    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, contentLenLimit);
+
+    const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
+    + BLEUtils.numStrToHex(contact.length) + contactHex + divider
+    + BLEUtils.numStrToHex(content.length) + contentHex;
+
+    const hexMsgWithoutCRC = this.state.vMsgHeader 
+    + this.state.vMsgPAttri
+    + this.state.vMsgSAttri1
+    + this.state.vMsgSAttri2
+    + entireContentHex;
+    const CRCHex = BLEUtils.sumHex(hexMsgWithoutCRC);
+    const hexMsg = hexMsgWithoutCRC + CRCHex; // CRCHex = 2 digits = 2 byte * 2 = 4 bytes
+
     if(GlobalSettings.DEBUG){
       console.log("writeNotificationMsg | utf8 to hex | appName = " + appNameHex 
       + ", contact = " + contactHex

@@ -49,8 +49,8 @@ class NotesScreen extends React.Component {
     const imgIdHex = BLEUtils.numStrToHex(imgId);
 
     const cutOffOrPadZero = (x, len) => x.substr(0, len).padEnd(len, '0');
-    const titleHexLength = 24
-    const titleHex = cutOffOrPadZero(BLEUtils.utf8ToUtf16Hex(title), titleHexLength) // 6个字 = 6 * 4 = 24
+    const titleHexLength = 20
+    const titleHex = cutOffOrPadZero(BLEUtils.utf8ToUtf16Hex(title), titleHexLength) // 10个字 = 10 * 2 = 20 bytes
     const notesHex = BLEUtils.utf8ToUtf16Hex(content)
     const divider = "00";
     const titleStrLength = titleHexLength/4
