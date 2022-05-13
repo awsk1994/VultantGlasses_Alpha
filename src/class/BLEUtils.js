@@ -69,6 +69,10 @@ class BLEUtils {
     return msg;
   };
 
+  static hexToNumStr = (hexStr) => {
+    return parseInt(hexStr, 16)
+  }
+
   static writeHexOp = (hexStr, characteristics, SuccessWriteFn, ErrWriteFn) => {
     if (!hexStr) {
       console.log('ERROR. hexStr is empty. 请输入要写入的特征值')
@@ -115,9 +119,9 @@ class BLEUtils {
     };
   }
 
-  static baseToStr(baseStr) {
+  static decode64ToHexStr(baseStr) {
     let buff = new Buffer(baseStr, 'base64');
-    return buff.toString('ascii');
+    return buff.toString('hex');
   }
 
   // static utf8ToHex(inptStr){

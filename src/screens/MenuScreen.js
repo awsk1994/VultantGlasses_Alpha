@@ -16,6 +16,7 @@ import VButton from '../components/VButton';
 import VStatus from '../components/VStatus';
 import SendOsInfo from '../class/SendOsInfo';
 import Writer from '../class/Writer'
+import Battery from '../class/Battery';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -435,9 +436,10 @@ class MenuScreen extends React.Component {
  
         val = characteristic.value
         if (val != null) {
-          valLog = "Received Subscription Event | raw = " + val + ", str = " + BLEUtils.baseToStr(val)
-          console.log(valLog);
-          Alert.alert(valLog);  
+          title = "Received Subscription Event" 
+          body = "raw=" + val +",str=" + BLEUtils.decode64ToHexStr(val) + ", battery=" + Battery.GetBatteryLevel(val)
+          console.log(title + body);
+          Alert.alert(title, body);
         }
       }
       subEvent = characteristic.monitor(subEventHandler)
