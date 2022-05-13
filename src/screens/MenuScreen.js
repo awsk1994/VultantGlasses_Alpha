@@ -436,10 +436,16 @@ class MenuScreen extends React.Component {
  
         val = characteristic.value
         if (val != null) {
+<<<<<<< HEAD
           title = "Received Subscription Event" 
           body = "raw=" + val +",str=" + BLEUtils.decode64ToHexStr(val) + ", battery=" + Battery.GetBatteryLevel(val)
           console.log(title + body);
           Alert.alert(title, body);
+=======
+          valLog = "Received Subscription Event | raw=" + val +",str=" + BLEUtils.decode64ToHexStr(val) + ", battery=" + Battery.GetBatteryLevel(val)
+          console.log(valLog);
+          Alert.alert(valLog);
+>>>>>>> 59dd99eed8e14402526d7c0d175c01ff8079d55a
         }
       }
       subEvent = characteristic.monitor(subEventHandler)
