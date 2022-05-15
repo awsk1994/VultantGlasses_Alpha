@@ -17,6 +17,7 @@ import VStatus from '../components/VStatus';
 import SendOsInfo from '../class/SendOsInfo';
 import Writer from '../class/Writer'
 import Battery from '../class/Battery';
+import NotificationUtil from '../class/NotificationUtil';
 
 // TODO: Reset Characteristic/Device functionality
 
@@ -250,25 +251,24 @@ class MenuScreen extends React.Component {
       + ", contact = " + contact
       + ", content = " + content);
    
-    const totalAppLenLimitInBytes = 200;
+    // configurable
+    let totalAppLenLimitInBytes = 200;
+    let appNameLenLimit = 15;
+    let contactLenLimit = 15;
+
+    // default: contentLenLimit = 60
+    contentLenLimit = NotificationUtil.calcContentLenLimit(totalAppLenLimitInBytes, appNameLenLimit, contactLenLimit)    
+    const appNameLimited = appName.substring(0, appNameLenLimit)
+    const contactLimited = contact.substring(0, contactLenLimit)
+    const contentLimited = content.substring(0, contentLenLimit)
+    const appNameLimitedHex = BLEUtils.utf8ToUtf16Hex(appNameLimited)
+    const contactLimitedHex = BLEUtils.utf8ToUtf16Hex(contactLimited)
+    const contentLimitedHex = BLEUtils.utf8ToUtf16Hex(contentLimited)
 
     const divider = "00";
-    const appNameLenLimit = 10 * 2; // 10 characters * 2 bytes(chinese character) = 20 bytes
-    const contactLenLimit = 10 * 2; // 20 bytes
-    const dividerAndCountLen = 2  // 2 bytes
-    const totalDividerAndCountLen = dividerAndCountLen * (2+3+1)  // 2 divider + 3 count + CRC
-    const headerLen = 8 // 2 * 4 bytes
-    // 200 - 20 - 20 - 12 - 8 = 140
-    // 140 bytes = 140/2 = 70 characters (chinese， english = 140)
-    const contentLenLimit = totalAppLenLimitInBytes - appNameLenLimit - contactLenLimit - totalDividerAndCountLen - headerLen;
-
-    const appNameHex = BLEUtils.utf8ToUtf16Hex(appName).substring(0, appNameLenLimit);
-    const contactHex = BLEUtils.utf8ToUtf16Hex(contact).substring(0, contactLenLimit);
-    const contentHex = BLEUtils.utf8ToUtf16Hex(content).substring(0, contentLenLimit);
-
-    const entireContentHex = BLEUtils.numStrToHex(appName.length) + appNameHex + divider
-    + BLEUtils.numStrToHex(contact.length) + contactHex + divider
-    + BLEUtils.numStrToHex(content.length) + contentHex;
+    const entireContentHex = BLEUtils.numStrToHex(appNameLimited.length) + appNameLimitedHex + divider
+    + BLEUtils.numStrToHex(contactLimited.length) + contactLimitedHex + divider
+    + BLEUtils.numStrToHex(contentLimited.length) + contentLimitedHex;
 
     const hexMsgWithoutCRC = this.state.vMsgHeader 
     + this.state.vMsgPAttri
@@ -279,13 +279,13 @@ class MenuScreen extends React.Component {
     const hexMsg = hexMsgWithoutCRC + CRCHex; // CRCHex = 2 digits = 2 byte * 2 = 4 bytes
 
     if(GlobalSettings.DEBUG){
-      console.log("writeNotificationMsg | utf8 to hex | appName = " + appNameHex 
-      + ", contact = " + contactHex
-      + ", content = " + contentHex);
+      console.log("writeNotificationMsg | utf8 to hex | appName = " + appNameLimitedHex 
+      + ", contact = " + contactLimitedHex
+      + ", content = " + contentLimitedHex);
     
-      console.log("writeNotificationMsg | getSize | appName = " + BLEUtils.numStrToHex(appName.length) 
-        + ", contact = " + BLEUtils.numStrToHex(contact.length)
-        + ", content = " + BLEUtils.numStrToHex(content.length));
+      console.log("writeNotificationMsg | getSize | appName = " + BLEUtils.numStrToHex(appNameLimited.length) 
+        + ", contact = " + BLEUtils.numStrToHex(contactLimited.length)
+        + ", content = " + BLEUtils.numStrToHex(contentLimited.length));
       
       console.log("writeNotificationMsg | CRCHex | " + CRCHex);
       console.log("writeNotificationMsg | entireContentHex | " + entireContentHex);
